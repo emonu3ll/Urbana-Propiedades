@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Urbana Propiedades | Curuguaty</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- BARRA DE NAVEGACIÓN -->
+    <nav class="navbar">
+        <div class="container">
+            <!-- Logo -->
+<div class="logo">
+                <img src="img/logo.png" alt="Logo" class="logo-icono">
+                <div class="logo-texto">
+                    <span>URBANA</span>
+                    <span>PROPIEDADES</span>
+                </div>
+            </div>
+            
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#propiedades" onclick="goToComprar(event)" data-i18n="nav_comprar">Comprar</a></li>
+                <li><a href="#" onclick="goToVender(event)" data-i18n="nav_vender">Vender</a></li>
+                <li><a href="#propiedades" onclick="goToAlquilar(event)" data-i18n="nav_alquilar">Alquilar</a></li>
+                <li><a href="#nosotros" data-i18n="nav_nosotros">Nosotros</a></li>
+                <li><a href="mailto:urbanapropiedades.py@gmail.com" class="feedback-link">💬 ¿Sugerencias? Ayúdanos a mejorar</a></li>
+            </ul>
+
+
+            <!-- Botón hamburguesa (solo celular) -->
+            <button class="menu-toggle" id="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- SECCIÓN HERO CON BUSCADOR -->
+    <section class="hero">
+        <div class="hero-content">
+            <h2 data-i18n="hero_title">Encontrá tu propiedad ideal en Curuguaty y Canindeyú</h2>
+            <div class="search-box">
+                <input type="text" data-i18n-placeholder="search_placeholder" placeholder="¿Qué estás buscando?">
+                <button class="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="todos">Todos</button>
+                <button class="filter-btn" data-filter="casas" data-i18n="filter_casas">🏠 Casas</button>
+                <button class="filter-btn" data-filter="terrenos" data-i18n="filter_terrenos">📐 Terrenos</button>
+                <button class="filter-btn" data-filter="campos" data-i18n="filter_campos">🌾 Campos</button>
+                <button class="filter-btn" data-filter="locales" data-i18n="filter_locales">🏪 Locales</button>
+                <button class="filter-btn" data-filter="alquileres" data-i18n="filter_alquileres">🔑 Alquileres</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROPIEDADES DESTACADAS -->
+    <section class="properties" id="propiedades">
+        <div class="container">
+            <h2>Propiedades Destacadas</h2>
+            <div class="properties-grid" id="properties-grid">
+                <!-- El JavaScript va a llenar esto automáticamente -->
+            </div>
+        </div>
+    </section>
+
+    <!-- BOTÓN FLOTANTE DE WHATSAPP -->
+    <a href="https://wa.me/595994272727?text=Hola%20Urbana%20Propiedades,%20quiero%20más%20información." class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- SECCIÓN SOBRE NOSOTROS -->
+    <section class="about-us" id="nosotros">
+        <div class="container about-grid">
+            <div class="about-content">
+                <h4 class="about-subtitle">QUIÉNES SOMOS</h4>
+                <h2 class="about-title">Expertos en el mercado inmobiliario de Canindeyú</h2>
+                <p class="about-text">
+                    En <strong>Urbana Propiedades</strong> entendemos que buscar una propiedad es una de las decisiones más importantes de tu vida. Con años de experiencia en Curuguaty y toda la región de Canindeyú, te ofrecemos un servicio personalizado, transparente y eficiente.
+                </p>
+                <ul class="about-features">
+                    <li><i class="fas fa-map-marked-alt"></i><span><strong>Conocimiento Local:</strong> Conocemos cada barrio, loteo y zona rural de la región.</span></li>
+                    <li><i class="fas fa-handshake"></i><span><strong>Trato Personalizado:</strong> Te acompañamos desde la primera visita hasta la firma.</span></li>
+                    <li><i class="fas fa-file-contract"></i><span><strong>Trámites Seguros:</strong> Asesoramiento legal y contable para tu tranquilidad.</span></li>
+                </ul>
+            </div>
+            <div class="about-image">
+                <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600" alt="Equipo Urbana Propiedades">
+            </div>
+        </div>
+    </section>
+
+    <!-- PIE DE PÁGINA (FOOTER) -->
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div class="footer-col">
+                <h3>Urbana Propiedades</h3>
+                <p>Tu aliado estratégico en el mercado inmobiliario de Canindeyú. Conectamos sueños con realidades.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Contacto</h3>
+                <ul>
+                    <li><i class="fas fa-phone"></i> +595 994 27 27 27</li>
+                    <li><i class="fas fa-envelope"></i> urbanapropiedades.py@gmail.com</li>
+                    <li><i class="fas fa-map-marker-alt"></i> Curuguaty, Canindeyú</li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Enlaces Rápidos</h3>
+                <ul>
+                    <li><a href="#propiedades" onclick="goToComprar(event)">Comprar</a></li>
+                    <li><a href="#" onclick="goToVender(event)">Vender</a></li>
+                    <li><a href="#propiedades" onclick="goToAlquilar(event)">Alquilar</a></li>
+                    <li><a href="#nosotros">Nosotros</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Síguenos</h3>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Barra inferior de Copyright con Link Oculto para Celular/PC -->
+        <div class="footer-bottom">
+            <p style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 5px;">
+                &copy; 2026 Urbana Propiedades. Todos los derechos reservados.
+                <a href="admin.html" style="
+                    display: inline-block;
+                    font-size: 10px;
+                    color: rgba(255,255,255,0.3);
+                    text-decoration: none;
+                    transition: color 0.3s;
+                " onmouseover="this.style.color='rgba(255,255,255,0.8)';" 
+                   onmouseout="this.style.color='rgba(255,255,255,0.3)';">
+                    • Admin
+                </a>
+            </p>
+        </div>
+    </footer>
+
+       <!-- MODAL DE DETALLE DE PROPIEDAD -->
+    <div class="property-modal" id="property-modal">
+        <div class="modal-content">
+            <button class="modal-close" id="modal-close"><i class="fas fa-times"></i></button>
+            <div class="modal-grid">
+                <div class="modal-info">
+                    
+                    <!-- CARRUSEL DE IMÁGENES CON BOTONES FLOTANTES (Estilo Redfin) -->
+                    <div class="modal-image-slider">
+                        <button class="slider-btn prev" onclick="changeSlide(-1)">&#10094;</button>
+                        <img src="" alt="Propiedad" id="modal-image" class="slider-image">
+                        <button class="slider-btn next" onclick="changeSlide(1)">&#10095;</button>
+                        
+                        <!-- BOTONES FLOTANTES SOBRE LA IMAGEN -->
+                        <div class="property-media-buttons" id="modal-media-buttons" style="display: none;">
+                            <button class="media-button youtube" id="modal-video-btn-float" type="button">
+                                <i class="fas fa-play-circle"></i>
+                                <span>Video</span>
+                            </button>
+                            <button class="media-button matterport" id="modal-tour-btn-float" type="button">
+                                <i class="fas fa-cube"></i>
+                                <span>3D Tour</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="slider-dots" id="slider-dots"></div>
+                    <!-- FIN CARRUSEL -->
+
+                    <div class="modal-price" id="modal-price"></div>
+                    <h2 id="modal-title"></h2>
+                    <p class="modal-description" id="modal-description"></p>
+                    <div class="modal-features" id="modal-features"></div>
+                    
+                    <!-- Botón de Oferta (se mostrará u ocultará con JS) -->
+                    <button class="modal-offer-btn" id="modal-offer-btn">
+                        <i class="fas fa-gavel"></i> Iniciar Oferta
+                    </button>
+                    
+                    <a href="#" class="modal-whatsapp" id="modal-whatsapp" target="_blank">
+                        <i class="fab fa-whatsapp"></i> Contactar por WhatsApp
+                    </a>
+                </div>
+                
+                <div class="modal-map">
+                    <h3>📍 Ubicación</h3>
+                    <iframe id="modal-map-iframe" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14480.78840488428!2d-55.7308!3d-24.0694!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94544a5c5e5e5e5f%3A0x0!2sCuruguaty!5e0!3m2!1ses!2spy!4v1234567890" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL INTEGRADO DE VIDEO/TOUR (Estilo Redfin - Pantalla Completa) -->
+    <!-- Este va SUETO al final del body para que tape todo correctamente -->
+    <div class="integrated-media-modal" id="integrated-media-modal">
+        <div class="integrated-media-content">
+            <button class="integrated-media-close" onclick="closeIntegratedMedia()">×</button>
+            <iframe class="integrated-media-iframe" id="integrated-media-iframe" src="" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script type="module" src="firebase-config.js"></script>
+    <script type="module" src="script.js"></script>
+
+    <!-- Atajo de teclado alternativo para Admin (Alt + Shift + A) -->
+    <script>
+        document.addEventListener('keydown', (e) => {
+            if (e.altKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+                window.location.href = 'admin.html';
+            }
+        });
+
+        // Navegación inteligente: Comprar / Vender / Alquilar
+        function goToComprar(e) {
+            e.preventDefault();
+            const btn = document.querySelector('.filter-btn[data-filter="todos"]');
+            if (btn) btn.click();
+            document.getElementById('propiedades').scrollIntoView({ behavior: 'smooth' });
+        }
+
+function goToAlquilar(e) {
+    e.preventDefault();
+    const btn = document.querySelector('.filter-btn[data-filter="alquileres"]');
+    if (btn) btn.click();
+    document.getElementById('propiedades').scrollIntoView({ behavior: 'smooth' });
+}
+
+        function goToVender(e) {
+            e.preventDefault();
+            const mensaje = encodeURIComponent('Hola Urbana Propiedades, quiero vender mi propiedad. ¿Me pueden asesorar?');
+            window.open(`https://wa.me/595994272727?text=${mensaje}`, '_blank');
+        }
+    </script>
+
+</body>
+</html>
