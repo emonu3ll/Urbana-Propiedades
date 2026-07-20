@@ -13,7 +13,7 @@ async function login() {
         await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
         console.error(error);
-        alert('❌ Usuario o contraseña incorrectos');
+        showToast('Usuario o contraseña incorrectos', 'error');
     }
 }
 
