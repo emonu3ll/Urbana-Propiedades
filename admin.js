@@ -329,11 +329,14 @@ if (!property) {
     return;
 }
         
-        document.getElementById('prop-title').value = property.title;
-        document.getElementById('prop-category').value = property.category;
-        document.getElementById('prop-description').value = property.description || '';
-        document.getElementById('prop-features').value = property.features ? property.features.join(', ') : '';
-        document.getElementById('prop-map').value = property.map || '';
+document.getElementById('prop-title').value = property.title;
+document.getElementById('prop-category').value = property.category;
+document.getElementById('prop-description').value = property.description || '';
+document.getElementById('prop-features').value = property.features ? property.features.join(', ') : '';
+document.getElementById('prop-map').value = property.map || '';
+document.getElementById('prop-badge').value = property.badge || '';
+document.getElementById('prop-youtube').value = property.youtube || '';
+document.getElementById('prop-matterport').value = property.matterport || '';
         
         document.getElementById('prop-price-usd').value = '';
         document.getElementById('prop-price-gs').value = '';
