@@ -191,10 +191,10 @@ const matterportUrl = document.getElementById('prop-matterport').value.trim();
             price = parts.join(' / ');
         }
         
-        if (!title || !price || uploadedImages.length === 0) {
-            alert('❌ Completá al menos: título, precio y una imagen');
-            btn.innerHTML = originalText; btn.disabled = false; return;
-        }
+if (!title || !price || uploadedImages.length === 0) {
+    showToast('Completá al menos: título, precio y una imagen', 'error');
+    btn.innerHTML = originalText; btn.disabled = false; return;
+}
         
         const features = featuresText ? featuresText.split(',').map(f => f.trim()).filter(f => f) : [];
         
@@ -255,12 +255,12 @@ document.getElementById('prop-matterport').value = '';
         document.getElementById('price-preview').style.color = '#999';
         
 clearDraft(); // Ya se guardó de verdad, borramos el borrador temporal
-        alert(editId ? '✅ Propiedad actualizada' : '✅ Propiedad guardada en la nube');
-        loadProperties();
-    } catch (error) {
-        console.error(error);
-        alert('❌ Error al guardar: ' + error.message);
-    } finally {
+showToast(editId ? 'Propiedad actualizada correctamente' : 'Propiedad guardada en la nube', 'success');
+loadProperties();
+} catch (error) {
+    console.error(error);
+    showToast('Error al guardar: ' + error.message, 'error');
+} finally {
         btn.innerHTML = originalText;
         btn.disabled = false;
     }
@@ -324,10 +324,10 @@ async function editProperty(id) {
             }
         });
         
-        if (!property) {
-            alert('❌ Propiedad no encontrada');
-            return;
-        }
+if (!property) {
+    showToast('Propiedad no encontrada', 'error');
+    return;
+}
         
         document.getElementById('prop-title').value = property.title;
         document.getElementById('prop-category').value = property.category;
@@ -375,12 +375,12 @@ displayImages();
         document.querySelector('.btn-save').innerHTML = '<i class="fas fa-sync"></i> Actualizar Propiedad';
         document.querySelector('.upload-section').scrollIntoView({ behavior: 'smooth' });
         
-        alert('✅ Datos cargados. La foto actual se mantiene. Si subís una nueva, reemplazará a la anterior.');
+       showToast('Datos cargados. La foto actual se mantiene. Si subís una nueva, reemplazará a la anterior.', 'success');
         
-    } catch (error) {
-        console.error("Error al cargar propiedad:", error);
-        alert('❌ Error al cargar la propiedad: ' + error.message);
-    }
+} catch (error) {
+    console.error("Error al cargar propiedad:", error);
+    showToast('Error al cargar la propiedad: ' + error.message, 'error');
+}
 }
 
 async function deleteProperty(id) {
@@ -388,25 +388,28 @@ async function deleteProperty(id) {
         try {
             await deleteDoc(doc(db, "propiedades", id));
             loadProperties();
-        } catch (error) {
-            alert('Error al eliminar: ' + error.message);
-        }
+} catch (error) {
+    showToast('Error al eliminar: ' + error.message, 'error');
+}
     }
 }
 
-// =========================================
-// CANCELAR EDICIÓN
-// =========================================
 function cancelEdit() {
     const title = document.getElementById('prop-title').value.trim();
     const hasData = title || uploadedImages.length > 0;
     
     if (hasData) {
-        if (!confirm('¿Seguro que querés cancelar? Se perderán los cambios no guardados.')) {
-            return;
-        }
+        openConfirmModal(
+            '¿Seguro que querés cancelar? Se perderán los cambios no guardados.',
+            () => { doCancelEdit(); },
+            'Sí, cancelar'
+        );
+    } else {
+        doCancelEdit();
     }
-    
+}
+
+function doCancelEdit() {
     document.getElementById('prop-title').value = '';
     document.getElementById('prop-price-usd').value = '';
     document.getElementById('prop-price-gs').value = '';
@@ -418,12 +421,72 @@ function cancelEdit() {
     
     uploadedImages = [];
     displayImages();
+    clearDraft();
     
     document.querySelector('.btn-save').innerHTML = '<i class="fas fa-save"></i> Guardar Propiedad';
     document.getElementById('price-preview').textContent = 'Completá los campos de arriba';
     document.getElementById('price-preview').style.color = '#999';
     
-    alert('✅ Edición cancelada. El formulario está limpio.');
+    showToast('Edición cancelada. El formulario está limpio.', 'success');
+}
+
+// =========================================
+// MODAL DE CONFIRMACIÓN PERSONALIZADO
+// =========================================
+function hasUnsavedChanges() {
+    const saved = localStorage.getItem(DRAFT_KEY);
+    if (!saved) return false;
+    try {
+        const draft = JSON.parse(saved);
+        return Object.values(draft).some(v => v && v.trim() !== '');
+    } catch (e) {
+        return false;
+    }
+}
+
+function openConfirmModal(message, onConfirm, actionText = 'Salir igual') {
+    const modal = document.getElementById('confirm-modal');
+    const text = document.getElementById('confirm-modal-text');
+    const actionBtn = document.getElementById('confirm-modal-action-btn');
+    
+    text.textContent = message;
+    actionBtn.textContent = actionText;
+    modal.style.display = 'flex';
+    
+    // Reemplazamos el botón para limpiar listeners anteriores
+    const newBtn = actionBtn.cloneNode(true);
+    actionBtn.parentNode.replaceChild(newBtn, actionBtn);
+    newBtn.id = 'confirm-modal-action-btn';
+    newBtn.addEventListener('click', () => {
+        closeConfirmModal();
+        onConfirm();
+    });
+}
+
+function closeConfirmModal() {
+    document.getElementById('confirm-modal').style.display = 'none';
+}
+
+function confirmNavigation(url) {
+    if (hasUnsavedChanges()) {
+        openConfirmModal(
+            'Si salís ahora, vas a perder los datos que escribiste en el formulario. ¿Qué querés hacer?',
+            () => { clearDraft(); window.location.href = url; }
+        );
+    } else {
+        window.location.href = url;
+    }
+}
+
+function confirmLogout() {
+    if (hasUnsavedChanges()) {
+        openConfirmModal(
+            'Tenés datos sin guardar. Si cerrás sesión ahora, vas a perderlos. ¿Qué querés hacer?',
+            () => { clearDraft(); logout(); }
+        );
+    } else {
+        logout();
+    }
 }
 
 // =========================================
@@ -519,3 +582,57 @@ window.updatePricePreview = updatePricePreview;
 window.displayImages = displayImages;
 window.loadProperties = loadProperties;
 window.cancelEdit = cancelEdit;
+window.confirmNavigation = confirmNavigation;
+window.confirmLogout = confirmLogout;
+window.closeConfirmModal = closeConfirmModal;
+
+// =========================================
+// NOTIFICACIONES TIPO TOAST
+// =========================================
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const colors = {
+        success: { bg: '#4CAF50', icon: '✅' },
+        error: { bg: '#f44336', icon: '❌' },
+        info: { bg: '#2196F3', icon: 'ℹ️' }
+    };
+    const style = colors[type] || colors.success;
+
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        background: ${style.bg};
+        color: white;
+        padding: 16px 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 500;
+        font-size: 14px;
+        max-width: 350px;
+        opacity: 0;
+        transform: translateX(100px);
+        transition: all 0.3s ease;
+    `;
+    toast.innerHTML = `<span style="font-size:18px;">${style.icon}</span><span>${message}</span>`;
+
+    container.appendChild(toast);
+
+    // Animación de entrada
+    requestAnimationFrame(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateX(0)';
+    });
+
+    // Animación de salida y remoción
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100px)';
+        setTimeout(() => toast.remove(), 300);
+    }, 3500);
+}
+
+window.showToast = showToast;
