@@ -340,13 +340,25 @@ document.addEventListener('keydown', (e) => {
 
 if (offerBtn) {
     offerBtn.addEventListener('click', () => {
-        const offerAmount = prompt('💰 ¿Cuánto querés ofrecer por esta propiedad? (Ej: 110.000 USD)');
-        if (offerAmount && offerAmount.trim() !== '') {
-            const message = `Hola Rubén, quiero hacer una oferta de ${offerAmount} por la propiedad: ${modalTitle.textContent}. ¿Podemos conversar?`;
-            window.open(`https://wa.me/595994272727?text=${encodeURIComponent(message)}`, '_blank');
-        }
+        document.getElementById('offer-input').value = '';
+        document.getElementById('offer-modal').style.display = 'flex';
     });
 }
+
+window.closeOfferModal = function() {
+    document.getElementById('offer-modal').style.display = 'none';
+};
+
+window.submitOffer = function() {
+    const offerAmount = document.getElementById('offer-input').value.trim();
+    if (offerAmount === '') {
+        document.getElementById('offer-input').focus();
+        return;
+    }
+    const message = `Hola Rubén, quiero hacer una oferta de ${offerAmount} por la propiedad: ${modalTitle.textContent}. ¿Podemos conversar?`;
+    window.open(`https://wa.me/595994272727?text=${encodeURIComponent(message)}`, '_blank');
+    document.getElementById('offer-modal').style.display = 'none';
+};
 
 // =========================================
 // 6. MODAL INTEGRADO DE VIDEO/TOUR (Estilo Redfin)

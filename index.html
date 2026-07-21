@@ -205,6 +205,24 @@
         </div>
     </div>
 
+    <!-- MODAL DE OFERTA -->
+    <div id="offer-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center; padding:20px;">
+        <div style="background:white; border-radius:15px; padding:30px; max-width:400px; width:100%; box-shadow:0 10px 40px rgba(0,0,0,0.3);">
+            <div style="font-size:40px; text-align:center; margin-bottom:10px;">💰</div>
+            <h3 style="color:#1e3a5f; font-family:'Cinzel', serif; text-align:center; margin-bottom:20px;">Hacé tu oferta</h3>
+            <label style="display:block; color:#1e3a5f; font-weight:bold; margin-bottom:8px; font-size:14px;">¿Cuánto querés ofrecer? (Ej: 110.000 USD)</label>
+            <input type="text" id="offer-input" placeholder="Ej: 110.000 USD" style="width:100%; padding:12px; border:2px solid #e0e0e0; border-radius:8px; font-size:14px; box-sizing:border-box; margin-bottom:20px;">
+            <div style="display:flex; gap:10px;">
+                <button onclick="closeOfferModal()" style="flex:1; padding:12px; border:2px solid #e0e0e0; background:white; color:#1e3a5f; border-radius:8px; font-weight:bold; cursor:pointer;">
+                    Cancelar
+                </button>
+                <button onclick="submitOffer()" style="flex:1; padding:12px; border:none; background:#4CAF50; color:white; border-radius:8px; font-weight:bold; cursor:pointer;">
+                    Enviar oferta
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- SCRIPTS -->
     <script type="module" src="firebase-config.js"></script>
     <script type="module" src="script.js"></script>
@@ -238,6 +256,8 @@ function goToAlquilar(e) {
             window.open(`https://wa.me/595994272727?text=${mensaje}`, '_blank');
         }
     </script>
+
+
 
 </body>
 </html>
