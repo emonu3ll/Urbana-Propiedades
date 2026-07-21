@@ -103,13 +103,23 @@ async function renderProperties(filter = 'todos') {
     const properties = await getPropertiesFromFirebase();
     grid.innerHTML = '';
     
-    if (properties.length === 0) {
-        grid.innerHTML = '<p style="text-align: center; width: 100%; padding: 20px;">No hay propiedades en esta categoría por el momento.</p>';
+    const filteredProperties = properties.filter(prop => filter === 'todos' || prop.category === filter);
+
+    if (filteredProperties.length === 0) {
+        const categoryNames = {
+            todos: 'propiedades',
+            casas: 'casas',
+            terrenos: 'terrenos',
+            campos: 'campos',
+            locales: 'locales',
+            alquileres: 'alquileres'
+        };
+        const nombreCategoria = categoryNames[filter] || 'propiedades';
+        grid.innerHTML = `<p style="text-align: center; width: 100%; padding: 40px 20px; color: #666; font-size: 16px;">😕 No hay ${nombreCategoria} disponibles en este momento.<br><small style="color:#999;">Volvé a intentar más tarde o consultanos por WhatsApp.</small></p>`;
         return;
     }
 
-    properties.forEach(prop => {
-        if (filter === 'todos' || prop.category === filter) {
+    filteredProperties.forEach(prop => {
             const featuresArray = Array.isArray(prop.features) ? prop.features : (prop.features ? prop.features.split(',').map(f => f.trim()) : []);
             const featuresHTML = featuresArray.map(f => `<span>${f}</span>`).join(' • ');
             
@@ -162,8 +172,7 @@ card.innerHTML = `
                     </button>
                 </div>
             `;
-            grid.appendChild(card);
-        }
+grid.appendChild(card);
     });
 }
 
@@ -175,6 +184,7 @@ document.addEventListener('click', (e) => {
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
         e.target.classList.add('active');
         renderProperties(e.target.getAttribute('data-filter'));
+        document.getElementById('propiedades').scrollIntoView({ behavior: 'smooth' });
     }
 });
 
