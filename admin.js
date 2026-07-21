@@ -1,4 +1,4 @@
-import { db, storage, auth, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, ref, uploadBytes, getDownloadURL, signInWithEmailAndPassword, signOut, onAuthStateChanged } from './firebase-config.js';
+import { db, storage, auth, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, ref, uploadBytes, getDownloadURL, deleteObject, signInWithEmailAndPassword, signOut, onAuthStateChanged } from './firebase-config.js';
 
 // =========================================
 // SISTEMA DE LOGIN
