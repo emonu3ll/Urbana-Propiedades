@@ -391,8 +391,29 @@ async function deleteProperty(id) {
         '¿Estás seguro de eliminar esta propiedad de la nube? Esta acción no se puede deshacer.',
         async () => {
             try {
+                // 1. Primero traemos los datos de la propiedad para saber qué imágenes borrar
+                const propertiesRef = collection(db, "propiedades");
+                const querySnapshot = await getDocs(propertiesRef);
+                let property = null;
+                querySnapshot.forEach((docSnap) => {
+                    if (docSnap.id === id) property = docSnap.data();
+                });
+
+                // 2. Borramos cada imagen del Storage
+                if (property && property.images && property.images.length > 0) {
+                    for (const imageUrl of property.images) {
+                        try {
+                            const imageRef = ref(storage, imageUrl);
+                            await deleteObject(imageRef);
+                        } catch (imgError) {
+                            console.warn('No se pudo borrar una imagen (puede que ya no exista):', imgError.message);
+                        }
+                    }
+                }
+
+                // 3. Borramos el registro de Firestore
                 await deleteDoc(doc(db, "propiedades", id));
-                showToast('Propiedad eliminada correctamente', 'success');
+                showToast('Propiedad y sus fotos eliminadas correctamente', 'success');
                 loadProperties();
             } catch (error) {
                 showToast('Error al eliminar: ' + error.message, 'error');
