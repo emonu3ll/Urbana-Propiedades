@@ -387,14 +387,19 @@ displayImages();
 }
 
 async function deleteProperty(id) {
-    if (confirm('¿Estás seguro de eliminar esta propiedad de la nube?')) {
-        try {
-            await deleteDoc(doc(db, "propiedades", id));
-            loadProperties();
-} catch (error) {
-    showToast('Error al eliminar: ' + error.message, 'error');
-}
-    }
+    openConfirmModal(
+        '¿Estás seguro de eliminar esta propiedad de la nube? Esta acción no se puede deshacer.',
+        async () => {
+            try {
+                await deleteDoc(doc(db, "propiedades", id));
+                showToast('Propiedad eliminada correctamente', 'success');
+                loadProperties();
+            } catch (error) {
+                showToast('Error al eliminar: ' + error.message, 'error');
+            }
+        },
+        'Sí, eliminar'
+    );
 }
 
 function cancelEdit() {
