@@ -107,10 +107,25 @@
                 
                 <div class="image-preview" id="image-preview"></div>
                 
-                <div class="form-group" style="margin-top: 20px;">
-                    <label>Título de la propiedad</label>
-                    <input type="text" id="prop-title" placeholder="Ej: Casa en Centro, Villa Curuguaty">
-                </div>
+<div class="form-group" style="margin-top: 20px;">
+    <label>Título de la propiedad</label>
+    <input type="text" id="prop-title" placeholder="Ej: Casa en Centro, Villa Curuguaty">
+</div>
+
+<div class="form-group">
+    <label>📍 Dirección (para exportar a My Maps)</label>
+    <input type="text" id="prop-address" placeholder="Ej: Av. 14 de Mayo c/ Gaspar Rodríguez, Curuguaty">
+    <small style="color: #666; font-size: 12px;">Opcional. Se usa solo para el botón "Descargar para My Maps".</small>
+</div>
+
+<div class="form-group">
+    <label>🏷️ Estado de la propiedad</label>
+    <select id="prop-status" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
+        <option value="disponible">🟢 Disponible</option>
+        <option value="reservado">🟡 Reservado</option>
+        <option value="vendido">🔴 Vendido</option>
+    </select>
+</div>
 
                 <!-- BADGE/ETIQUETA -->
 <div class="form-group">
@@ -218,13 +233,16 @@
 </div>
             </div>
             
-            <!-- LISTA DE PROPIEDADES -->
+<!-- LISTA DE PROPIEDADES -->
             <div class="properties-list">
-                <h2>📋 Propiedades Publicadas</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+                    <h2 style="margin: 0;">📋 Propiedades Publicadas</h2>
+                    <button onclick="exportForMyMaps()" style="background: #4285F4; color: white; padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-map-marked-alt"></i> Descargar para My Maps
+                    </button>
+                </div>
                 <div id="properties-container"></div>
             </div>
-        </div>
-    </div>
 
 <!-- MODAL DE CONFIRMACIÓN PERSONALIZADO -->
     <div id="confirm-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
