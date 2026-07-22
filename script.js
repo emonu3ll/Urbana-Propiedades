@@ -281,6 +281,9 @@ document.querySelector('.properties')?.addEventListener('click', (e) => {
     e.preventDefault();
     const card = trigger.closest('.property-card');
     const category = card.getAttribute('data-category');
+
+    const banner = document.getElementById('shared-property-banner');
+    if (banner) banner.style.display = 'none';
     
     const imagesAttr = card.getAttribute('data-images');
     currentImages = imagesAttr ? JSON.parse(imagesAttr) : [card.getAttribute('data-image')];
@@ -418,5 +421,8 @@ function checkForSharedProperty() {
     if (card) {
         const trigger = card.querySelector('.modal-trigger');
         if (trigger) trigger.click();
+
+        const banner = document.getElementById('shared-property-banner');
+        if (banner) banner.style.display = 'block';
     }
 }
