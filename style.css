@@ -1019,6 +1019,7 @@ html, body {
 .badge-urgente { background: #fb8c00; color: white; }
 .badge-acceso { background: #212121; color: white; }
 .badge-popular { background: #8e24aa; color: white; }
+.badge-reservado { background: #f9a825; color: white; }
 
 .property-card {
     position: relative;

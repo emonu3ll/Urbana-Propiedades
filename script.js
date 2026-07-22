@@ -103,7 +103,11 @@ async function renderProperties(filter = 'todos') {
     const properties = await getPropertiesFromFirebase();
     grid.innerHTML = '';
     
-    const filteredProperties = properties.filter(prop => filter === 'todos' || prop.category === filter);
+   const filteredProperties = properties.filter(prop => {
+    const matchesFilter = filter === 'todos' || prop.category === filter;
+    const notSold = (prop.status || 'disponible') !== 'vendido';
+    return matchesFilter && notSold;
+});
 
     if (filteredProperties.length === 0) {
         const categoryNames = {
@@ -137,14 +141,16 @@ async function renderProperties(filter = 'todos') {
             card.setAttribute('data-youtube', prop.youtube ? processYoutubeUrl(prop.youtube) : '');
             card.setAttribute('data-matterport', prop.matterport ? processMatterportUrl(prop.matterport) : '');
             
-            let badgeHTML = '';
-            if (prop.badge) {
-                const badgeTexts = {
-                    'oferta': 'OFERTA', 'nuevo': 'NUEVO', 'exclusivo': 'EXCLUSIVO',
-                    'urgente': 'OPORTUNIDAD', 'acceso': 'ACCESO ANTICIPADO', 'popular': 'MÁS VENDIDO'
-                };
-                badgeHTML = `<span class="property-badge badge-${prop.badge}">${badgeTexts[prop.badge] || prop.badge}</span>`;
-            }
+let badgeHTML = '';
+if (prop.status === 'reservado') {
+    badgeHTML = `<span class="property-badge badge-reservado">RESERVADO</span>`;
+} else if (prop.badge) {
+    const badgeTexts = {
+        'oferta': 'OFERTA', 'nuevo': 'NUEVO', 'exclusivo': 'EXCLUSIVO',
+        'urgente': 'OPORTUNIDAD', 'acceso': 'ACCESO ANTICIPADO', 'popular': 'MÁS VENDIDO'
+    };
+    badgeHTML = `<span class="property-badge badge-${prop.badge}">${badgeTexts[prop.badge] || prop.badge}</span>`;
+}
 
             let iconsHTML = '';
             if (prop.youtube || prop.matterport) {
