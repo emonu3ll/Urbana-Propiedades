@@ -127,10 +127,11 @@ async function renderProperties(filter = 'todos') {
             const featuresArray = Array.isArray(prop.features) ? prop.features : (prop.features ? prop.features.split(',').map(f => f.trim()) : []);
             const featuresHTML = featuresArray.map(f => `<span>${f}</span>`).join(' • ');
             
-            const card = document.createElement('div');
-            card.className = 'property-card';
-            card.setAttribute('data-category', prop.category);
-            card.setAttribute('data-title', prop.title);
+           const card = document.createElement('div');
+card.className = 'property-card';
+card.setAttribute('data-id', prop.id);
+card.setAttribute('data-category', prop.category);
+card.setAttribute('data-title', prop.title);
             card.setAttribute('data-price', prop.price);
             card.setAttribute('data-image', prop.image);
             card.setAttribute('data-images', JSON.stringify(prop.images || [prop.image]));
@@ -206,8 +207,12 @@ document.getElementById('properties-grid')?.addEventListener('click', async (e) 
     const card = shareBtn.closest('.property-card');
     const title = card.getAttribute('data-title');
     const price = card.getAttribute('data-price');
+    const propId = card.getAttribute('data-id');
     const shareText = `${title} - ${price}`;
-    const shareUrl = window.location.href;
+    
+    // Armamos un link directo a esta propiedad específica
+    const baseUrl = window.location.origin + window.location.pathname;
+    const shareUrl = `${baseUrl}?propiedad=${propId}`;
     
     if (navigator.share) {
         try {
@@ -396,6 +401,22 @@ window.closeIntegratedMedia = function() {
 // =========================================
 // 7. INICIALIZAR
 // =========================================
-window.addEventListener('DOMContentLoaded', () => {
-    renderProperties('todos');
+window.addEventListener('DOMContentLoaded', async () => {
+    await renderProperties('todos');
+    checkForSharedProperty();
 });
+
+// =========================================
+// 8. ABRIR PROPIEDAD DIRECTO DESDE UN LINK COMPARTIDO
+// =========================================
+function checkForSharedProperty() {
+    const params = new URLSearchParams(window.location.search);
+    const propId = params.get('propiedad');
+    if (!propId) return;
+
+    const card = document.querySelector(`.property-card[data-id="${propId}"]`);
+    if (card) {
+        const trigger = card.querySelector('.modal-trigger');
+        if (trigger) trigger.click();
+    }
+}
