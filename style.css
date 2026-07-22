@@ -311,6 +311,7 @@ html, body {
     padding: 10px;
     text-align: center;
     font-weight: bold;
+    border-radius: 12px 12px 0 0;
 }
 
 .property-card img {
