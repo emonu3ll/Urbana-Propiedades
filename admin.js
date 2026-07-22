@@ -43,14 +43,16 @@ function showWelcomeMessage() {
     if (hour >= 5 && hour < 12) saludo = 'Buenos días';
     else if (hour >= 12 && hour < 19) saludo = 'Buenas tardes';
 
-    const nombresPorCorreo = {
-        'urbanapropiedades.py@gmail.com': 'Rubén',
-        'lopeztobi65@gmail.com': 'Manuel'
+    const user = auth.currentUser;
+    const uid = user ? user.uid : '';
+
+    const nombresPorUid = {
+        // Reemplazá estos valores por los UID reales (ver instrucciones abajo)
+        'UID_DE_RUBEN_AQUI': 'Rubén',
+        'UID_DE_MANUEL_AQUI': 'Manuel'
     };
 
-    const user = auth.currentUser;
-    const email = user && user.email ? user.email.toLowerCase() : '';
-    const nombre = nombresPorCorreo[email] || 'Bienvenido';
+    const nombre = nombresPorUid[uid] || 'Bienvenido';
 
     el.textContent = `${saludo}, ${nombre} 👋 ¿Qué vamos a hacer hoy?`;
 }
