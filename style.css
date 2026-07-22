@@ -125,6 +125,8 @@ html, body {
     cursor: pointer;
     padding: 5px;
     flex-shrink: 0;
+    position: relative;
+    z-index: 250;
 }
 
 .menu-toggle i {

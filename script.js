@@ -71,11 +71,35 @@ function processMatterportUrl(url) {
 const menuToggle = document.getElementById('menu-toggle');
 const navLinks = document.getElementById('nav-links');
 if (menuToggle && navLinks) {
+    const menuIcon = menuToggle.querySelector('i');
     const overlay = document.createElement('div');
     overlay.classList.add('overlay');
     document.body.appendChild(overlay);
-    function closeMenu() { menuToggle.classList.remove('active'); navLinks.classList.remove('active'); overlay.classList.remove('active'); }
-    menuToggle.addEventListener('click', () => { menuToggle.classList.toggle('active'); navLinks.classList.toggle('active'); overlay.classList.toggle('active'); });
+
+    function updateIcon() {
+        if (menuToggle.classList.contains('active')) {
+            menuIcon.classList.remove('fa-bars');
+            menuIcon.classList.add('fa-times');
+        } else {
+            menuIcon.classList.remove('fa-times');
+            menuIcon.classList.add('fa-bars');
+        }
+    }
+
+    function closeMenu() {
+        menuToggle.classList.remove('active');
+        navLinks.classList.remove('active');
+        overlay.classList.remove('active');
+        updateIcon();
+    }
+
+    menuToggle.addEventListener('click', () => {
+        menuToggle.classList.toggle('active');
+        navLinks.classList.toggle('active');
+        overlay.classList.toggle('active');
+        updateIcon();
+    });
+
     overlay.addEventListener('click', closeMenu);
     navLinks.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
 }
