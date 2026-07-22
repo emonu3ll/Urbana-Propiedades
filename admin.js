@@ -31,6 +31,28 @@ function showAdminPanel() {
     document.getElementById('admin-panel').style.display = 'block';
     loadProperties();
     checkForDraft();
+    showWelcomeMessage();
+}
+
+function showWelcomeMessage() {
+    const el = document.getElementById('welcome-message');
+    if (!el) return;
+
+    const hour = new Date().getHours();
+    let saludo = 'Buenas noches';
+    if (hour >= 5 && hour < 12) saludo = 'Buenos días';
+    else if (hour >= 12 && hour < 19) saludo = 'Buenas tardes';
+
+    const nombresPorCorreo = {
+        'urbanapropiedades.py@gmail.com': 'Rubén',
+        'lopeztobi65@gmail.com': 'Manuel'
+    };
+
+    const user = auth.currentUser;
+    const email = user && user.email ? user.email.toLowerCase() : '';
+    const nombre = nombresPorCorreo[email] || 'Bienvenido';
+
+    el.textContent = `${saludo}, ${nombre} 👋 ¿Qué vamos a hacer hoy?`;
 }
 
 function showLoginScreen() {
@@ -716,3 +738,6 @@ window.closeConfirmModal = closeConfirmModal;
 window.showToast = showToast;
 window.updatePropertyStatus = updatePropertyStatus;
 window.exportForMyMaps = exportForMyMaps;
+window.updatePropertyStatus = updatePropertyStatus;
+window.exportForMyMaps = exportForMyMaps;
+window.showWelcomeMessage = showWelcomeMessage;
