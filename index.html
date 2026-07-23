@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Urbana Propiedades | Casas, Terrenos y Campos en Curuguaty, Paraguay</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GW6CNDEBV2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-GW6CNDEBV2', { 'anonymize_ip': true });
+    </script>
     <meta name="description" content="Compra, venta y alquiler de propiedades en Curuguaty y Canindeyú, Paraguay. Casas, terrenos, campos y locales comerciales. Atención personalizada e inversión segura para paraguayos y extranjeros.">
     <meta name="keywords" content="propiedades Paraguay, comprar casa Curuguaty, invertir en Paraguay, terrenos Canindeyú, real estate Paraguay, buy land Paraguay">
 
@@ -235,9 +244,32 @@
         </div>
     </div>
 
+<!-- BANNER DE COOKIES -->
+    <div id="cookie-banner" style="display:none; position:fixed; bottom:0; left:0; width:100%; background:#1e3a5f; color:white; padding:16px 20px; z-index:9998; box-shadow: 0 -2px 10px rgba(0,0,0,0.2);">
+        <div style="max-width:1000px; margin:0 auto; display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
+            <p style="margin:0; flex:1; min-width:250px; font-size:14px;">
+                🍪 Usamos cookies para mejorar tu experiencia y entender cómo usás el sitio. Al continuar, aceptás su uso.
+            </p>
+            <button onclick="acceptCookies()" style="background:#4CAF50; color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:bold; white-space:nowrap;">
+                Aceptar
+            </button>
+        </div>
+    </div>
+
     <!-- SCRIPTS -->
     <script type="module" src="firebase-config.js"></script>
     <script type="module" src="script.js"></script>
+    <script>
+        function acceptCookies() {
+            localStorage.setItem('cookiesAccepted', 'true');
+            document.getElementById('cookie-banner').style.display = 'none';
+        }
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!localStorage.getItem('cookiesAccepted')) {
+                document.getElementById('cookie-banner').style.display = 'block';
+            }
+        });
+    </script>
 
     <!-- Atajo de teclado alternativo para Admin (Alt + Shift + A) -->
     <script>
