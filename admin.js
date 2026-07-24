@@ -46,11 +46,10 @@ function showWelcomeMessage() {
     const user = auth.currentUser;
     const uid = user ? user.uid : '';
 
-    const nombresPorUid = {
-        // Reemplazá estos valores por los UID reales (ver instrucciones abajo)
-        'UID_DE_RUBEN_AQUI': 'Rubén',
-        'UID_DE_MANUEL_AQUI': 'Manuel'
-    };
+  const nombresPorUid = {
+    '8w9RcNMOV0MMPOAhKiL2G7e4sjG3': 'Rubén',
+    'WodDTBpLxfPqJ7tDeRrKr0BCNky1': 'Manuel'
+};
 
     const nombre = nombresPorUid[uid] || 'Bienvenido';
 
