@@ -54,20 +54,7 @@ html, body {
     object-fit: contain;
 }
 
-.logo-texto {
-    display: flex;
-    flex-direction: column;
-    font-family: 'Cinzel', serif;
-    font-size: 20px;
-    font-weight: 600;
-    color: white;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    line-height: 1.2;
-}
-
-.logo-texto span {
-   .logo-texto-img {
+.logo-texto-img {
     height: 45px;
     width: auto;
 }
@@ -76,7 +63,6 @@ html, body {
     .logo-texto-img {
         height: 30px;
     }
-} display: block;
 }
 
 /* =========================================
