@@ -152,7 +152,7 @@ async function renderProperties(filter = 'todos') {
             const featuresHTML = featuresArray.map(f => `<span>${f}</span>`).join(' • ');
             
            const card = document.createElement('div');
-card.className = 'property-card';
+card.className = 'property-card fade-in-element';
 card.setAttribute('data-id', prop.id);
 card.setAttribute('data-category', prop.category);
 card.setAttribute('data-title', prop.title);
@@ -205,6 +205,8 @@ card.innerHTML = `
             `;
 grid.appendChild(card);
     });
+
+    initScrollAnimations();
 }
 
 // =========================================
@@ -424,6 +426,22 @@ window.closeIntegratedMedia = function() {
         document.body.style.overflow = 'auto';
     }
 };
+
+// =========================================
+// ANIMACIONES DE APARICIÓN AL HACER SCROLL
+// =========================================
+function initScrollAnimations() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.fade-in-element').forEach(el => observer.observe(el));
+}
 
 // =========================================
 // 7. INICIALIZAR

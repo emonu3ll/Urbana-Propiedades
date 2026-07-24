@@ -1340,3 +1340,34 @@ html, body {
         aspect-ratio: auto;
     }
 }
+
+/* =========================================
+   ANIMACIONES DE APARICIÓN AL CARGAR/SCROLL
+   ========================================= */
+.fade-in-element {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.fade-in-element.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.hero-content > * {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: heroFadeIn 0.8s ease forwards;
+}
+
+.hero-content h2 { animation-delay: 0.1s; }
+.hero-content .search-box { animation-delay: 0.3s; }
+.hero-content .filter-buttons { animation-delay: 0.5s; }
+
+@keyframes heroFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
