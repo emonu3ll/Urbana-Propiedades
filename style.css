@@ -54,15 +54,20 @@ html, body {
     object-fit: contain;
 }
 
-.logo-texto-img {
-    height: 45px;
-    width: auto;
+.logo-texto {
+    display: flex;
+    flex-direction: column;
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: white;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    line-height: 1.2;
 }
 
-@media (max-width: 768px) {
-    .logo-texto-img {
-        height: 30px;
-    }
+.logo-texto span {
+    display: block;
 }
 
 /* =========================================
