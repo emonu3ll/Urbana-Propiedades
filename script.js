@@ -440,13 +440,21 @@ function initScrollAnimations() {
         });
     }, { threshold: 0.15 });
 
-    document.querySelectorAll('.fade-in-element').forEach(el => observer.observe(el));
+    document.querySelectorAll('.fade-in-element').forEach(el => {
+        observer.observe(el);
+        // Red de seguridad: si el detector de scroll no llega a activarse,
+        // mostramos el contenido igual después de 1.5 segundos.
+        setTimeout(() => {
+            el.classList.add('visible');
+        }, 1500);
+    });
 }
 
 // =========================================
 // 7. INICIALIZAR
 // =========================================
 window.addEventListener('DOMContentLoaded', async () => {
+    initScrollAnimations(); // Activa las animaciones (como "Sobre Nosotros") sin esperar a Firebase
     await renderProperties('todos');
     checkForSharedProperty();
 });
