@@ -86,10 +86,43 @@
         </div>
     </section>
 
-    <!-- BOTÓN FLOTANTE DE WHATSAPP -->
+   <!-- BOTÓN FLOTANTE DE WHATSAPP -->
     <a href="https://wa.me/595994272727?text=Hola%20Urbana%20Propiedades,%20quiero%20más%20información." class="whatsapp-float" target="_blank">
         <i class="fab fa-whatsapp"></i>
     </a>
+
+    <!-- BURBUJA DE CHAT DE WHATSAPP -->
+    <div class="whatsapp-chat-bubble" id="whatsapp-chat-bubble">
+        <button class="whatsapp-bubble-close" id="whatsapp-bubble-close" aria-label="Cerrar">&times;</button>
+        <div class="whatsapp-bubble-header">
+            <div class="whatsapp-bubble-avatar"><i class="fab fa-whatsapp"></i></div>
+            <div>
+                <strong>Urbana Propiedades</strong>
+                <span class="whatsapp-bubble-status">● En línea</span>
+            </div>
+        </div>
+        <div class="whatsapp-bubble-message">
+            ¡Hola! 👋 ¿Buscás tu próxima propiedad en Curuguaty y Canindeyú? Escribinos, con gusto te ayudamos.
+        </div>
+        <a href="https://wa.me/595994272727?text=Hola%20Urbana%20Propiedades,%20quiero%20más%20información." target="_blank" class="whatsapp-bubble-btn">
+            <i class="fab fa-whatsapp"></i> Enviar mensaje
+        </a>
+    </div>
+
+    <script>
+        (function() {
+            const bubble = document.getElementById('whatsapp-chat-bubble');
+            const closeBtn = document.getElementById('whatsapp-bubble-close');
+            if (!bubble) return;
+            if (sessionStorage.getItem('whatsappBubbleClosed')) {
+                bubble.style.display = 'none';
+            }
+            closeBtn.addEventListener('click', () => {
+                bubble.style.display = 'none';
+                sessionStorage.setItem('whatsappBubbleClosed', 'true');
+            });
+        })();
+    </script>
 
     <!-- SECCIÓN SOBRE NOSOTROS -->
     <section class="about-us" id="nosotros">

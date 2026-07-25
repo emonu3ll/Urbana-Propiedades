@@ -384,6 +384,109 @@ html, body {
     transform: scale(1.1);
 }
 
+/* BURBUJA DE CHAT DE WHATSAPP */
+.whatsapp-chat-bubble {
+    position: fixed;
+    bottom: 105px;
+    right: 30px;
+    width: 290px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+    z-index: 89;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(20px) scale(0.9);
+    animation: whatsappBubbleIn 0.5s ease forwards;
+    animation-delay: 3s;
+}
+
+@keyframes whatsappBubbleIn {
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.whatsapp-bubble-close {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: rgba(255,255,255,0.85);
+    cursor: pointer;
+    z-index: 2;
+    line-height: 1;
+}
+
+.whatsapp-bubble-header {
+    background: #075E54;
+    color: white;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.whatsapp-bubble-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #25D366;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: white;
+    flex-shrink: 0;
+}
+
+.whatsapp-bubble-header strong {
+    display: block;
+    font-size: 14px;
+}
+
+.whatsapp-bubble-status {
+    font-size: 11px;
+    opacity: 0.85;
+}
+
+.whatsapp-bubble-message {
+    padding: 14px 16px;
+    background: #ECE5DD;
+    font-size: 13.5px;
+    color: #333;
+    line-height: 1.4;
+}
+
+.whatsapp-bubble-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #25D366;
+    color: white;
+    padding: 12px;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background 0.3s;
+}
+
+.whatsapp-bubble-btn:hover {
+    background: #1ebe57;
+}
+
+@media (max-width: 480px) {
+    .whatsapp-chat-bubble {
+        width: calc(100% - 30px);
+        right: 15px;
+        bottom: 95px;
+    }
+}
+
 /* =========================================
    9. DISEÑO RESPONSIVE (CELULARES Y TABLETS)
    ========================================= */
