@@ -91,18 +91,24 @@
         <i class="fab fa-whatsapp"></i>
     </a>
 
-    <!-- BURBUJA DE CHAT DE WHATSAPP -->
+<!-- BURBUJA DE CHAT DE WHATSAPP -->
     <div class="whatsapp-chat-bubble" id="whatsapp-chat-bubble">
         <button class="whatsapp-bubble-close" id="whatsapp-bubble-close" aria-label="Cerrar">&times;</button>
         <div class="whatsapp-bubble-header">
-            <div class="whatsapp-bubble-avatar"><i class="fab fa-whatsapp"></i></div>
+            <img src="img/logo.png" alt="Urbana Propiedades" class="whatsapp-bubble-avatar">
             <div>
                 <strong>Urbana Propiedades</strong>
                 <span class="whatsapp-bubble-status">● En línea</span>
             </div>
         </div>
-        <div class="whatsapp-bubble-message">
-            ¡Hola! 👋 ¿Buscás tu próxima propiedad en Curuguaty y Canindeyú? Escribinos, con gusto te ayudamos.
+        <div class="whatsapp-bubble-chat-area">
+            <div class="whatsapp-typing-indicator" id="whatsapp-typing-indicator">
+                <span></span><span></span><span></span>
+            </div>
+            <div class="whatsapp-bubble-message" id="whatsapp-bubble-message">
+                ¡Hola! 👋 ¿Buscás tu próxima propiedad en Curuguaty y Canindeyú? Escribinos, con gusto te ayudamos.
+                <span class="whatsapp-bubble-time">Ahora</span>
+            </div>
         </div>
         <a href="https://wa.me/595994272727?text=Hola%20Urbana%20Propiedades,%20quiero%20más%20información." target="_blank" class="whatsapp-bubble-btn">
             <i class="fab fa-whatsapp"></i> Enviar mensaje
@@ -113,10 +119,25 @@
         (function() {
             const bubble = document.getElementById('whatsapp-chat-bubble');
             const closeBtn = document.getElementById('whatsapp-bubble-close');
+            const typing = document.getElementById('whatsapp-typing-indicator');
+            const message = document.getElementById('whatsapp-bubble-message');
             if (!bubble) return;
+
             if (sessionStorage.getItem('whatsappBubbleClosed')) {
                 bubble.style.display = 'none';
+                return;
             }
+
+            // La burbuja aparece a los 3 segundos
+            setTimeout(() => {
+                bubble.classList.add('show');
+                // Simula "escribiendo..." por 1.6 segundos antes de mostrar el mensaje
+                setTimeout(() => {
+                    typing.classList.add('hide');
+                    message.classList.add('show');
+                }, 1600);
+            }, 3000);
+
             closeBtn.addEventListener('click', () => {
                 bubble.style.display = 'none';
                 sessionStorage.setItem('whatsappBubbleClosed', 'true');
