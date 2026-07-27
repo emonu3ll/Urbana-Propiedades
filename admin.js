@@ -535,7 +535,10 @@ function closeConfirmModal() {
 }
 
 function confirmNavigation(url) {
-    if (hasUnsavedChanges()) {
+    if (draftGuardadoAPropósito) {
+        // Ya está guardado a propósito como borrador: se puede salir sin advertencia ni borrar nada
+        window.location.href = url;
+    } else if (hasUnsavedChanges()) {
         openConfirmModal(
             'Si salís ahora, vas a perder los datos que escribiste en el formulario. ¿Qué querés hacer?',
             () => { clearDraft(); window.location.href = url; }
@@ -546,7 +549,10 @@ function confirmNavigation(url) {
 }
 
 function confirmLogout() {
-    if (hasUnsavedChanges()) {
+    if (draftGuardadoAPropósito) {
+        // Ya está guardado a propósito como borrador: se puede cerrar sesión sin advertencia ni borrar nada
+        logout();
+    } else if (hasUnsavedChanges()) {
         openConfirmModal(
             'Tenés datos sin guardar. Si cerrás sesión ahora, vas a perderlos. ¿Qué querés hacer?',
             () => { clearDraft(); logout(); }
@@ -563,6 +569,7 @@ const DRAFT_KEY = 'urbana_property_draft';
 const draftFields = ['prop-title', 'prop-badge', 'prop-youtube', 'prop-matterport',
                       'prop-price-usd', 'prop-price-gs', 'prop-price-alquiler',
                       'prop-category', 'prop-description', 'prop-features', 'prop-map'];
+let draftGuardadoAPropósito = false;
 
 function saveDraft() {
     const draft = {};
@@ -586,7 +593,8 @@ function saveDraftManual() {
     }
 
     saveDraft();
-    showToast('Borrador guardado. Podés continuar más tarde desde este mismo dispositivo.', 'success');
+    draftGuardadoAPropósito = true;
+    showToast('Borrador guardado. Ya podés salir tranquilo, lo vas a ver de nuevo la próxima vez que entres.', 'success');
 }
 
 function loadDraftIntoForm(draft) {
@@ -626,6 +634,7 @@ function checkForDraft() {
 document.addEventListener('input', (e) => {
     if (draftFields.includes(e.target.id)) {
         saveDraft();
+        draftGuardadoAPropósito = false; // Si sigue escribiendo después de guardar, vuelve a considerarse "sin guardar"
     }
 });
 
