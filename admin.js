@@ -123,6 +123,17 @@ function formatNumberString(numStr) {
     return numStr.toString().replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 
+function formatOwnerPhone(input) {
+    let value = input.value.replace(/\D/g, '');
+    if (value.startsWith('0')) value = value.substring(1);
+    value = value.substring(0, 9);
+    let formatted = '';
+    if (value.length > 0) formatted = '+595 ' + value.substring(0, 3);
+    if (value.length > 3) formatted += ' ' + value.substring(3, 6);
+    if (value.length > 6) formatted += ' ' + value.substring(6, 9);
+    input.value = formatted;
+}
+
 function unformatNumber(value) { return value.replace(/\./g, ''); }
 
 function togglePriceFields() {
@@ -194,6 +205,8 @@ async function saveProperty() {
         const description = document.getElementById('prop-description').value.trim();
         const featuresText = document.getElementById('prop-features').value.trim();
         const superficie = document.getElementById('prop-superficie').value.trim();
+        const ownerName = document.getElementById('prop-owner-name').value.trim();
+        const ownerPhone = document.getElementById('prop-owner-phone').value.trim();
 
         let mapUrl = document.getElementById('prop-map').value.trim();
         if (mapUrl) {
@@ -236,12 +249,14 @@ async function saveProperty() {
             }
         }
 
-        const propertyData = {
+      const propertyData = {
             title,
             price,
             category,
             description,
             features,
+            ownerName: ownerName || null,
+            ownerPhone: ownerPhone || null,
             badge: badge || null,
             youtube: youtubeUrl || null,
             matterport: matterportUrl || null,
@@ -265,6 +280,8 @@ async function saveProperty() {
         document.getElementById('prop-price-gs').value = '';
         document.getElementById('prop-price-alquiler').value = '';
         document.getElementById('prop-description').value = '';
+        document.getElementById('prop-owner-name').value = '';
+        document.getElementById('prop-owner-phone').value = '';
         document.getElementById('prop-superficie').value = '';
         document.getElementById('prop-features').value = '';
         document.getElementById('prop-map').value = '';
@@ -320,10 +337,15 @@ async function loadProperties() {
         container.innerHTML = properties.map(prop => `
             <div class="property-item">
                 <img src="${prop.image}" alt="${prop.title}">
-                <div class="property-item-info">
+               <div class="property-item-info">
                     <h3>${prop.title}</h3>
                     <p class="price">${prop.price}</p>
                     <p style="color: #666; font-size: 14px;">${prop.category.toUpperCase()}</p>
+                    ${prop.ownerName || prop.ownerPhone ? `
+                        <p style="background: #fff3e0; color: #E65100; font-size: 12px; padding: 6px 10px; border-radius: 8px; margin-top: 6px; display: inline-block;">
+                            🔒 ${prop.ownerName || 'Sin nombre'}${prop.ownerPhone ? ' · ' + prop.ownerPhone : ''}
+                        </p>
+                    ` : ''}
                    <select onchange="updatePropertyStatus('${prop.id}', this.value)" style="margin-top: 8px; padding: 6px 10px; border-radius: 10px; border: 1px solid #ccc; font-size: 13px;">
                         <option value="disponible" ${(prop.status || 'disponible') === 'disponible' ? 'selected' : ''}>${statusLabels.disponible}</option>
                         <option value="reservado" ${prop.status === 'reservado' ? 'selected' : ''}>${statusLabels.reservado}</option>
@@ -383,8 +405,10 @@ async function editProperty(id) {
         document.getElementById('prop-badge').value = property.badge || '';
         document.getElementById('prop-youtube').value = property.youtube || '';
         document.getElementById('prop-matterport').value = property.matterport || '';
-        document.getElementById('prop-address').value = property.address || '';
+       document.getElementById('prop-address').value = property.address || '';
         document.getElementById('prop-status').value = property.status || 'disponible';
+        document.getElementById('prop-owner-name').value = property.ownerName || '';
+        document.getElementById('prop-owner-phone').value = property.ownerPhone || '';
 
         document.getElementById('prop-price-usd').value = '';
         document.getElementById('prop-price-gs').value = '';
@@ -488,6 +512,8 @@ function doCancelEdit() {
     document.getElementById('prop-price-gs').value = '';
     document.getElementById('prop-price-alquiler').value = '';
     document.getElementById('prop-description').value = '';
+   document.getElementById('prop-owner-name').value = '';
+    document.getElementById('prop-owner-phone').value = '';
     document.getElementById('prop-superficie').value = '';
     document.getElementById('prop-features').value = '';
     document.getElementById('prop-map').value = '';
@@ -762,6 +788,7 @@ window.handleFiles = handleFiles;
 window.removeImage = removeImage;
 window.togglePriceFields = togglePriceFields;
 window.formatNumber = formatNumber;
+window.formatOwnerPhone = formatOwnerPhone;
 window.updatePricePreview = updatePricePreview;
 window.displayImages = displayImages;
 window.loadProperties = loadProperties;
