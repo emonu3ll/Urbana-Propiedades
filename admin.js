@@ -193,6 +193,7 @@ async function saveProperty() {
         const category = document.getElementById('prop-category').value;
         const description = document.getElementById('prop-description').value.trim();
         const featuresText = document.getElementById('prop-features').value.trim();
+        const superficie = document.getElementById('prop-superficie').value.trim();
 
         let mapUrl = document.getElementById('prop-map').value.trim();
         if (mapUrl) {
@@ -218,6 +219,9 @@ async function saveProperty() {
         }
 
         const features = featuresText ? featuresText.split(',').map(f => f.trim()).filter(f => f) : [];
+        if (superficie) {
+            features.unshift(`${superficie} m²`);
+        }
 
         const imageUrls = [];
 
@@ -261,6 +265,7 @@ async function saveProperty() {
         document.getElementById('prop-price-gs').value = '';
         document.getElementById('prop-price-alquiler').value = '';
         document.getElementById('prop-description').value = '';
+        document.getElementById('prop-superficie').value = '';
         document.getElementById('prop-features').value = '';
         document.getElementById('prop-map').value = '';
         document.getElementById('prop-badge').value = '';
@@ -483,6 +488,7 @@ function doCancelEdit() {
     document.getElementById('prop-price-gs').value = '';
     document.getElementById('prop-price-alquiler').value = '';
     document.getElementById('prop-description').value = '';
+    document.getElementById('prop-superficie').value = '';
     document.getElementById('prop-features').value = '';
     document.getElementById('prop-map').value = '';
     document.getElementById('edit-property-id').value = '';
@@ -568,7 +574,7 @@ function confirmLogout() {
 const DRAFT_KEY = 'urbana_property_draft';
 const draftFields = ['prop-title', 'prop-badge', 'prop-youtube', 'prop-matterport',
                       'prop-price-usd', 'prop-price-gs', 'prop-price-alquiler',
-                      'prop-category', 'prop-description', 'prop-features', 'prop-map'];
+                      'prop-category', 'prop-description', 'prop-features', 'prop-map', 'prop-superficie'];
 let draftGuardadoAPropósito = false;
 
 function saveDraft() {
