@@ -319,17 +319,17 @@ async function loadProperties() {
                     <h3>${prop.title}</h3>
                     <p class="price">${prop.price}</p>
                     <p style="color: #666; font-size: 14px;">${prop.category.toUpperCase()}</p>
-                    <select onchange="updatePropertyStatus('${prop.id}', this.value)" style="margin-top: 8px; padding: 6px 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 13px;">
+                   <select onchange="updatePropertyStatus('${prop.id}', this.value)" style="margin-top: 8px; padding: 6px 10px; border-radius: 10px; border: 1px solid #ccc; font-size: 13px;">
                         <option value="disponible" ${(prop.status || 'disponible') === 'disponible' ? 'selected' : ''}>${statusLabels.disponible}</option>
                         <option value="reservado" ${prop.status === 'reservado' ? 'selected' : ''}>${statusLabels.reservado}</option>
                         <option value="vendido" ${prop.status === 'vendido' ? 'selected' : ''}>${statusLabels.vendido}</option>
                     </select>
                 </div>
                 <div style="display: flex; gap: 10px;">
-                    <button onclick="editProperty('${prop.id}')" style="background: #2196F3; color: white; padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer;">
+                    <button onclick="editProperty('${prop.id}')" style="background: #2196F3; color: white; padding: 8px 15px; border: none; border-radius: 10px; cursor: pointer;">
                         <i class="fas fa-edit"></i> Editar
                     </button>
-                    <button onclick="deleteProperty('${prop.id}')" style="background: #f44336; color: white; padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer;">
+                    <button onclick="deleteProperty('${prop.id}')" style="background: #f44336; color: white; padding: 8px 15px; border: none; border-radius: 10px; cursor: pointer;">
                         <i class="fas fa-trash"></i> Eliminar
                     </button>
                 </div>
