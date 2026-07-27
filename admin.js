@@ -619,13 +619,18 @@ function checkForDraft() {
         const hasContent = Object.values(draft).some(v => v && v.trim() !== '');
         if (!hasContent) { clearDraft(); return; }
 
-        const continuar = confirm('📝 Tenés datos sin guardar de la última vez que estabas cargando una propiedad.\n\n¿Querés continuar editando donde lo dejaste?\n\n(Aceptar = Continuar editando | Cancelar = Empezar de nuevo)');
+        // Cargamos el borrador directo en el formulario
+        loadDraftIntoForm(draft);
+        draftGuardadoAPropósito = true;
 
-        if (continuar) {
-            loadDraftIntoForm(draft);
-        } else {
-            clearDraft();
-        }
+        // Y avisamos con el modal propio del sitio, dando la opción de empezar de cero
+        setTimeout(() => {
+            openConfirmModal(
+                '📝 Cargamos los datos que dejaste guardados la última vez. Ya podés seguir editando desde donde lo dejaste. Si preferís, también podés empezar de nuevo.',
+                () => { doCancelEdit(); draftGuardadoAPropósito = false; },
+                'Empezar de nuevo'
+            );
+        }, 400);
     } catch (e) {
         clearDraft();
     }
