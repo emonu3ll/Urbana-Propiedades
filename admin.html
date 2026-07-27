@@ -235,9 +235,24 @@
                
                 <input type="hidden" id="edit-property-id" value="">
                
-               <div style="display: flex; gap: 10px;">
+   <div style="display: flex; gap: 10px;">
     <button class="btn-save" onclick="saveProperty()" style="flex: 1;">
         <i class="fas fa-save"></i> Guardar Propiedad
+    </button>
+    <button onclick="saveDraftManual()" style="
+        flex: 1;
+        padding: 15px;
+        background: #FF9800;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s;
+    " onmouseover="this.style.background='#F57C00';" 
+       onmouseout="this.style.background='#FF9800';">
+        <i class="fas fa-clock"></i> Guardar Borrador
     </button>
     <button onclick="cancelEdit()" style="
         flex: 1;
