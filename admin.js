@@ -589,19 +589,6 @@ function saveDraftManual() {
     showToast('Borrador guardado. Podés continuar más tarde desde este mismo dispositivo.', 'success');
 }
 
-function saveDraftManual() {
-    const title = document.getElementById('prop-title').value.trim();
-    const hasData = title || document.getElementById('prop-description').value.trim();
-
-    if (!hasData) {
-        showToast('Completá al menos el título para guardar un borrador', 'error');
-        return;
-    }
-
-    saveDraft();
-    showToast('Borrador guardado. Podés continuar más tarde desde este mismo dispositivo.', 'success');
-}
-
 function loadDraftIntoForm(draft) {
     draftFields.forEach(id => {
         const el = document.getElementById(id);
