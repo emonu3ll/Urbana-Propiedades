@@ -236,25 +236,32 @@ async function saveProperty() {
         const category = document.getElementById('prop-category').value;
         const description = document.getElementById('prop-description').value.trim();
         const featuresText = document.getElementById('prop-features').value.trim();
-        const superficie = document.getElementById('prop-superficie').value.trim();
+       const superficie = document.getElementById('prop-superficie').value.trim();
         const ownerName = document.getElementById('prop-owner-name').value.trim();
         const ownerPhone = document.getElementById('prop-owner-phone').value.trim();
+        const dormitorios = document.getElementById('prop-dormitorios').value;
 
         let mapUrl = document.getElementById('prop-map').value.trim();
         if (mapUrl) {
             mapUrl = convertMapUrl(mapUrl);
         }
 
-        let price = '';
+       let price = '';
+        let priceUSD = null;
+        let priceGS = null;
+
         if (category === 'alquileres') {
             const alquilerRaw = unformatNumber(document.getElementById('prop-price-alquiler').value);
-            if (alquilerRaw) price = `₲ ${formatNumberString(alquilerRaw)} / mes`;
+            if (alquilerRaw) {
+                price = `₲ ${formatNumberString(alquilerRaw)} / mes`;
+                priceGS = parseInt(alquilerRaw) || null;
+            }
         } else {
             const usdRaw = unformatNumber(document.getElementById('prop-price-usd').value);
             const gsRaw = unformatNumber(document.getElementById('prop-price-gs').value);
             let parts = [];
-            if (usdRaw) parts.push(`USD ${formatNumberString(usdRaw)}`);
-            if (gsRaw) parts.push(`₲ ${formatNumberString(gsRaw)}`);
+            if (usdRaw) { parts.push(`USD ${formatNumberString(usdRaw)}`); priceUSD = parseInt(usdRaw) || null; }
+            if (gsRaw) { parts.push(`₲ ${formatNumberString(gsRaw)}`); priceGS = parseInt(gsRaw) || null; }
             price = parts.join(' / ');
         }
 
@@ -287,8 +294,11 @@ async function saveProperty() {
             category,
             description,
             features,
-            ownerName: ownerName || null,
+         ownerName: ownerName || null,
             ownerPhone: ownerPhone || null,
+            dormitorios: dormitorios !== '' ? parseInt(dormitorios) : null,
+            priceUSD: priceUSD,
+            priceGS: priceGS,
             badge: badge || null,
             youtube: youtubeUrl || null,
             matterport: matterportUrl || null,
@@ -312,6 +322,7 @@ async function saveProperty() {
         document.getElementById('prop-price-gs').value = '';
         document.getElementById('prop-price-alquiler').value = '';
         document.getElementById('prop-description').value = '';
+       document.getElementById('prop-dormitorios').value = '';
         document.getElementById('prop-owner-name').value = '';
         document.getElementById('prop-owner-phone').value = '';
         document.getElementById('prop-superficie').value = '';
@@ -439,6 +450,7 @@ async function editProperty(id) {
         document.getElementById('prop-matterport').value = property.matterport || '';
        document.getElementById('prop-address').value = property.address || '';
         document.getElementById('prop-status').value = property.status || 'disponible';
+       document.getElementById('prop-dormitorios').value = property.dormitorios != null ? property.dormitorios : '';
         document.getElementById('prop-owner-name').value = property.ownerName || '';
         document.getElementById('prop-owner-phone').value = property.ownerPhone || '';
 
