@@ -82,14 +82,46 @@ if (dropZone) {
     dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
 }
 
-function handleFiles(files) {
-    Array.from(files).forEach(file => {
-        if (file.type.startsWith('image/')) {
-            const reader = new FileReader();
-            reader.onload = (e) => { uploadedImages.push({ file: file, base64: e.target.result }); displayImages(); };
-            reader.readAsDataURL(file);
-        }
+function comprimirImagen(file) {
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                const maxAncho = 1600; // Suficiente calidad para verse bien en el sitio
+                let ancho = img.width;
+                let alto = img.height;
+
+                if (ancho > maxAncho) {
+                    alto = Math.round((alto * maxAncho) / ancho);
+                    ancho = maxAncho;
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.width = ancho;
+                canvas.height = alto;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, ancho, alto);
+
+                canvas.toBlob((blob) => {
+                    const archivoComprimido = new File([blob], file.name, { type: 'image/jpeg' });
+                    resolve({ file: archivoComprimido, base64: canvas.toDataURL('image/jpeg', 0.8) });
+                }, 'image/jpeg', 0.8);
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
     });
+}
+
+async function handleFiles(files) {
+    const imagenes = Array.from(files).filter(file => file.type.startsWith('image/'));
+
+    for (const file of imagenes) {
+        const comprimida = await comprimirImagen(file);
+        uploadedImages.push(comprimida);
+        displayImages();
+    }
 }
 
 function displayImages() {
