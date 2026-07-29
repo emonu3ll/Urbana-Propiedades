@@ -272,6 +272,11 @@ function actualizarEtiquetasPrecio() {
     const formatear = (num) => new Intl.NumberFormat('es-PY').format(num);
     priceMinLabel.textContent = formatear(filterPriceMin.value);
     priceMaxLabel.textContent = filterPriceMax.value >= filterPriceMax.max ? `${formatear(filterPriceMax.value)}+` : formatear(filterPriceMax.value);
+
+    const pctMin = (filterPriceMin.value / filterPriceMin.max) * 100;
+    const pctMax = (filterPriceMax.value / filterPriceMax.max) * 100;
+    filterPriceMin.style.setProperty('--fill', pctMin + '%');
+    filterPriceMax.style.setProperty('--fill', pctMax + '%');
 }
 
 if (filterPriceMin && filterPriceMax) {
@@ -456,13 +461,7 @@ document.querySelector('.properties')?.addEventListener('click', (e) => {
     currentSlide = 0;
     updateModalImage();
 
-    // Precarga todas las fotos de esta propiedad en segundo plano
-    currentImages.forEach(url => {
-        const img = new Image();
-        img.src = url;
-    });
-
-    // Precarga todas las fotos de esta propiedad en segundo plano
+// Precarga todas las fotos de esta propiedad en segundo plano
     currentImages.forEach(url => {
         const img = new Image();
         img.src = url;

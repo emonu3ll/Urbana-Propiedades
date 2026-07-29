@@ -94,14 +94,16 @@
                                 <button type="button" class="currency-btn active" data-currency="USD">USD</button>
                                 <button type="button" class="currency-btn" data-currency="GS">₲ GS</button>
                             </div>
-                           <div class="price-slider-group">
+                          <div class="price-slider-group">
                                 <div class="price-slider-row">
-                                    <label>Mínimo: <span id="price-min-label">0</span></label>
+                                    <span class="price-slider-side-label">Mínimo</span>
                                     <input type="range" id="filter-price-min" min="0" max="500000" step="5000" value="0">
+                                    <span class="price-slider-value" id="price-min-label">0</span>
                                 </div>
                                 <div class="price-slider-row">
-                                    <label>Máximo: <span id="price-max-label">500.000+</span></label>
+                                    <span class="price-slider-side-label">Máximo</span>
                                     <input type="range" id="filter-price-max" min="0" max="500000" step="5000" value="500000">
+                                    <span class="price-slider-value" id="price-max-label">500.000+</span>
                                 </div>
                             </div>
                             <button type="button" class="filter-price-apply" id="filter-price-apply">Aplicar</button>
@@ -413,19 +415,16 @@
                 window.location.href = 'admin.html';
             }
         });
-
-        // Navegación inteligente: Comprar / Vender / Alquilar
+// Navegación inteligente: Comprar / Vender / Alquilar
         function goToComprar(e) {
             e.preventDefault();
-            const btn = document.querySelector('.filter-btn[data-filter="todos"]');
-            if (btn) btn.click();
+            document.getElementById('toggle-comprar')?.click();
             document.getElementById('propiedades').scrollIntoView({ behavior: 'smooth' });
         }
 
 function goToAlquilar(e) {
     e.preventDefault();
-    const btn = document.querySelector('.filter-btn[data-filter="alquileres"]');
-    if (btn) btn.click();
+    document.getElementById('toggle-alquilar')?.click();
     document.getElementById('propiedades').scrollIntoView({ behavior: 'smooth' });
 }
 
