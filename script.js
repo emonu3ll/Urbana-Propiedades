@@ -253,6 +253,31 @@ const filterPriceDropdown = document.getElementById('filter-price-dropdown');
 const filterPriceMin = document.getElementById('filter-price-min');
 const filterPriceMax = document.getElementById('filter-price-max');
 const filterPriceApply = document.getElementById('filter-price-apply');
+const priceMinLabel = document.getElementById('price-min-label');
+const priceMaxLabel = document.getElementById('price-max-label');
+
+function actualizarSliderMax() {
+    const max = currentFilters.moneda === 'USD' ? 500000 : 2000000000;
+    const step = currentFilters.moneda === 'USD' ? 5000 : 10000000;
+    filterPriceMin.max = max;
+    filterPriceMax.max = max;
+    filterPriceMin.step = step;
+    filterPriceMax.step = step;
+    filterPriceMin.value = 0;
+    filterPriceMax.value = max;
+    actualizarEtiquetasPrecio();
+}
+
+function actualizarEtiquetasPrecio() {
+    const formatear = (num) => new Intl.NumberFormat('es-PY').format(num);
+    priceMinLabel.textContent = formatear(filterPriceMin.value);
+    priceMaxLabel.textContent = filterPriceMax.value >= filterPriceMax.max ? `${formatear(filterPriceMax.value)}+` : formatear(filterPriceMax.value);
+}
+
+if (filterPriceMin && filterPriceMax) {
+    filterPriceMin.addEventListener('input', actualizarEtiquetasPrecio);
+    filterPriceMax.addEventListener('input', actualizarEtiquetasPrecio);
+}
 
 function aplicarFiltrosYScroll() {
     renderProperties();
@@ -317,13 +342,14 @@ document.querySelectorAll('.currency-btn').forEach(btn => {
         document.querySelectorAll('.currency-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         currentFilters.moneda = btn.getAttribute('data-currency');
+        actualizarSliderMax();
     });
 });
 
 if (filterPriceApply) {
     filterPriceApply.addEventListener('click', () => {
-        currentFilters.precioMin = filterPriceMin.value ? parseInt(filterPriceMin.value) : null;
-        currentFilters.precioMax = filterPriceMax.value ? parseInt(filterPriceMax.value) : null;
+        currentFilters.precioMin = parseInt(filterPriceMin.value);
+        currentFilters.precioMax = parseInt(filterPriceMax.value) >= parseInt(filterPriceMax.max) ? null : parseInt(filterPriceMax.value);
         filterPriceDropdown.classList.remove('active');
         aplicarFiltrosYScroll();
     });

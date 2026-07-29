@@ -94,9 +94,15 @@
                                 <button type="button" class="currency-btn active" data-currency="USD">USD</button>
                                 <button type="button" class="currency-btn" data-currency="GS">₲ GS</button>
                             </div>
-                            <div class="price-inputs">
-                                <input type="number" id="filter-price-min" placeholder="Mínimo">
-                                <input type="number" id="filter-price-max" placeholder="Máximo">
+                           <div class="price-slider-group">
+                                <div class="price-slider-row">
+                                    <label>Mínimo: <span id="price-min-label">0</span></label>
+                                    <input type="range" id="filter-price-min" min="0" max="500000" step="5000" value="0">
+                                </div>
+                                <div class="price-slider-row">
+                                    <label>Máximo: <span id="price-max-label">500.000+</span></label>
+                                    <input type="range" id="filter-price-max" min="0" max="500000" step="5000" value="500000">
+                                </div>
                             </div>
                             <button type="button" class="filter-price-apply" id="filter-price-apply">Aplicar</button>
                         </div>
