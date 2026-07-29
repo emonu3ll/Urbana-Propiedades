@@ -1576,6 +1576,7 @@ html, body {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
+    position: relative;
 }
 
 .filter-selects select {
@@ -1588,7 +1589,7 @@ html, body {
     cursor: pointer;
 }
 
-.filter-price-wrapper {
+.filter-selects {
     position: relative;
 }
 
