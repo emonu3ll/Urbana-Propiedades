@@ -315,6 +315,12 @@ document.querySelector('.properties')?.addEventListener('click', (e) => {
     currentImages = imagesAttr ? JSON.parse(imagesAttr) : [card.getAttribute('data-image')];
     currentSlide = 0;
     updateModalImage();
+
+    // Precarga todas las fotos de esta propiedad en segundo plano
+    currentImages.forEach(url => {
+        const img = new Image();
+        img.src = url;
+    });
     
     modalPrice.textContent = card.getAttribute('data-price');
     modalTitle.textContent = card.getAttribute('data-title');
