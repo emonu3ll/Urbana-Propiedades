@@ -61,17 +61,47 @@
     <section class="hero">
         <div class="hero-content">
             <h2 data-i18n="hero_title">Encontrá tu propiedad ideal en Curuguaty y Canindeyú</h2>
-            <div class="search-box">
-                <input type="text" data-i18n-placeholder="search_placeholder" placeholder="¿Qué estás buscando?">
-                <button class="search-btn"><i class="fas fa-search"></i></button>
-            </div>
-            <div class="filter-buttons">
-                <button class="filter-btn active" data-filter="todos">Todos</button>
-                <button class="filter-btn" data-filter="casas" data-i18n="filter_casas">🏠 Casas</button>
-                <button class="filter-btn" data-filter="terrenos" data-i18n="filter_terrenos">📐 Terrenos</button>
-                <button class="filter-btn" data-filter="campos" data-i18n="filter_campos">🌾 Campos</button>
-                <button class="filter-btn" data-filter="locales" data-i18n="filter_locales">🏪 Locales</button>
-                <button class="filter-btn" data-filter="alquileres" data-i18n="filter_alquileres">🔑 Alquileres</button>
+         <div class="filter-panel">
+                <div class="filter-toggle">
+                    <button type="button" class="toggle-btn active" id="toggle-comprar">Comprar</button>
+                    <button type="button" class="toggle-btn" id="toggle-alquilar">Alquilar</button>
+                </div>
+                <div class="search-box">
+                    <input type="text" id="filter-search-input" placeholder="¿Qué estás buscando?">
+                    <button class="search-btn" id="filter-search-btn"><i class="fas fa-search"></i></button>
+                </div>
+                <div class="filter-selects">
+                    <select id="filter-tipo-propiedad">
+                        <option value="todos">Tipo de propiedad</option>
+                        <option value="casas">🏠 Casas</option>
+                        <option value="terrenos">📐 Terrenos</option>
+                        <option value="campos">🌾 Campos</option>
+                        <option value="locales">🏪 Locales</option>
+                    </select>
+                    <select id="filter-dormitorios">
+                        <option value="">Dormitorios</option>
+                        <option value="0">Monoambiente</option>
+                        <option value="1">1+</option>
+                        <option value="2">2+</option>
+                        <option value="3">3+</option>
+                        <option value="4">4+</option>
+                        <option value="5">5+</option>
+                    </select>
+                    <div class="filter-price-wrapper">
+                        <button type="button" class="filter-price-btn" id="filter-price-btn">Precio <i class="fas fa-chevron-down"></i></button>
+                        <div class="filter-price-dropdown" id="filter-price-dropdown">
+                            <div class="price-currency-toggle">
+                                <button type="button" class="currency-btn active" data-currency="USD">USD</button>
+                                <button type="button" class="currency-btn" data-currency="GS">₲ GS</button>
+                            </div>
+                            <div class="price-inputs">
+                                <input type="number" id="filter-price-min" placeholder="Mínimo">
+                                <input type="number" id="filter-price-max" placeholder="Máximo">
+                            </div>
+                            <button type="button" class="filter-price-apply" id="filter-price-apply">Aplicar</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

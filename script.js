@@ -119,31 +119,58 @@ async function getPropertiesFromFirebase() {
     }
 }
 
-async function renderProperties(filter = 'todos') {
+let currentFilters = {
+    tipoCompra: 'compra',
+    categoria: 'todos',
+    dormitorios: '',
+    precioMin: null,
+    precioMax: null,
+    moneda: 'USD',
+    texto: ''
+};
+
+async function renderProperties() {
     const grid = document.getElementById('properties-grid');
     if (!grid) return;
     
     grid.innerHTML = '<p style="text-align: center; width: 100%; padding: 20px;">Cargando propiedades...</p>';
     const properties = await getPropertiesFromFirebase();
     grid.innerHTML = '';
-    
-   const filteredProperties = properties.filter(prop => {
-    const matchesFilter = filter === 'todos' || prop.category === filter;
-    const notSold = (prop.status || 'disponible') !== 'vendido';
-    return matchesFilter && notSold;
-});
+
+    const filteredProperties = properties.filter(prop => {
+        const notSold = (prop.status || 'disponible') !== 'vendido';
+        if (!notSold) return false;
+
+        if (currentFilters.tipoCompra === 'alquiler') {
+            if (prop.category !== 'alquileres') return false;
+        } else {
+            if (prop.category === 'alquileres') return false;
+            if (currentFilters.categoria !== 'todos' && prop.category !== currentFilters.categoria) return false;
+        }
+
+        if (currentFilters.dormitorios !== '') {
+            const min = parseInt(currentFilters.dormitorios);
+            if (prop.dormitorios === null || prop.dormitorios === undefined || prop.dormitorios < min) return false;
+        }
+
+        if (currentFilters.precioMin !== null || currentFilters.precioMax !== null) {
+            const precioProp = currentFilters.moneda === 'USD' ? prop.priceUSD : prop.priceGS;
+            if (precioProp === null || precioProp === undefined) return false;
+            if (currentFilters.precioMin !== null && precioProp < currentFilters.precioMin) return false;
+            if (currentFilters.precioMax !== null && precioProp > currentFilters.precioMax) return false;
+        }
+
+        if (currentFilters.texto) {
+            const texto = currentFilters.texto.toLowerCase();
+            const coincide = (prop.title || '').toLowerCase().includes(texto) || (prop.address || '').toLowerCase().includes(texto);
+            if (!coincide) return false;
+        }
+
+        return true;
+    });
 
     if (filteredProperties.length === 0) {
-        const categoryNames = {
-            todos: 'propiedades',
-            casas: 'casas',
-            terrenos: 'terrenos',
-            campos: 'campos',
-            locales: 'locales',
-            alquileres: 'alquileres'
-        };
-        const nombreCategoria = categoryNames[filter] || 'propiedades';
-        grid.innerHTML = `<p style="text-align: center; width: 100%; padding: 40px 20px; color: #666; font-size: 16px;">😕 No hay ${nombreCategoria} disponibles en este momento.<br><small style="color:#999;">Volvé a intentar más tarde o consultanos por WhatsApp.</small></p>`;
+        grid.innerHTML = `<p style="text-align: center; width: 100%; padding: 40px 20px; color: #666; font-size: 16px;">😕 No hay propiedades que coincidan con tu búsqueda.<br><small style="color:#999;">Probá ajustar los filtros o consultanos por WhatsApp.</small></p>`;
         return;
     }
 
@@ -215,12 +242,96 @@ grid.appendChild(card);
 // =========================================
 // 4. FILTRADO
 // =========================================
+const toggleComprar = document.getElementById('toggle-comprar');
+const toggleAlquilar = document.getElementById('toggle-alquilar');
+const filterTipoPropiedad = document.getElementById('filter-tipo-propiedad');
+const filterDormitorios = document.getElementById('filter-dormitorios');
+const filterSearchInput = document.getElementById('filter-search-input');
+const filterSearchBtn = document.getElementById('filter-search-btn');
+const filterPriceBtn = document.getElementById('filter-price-btn');
+const filterPriceDropdown = document.getElementById('filter-price-dropdown');
+const filterPriceMin = document.getElementById('filter-price-min');
+const filterPriceMax = document.getElementById('filter-price-max');
+const filterPriceApply = document.getElementById('filter-price-apply');
+
+function aplicarFiltrosYScroll() {
+    renderProperties();
+    document.getElementById('propiedades').scrollIntoView({ behavior: 'smooth' });
+}
+
+if (toggleComprar && toggleAlquilar) {
+    toggleComprar.addEventListener('click', () => {
+        currentFilters.tipoCompra = 'compra';
+        toggleComprar.classList.add('active');
+        toggleAlquilar.classList.remove('active');
+        filterTipoPropiedad.style.display = '';
+        aplicarFiltrosYScroll();
+    });
+    toggleAlquilar.addEventListener('click', () => {
+        currentFilters.tipoCompra = 'alquiler';
+        toggleAlquilar.classList.add('active');
+        toggleComprar.classList.remove('active');
+        filterTipoPropiedad.style.display = 'none';
+        aplicarFiltrosYScroll();
+    });
+}
+
+if (filterTipoPropiedad) {
+    filterTipoPropiedad.addEventListener('change', () => {
+        currentFilters.categoria = filterTipoPropiedad.value;
+        aplicarFiltrosYScroll();
+    });
+}
+
+if (filterDormitorios) {
+    filterDormitorios.addEventListener('change', () => {
+        currentFilters.dormitorios = filterDormitorios.value;
+        aplicarFiltrosYScroll();
+    });
+}
+
+if (filterSearchBtn) {
+    filterSearchBtn.addEventListener('click', () => {
+        currentFilters.texto = filterSearchInput.value.trim();
+        aplicarFiltrosYScroll();
+    });
+}
+
+if (filterSearchInput) {
+    filterSearchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            currentFilters.texto = filterSearchInput.value.trim();
+            aplicarFiltrosYScroll();
+        }
+    });
+}
+
+if (filterPriceBtn) {
+    filterPriceBtn.addEventListener('click', () => {
+        filterPriceDropdown.classList.toggle('active');
+    });
+}
+
+document.querySelectorAll('.currency-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.currency-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilters.moneda = btn.getAttribute('data-currency');
+    });
+});
+
+if (filterPriceApply) {
+    filterPriceApply.addEventListener('click', () => {
+        currentFilters.precioMin = filterPriceMin.value ? parseInt(filterPriceMin.value) : null;
+        currentFilters.precioMax = filterPriceMax.value ? parseInt(filterPriceMax.value) : null;
+        filterPriceDropdown.classList.remove('active');
+        aplicarFiltrosYScroll();
+    });
+}
+
 document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('filter-btn')) {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        e.target.classList.add('active');
-        renderProperties(e.target.getAttribute('data-filter'));
-        document.getElementById('propiedades').scrollIntoView({ behavior: 'smooth' });
+    if (filterPriceDropdown && !e.target.closest('.filter-price-wrapper')) {
+        filterPriceDropdown.classList.remove('active');
     }
 });
 

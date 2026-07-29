@@ -1534,6 +1534,154 @@ html, body {
 }
 
 /* =========================================
+   PANEL DE FILTROS NUEVO
+   ========================================= */
+.filter-panel {
+    background: rgba(30, 58, 95, 0.55);
+    backdrop-filter: blur(6px);
+    border-radius: 20px;
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.filter-toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.toggle-btn {
+    flex: 1;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.toggle-btn.active {
+    background: #4CAF50;
+}
+
+.filter-panel .search-box {
+    margin-bottom: 12px;
+}
+
+.filter-selects {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.filter-selects select {
+    border-radius: 10px;
+    border: none;
+    padding: 10px;
+    font-size: 13px;
+    background: white;
+    color: #1e3a5f;
+    cursor: pointer;
+}
+
+.filter-price-wrapper {
+    position: relative;
+}
+
+.filter-price-btn {
+    width: 100%;
+    border-radius: 10px;
+    border: none;
+    padding: 10px;
+    font-size: 13px;
+    background: white;
+    color: #1e3a5f;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.filter-price-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    z-index: 50;
+}
+
+.filter-price-dropdown.active {
+    display: block;
+}
+
+.price-currency-toggle {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.currency-btn {
+    flex: 1;
+    background: #f0f0f0;
+    border: none;
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #1e3a5f;
+    cursor: pointer;
+}
+
+.currency-btn.active {
+    background: #1e3a5f;
+    color: white;
+}
+
+.price-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.price-inputs input {
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 13px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.filter-price-apply {
+    width: 100%;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+@media (max-width: 600px) {
+    .filter-selects {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================
    SECCIÓN DE CONTACTO
    ========================================= */
 .contact-section {
