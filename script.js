@@ -257,8 +257,16 @@ const priceMinLabel = document.getElementById('price-min-label');
 const priceMaxLabel = document.getElementById('price-max-label');
 
 function actualizarSliderMax() {
-    const max = currentFilters.moneda === 'USD' ? 500000 : 2000000000;
-    const step = currentFilters.moneda === 'USD' ? 5000 : 10000000;
+    let max, step;
+
+    if (currentFilters.tipoCompra === 'alquiler') {
+        max = currentFilters.moneda === 'USD' ? 3000 : 20000000;
+        step = currentFilters.moneda === 'USD' ? 50 : 100000;
+    } else {
+        max = currentFilters.moneda === 'USD' ? 500000 : 2000000000;
+        step = currentFilters.moneda === 'USD' ? 5000 : 10000000;
+    }
+
     filterPriceMin.max = max;
     filterPriceMax.max = max;
     filterPriceMin.step = step;
@@ -295,6 +303,9 @@ if (toggleComprar && toggleAlquilar) {
         toggleComprar.classList.add('active');
         toggleAlquilar.classList.remove('active');
         filterTipoPropiedad.style.display = '';
+        actualizarSliderMax();
+        currentFilters.precioMin = null;
+        currentFilters.precioMax = null;
         aplicarFiltrosYScroll();
     });
     toggleAlquilar.addEventListener('click', () => {
@@ -302,6 +313,9 @@ if (toggleComprar && toggleAlquilar) {
         toggleAlquilar.classList.add('active');
         toggleComprar.classList.remove('active');
         filterTipoPropiedad.style.display = 'none';
+        actualizarSliderMax();
+        currentFilters.precioMin = null;
+        currentFilters.precioMax = null;
         aplicarFiltrosYScroll();
     });
 }
