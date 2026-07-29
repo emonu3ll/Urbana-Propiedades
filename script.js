@@ -150,7 +150,7 @@ async function renderProperties(filter = 'todos') {
     filteredProperties.forEach(prop => {
             const featuresArray = Array.isArray(prop.features) ? prop.features : (prop.features ? prop.features.split(',').map(f => f.trim()) : []);
             if (prop.dormitorios !== null && prop.dormitorios !== undefined) {
-                const textoDorm = prop.dormitorios === 0 ? 'Monoambiente' : `${prop.dormitorios}${prop.dormitorios === 5 ? '+' : ''} dormitorio${prop.dormitorios === 1 ? '' : 's'}`;
+                const textoDorm = prop.dormitorios === 0 ? 'Monoambiente' : `${prop.dormitorios}${prop.dormitorios === 5 ? '+' : ''} Dormitorio${prop.dormitorios === 1 ? '' : 's'}`;
                 featuresArray.unshift(textoDorm);
             }
             const featuresHTML = featuresArray.map(f => `<span>${f}</span>`).join(' • ');
