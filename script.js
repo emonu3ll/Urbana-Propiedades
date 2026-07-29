@@ -311,10 +311,16 @@ document.querySelector('.properties')?.addEventListener('click', (e) => {
     const banner = document.getElementById('shared-property-banner');
     if (banner) banner.style.display = 'none';
     
-    const imagesAttr = card.getAttribute('data-images');
+   const imagesAttr = card.getAttribute('data-images');
     currentImages = imagesAttr ? JSON.parse(imagesAttr) : [card.getAttribute('data-image')];
     currentSlide = 0;
     updateModalImage();
+
+    // Precarga todas las fotos de esta propiedad en segundo plano
+    currentImages.forEach(url => {
+        const img = new Image();
+        img.src = url;
+    });
 
     // Precarga todas las fotos de esta propiedad en segundo plano
     currentImages.forEach(url => {
