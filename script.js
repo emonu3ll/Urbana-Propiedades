@@ -620,7 +620,8 @@ function initScrollAnimations() {
 // =========================================
 window.addEventListener('DOMContentLoaded', async () => {
     initScrollAnimations(); // Activa las animaciones (como "Sobre Nosotros") sin esperar a Firebase
-    await renderProperties('todos');
+    await renderProperties();
+    renderFaqs();
     checkForSharedProperty();
 });
 
@@ -667,17 +668,44 @@ if (contactForm) {
 }
 
 // =========================================
-// 10. PREGUNTAS FRECUENTES (ACORDEÓN)
+// 10. PREGUNTAS FRECUENTES (DESDE FIREBASE)
 // =========================================
-document.querySelectorAll('.faq-question').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const item = btn.closest('.faq-item');
-        const yaEstaAbierto = item.classList.contains('active');
+async function renderFaqs() {
+    const faqList = document.getElementById('faq-list');
+    if (!faqList) return;
 
-        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+    try {
+        const querySnapshot = await getDocs(collection(db, "preguntas"));
+        const faqs = [];
+        querySnapshot.forEach((doc) => faqs.push({ id: doc.id, ...doc.data() }));
 
-        if (!yaEstaAbierto) {
-            item.classList.add('active');
+        if (faqs.length === 0) {
+            faqList.innerHTML = '';
+            document.getElementById('preguntas-frecuentes').style.display = 'none';
+            return;
         }
-    });
-});
+
+        faqList.innerHTML = faqs.map(faq => `
+            <div class="faq-item">
+                <button class="faq-question">
+                    <span>${faq.question}</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>${faq.answer}</p>
+                </div>
+            </div>
+        `).join('');
+
+        document.querySelectorAll('.faq-question').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const item = btn.closest('.faq-item');
+                const yaEstaAbierto = item.classList.contains('active');
+                document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+                if (!yaEstaAbierto) item.classList.add('active');
+            });
+        });
+    } catch (error) {
+        console.error("Error cargando preguntas frecuentes:", error);
+    }
+}

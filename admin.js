@@ -30,6 +30,7 @@ function showAdminPanel() {
     document.getElementById('admin-login').style.display = 'none';
     document.getElementById('admin-panel').style.display = 'block';
     loadProperties();
+    loadFaqs();
     checkForDraft();
     showWelcomeMessage();
 }
@@ -821,6 +822,113 @@ function showToast(message, type = 'success') {
 }
 
 // =========================================
+// PREGUNTAS FRECUENTES (FAQ)
+// =========================================
+async function loadFaqs() {
+    const container = document.getElementById('faq-container');
+    if (!container) return;
+
+    try {
+        const querySnapshot = await getDocs(collection(db, "preguntas"));
+        const faqs = [];
+        querySnapshot.forEach((doc) => faqs.push({ id: doc.id, ...doc.data() }));
+
+        if (faqs.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No hay preguntas cargadas todavía</p>';
+            return;
+        }
+
+        container.innerHTML = faqs.map(faq => `
+            <div class="property-item">
+                <div class="property-item-info">
+                    <h3>${faq.question}</h3>
+                    <p style="color: #666; font-size: 14px;">${faq.answer}</p>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="editFaq('${faq.id}')" style="background: #2196F3; color: white; padding: 8px 15px; border: none; border-radius: 10px; cursor: pointer;">
+                        <i class="fas fa-edit"></i> Editar
+                    </button>
+                    <button onclick="deleteFaq('${faq.id}')" style="background: #f44336; color: white; padding: 8px 15px; border: none; border-radius: 10px; cursor: pointer;">
+                        <i class="fas fa-trash"></i> Eliminar
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error("Error cargando preguntas:", error);
+        container.innerHTML = '<p style="color: red;">Error al cargar preguntas frecuentes</p>';
+    }
+}
+
+async function saveFaq() {
+    const question = document.getElementById('faq-question-input').value.trim();
+    const answer = document.getElementById('faq-answer-input').value.trim();
+    const editId = document.getElementById('edit-faq-id').value;
+
+    if (!question || !answer) {
+        showToast('Completá la pregunta y la respuesta', 'error');
+        return;
+    }
+
+    try {
+        if (editId) {
+            await updateDoc(doc(db, "preguntas", editId), { question, answer });
+            showToast('Pregunta actualizada correctamente', 'success');
+        } else {
+            await addDoc(collection(db, "preguntas"), { question, answer, date: new Date().toISOString() });
+            showToast('Pregunta agregada correctamente', 'success');
+        }
+        doCancelFaqEdit();
+        loadFaqs();
+    } catch (error) {
+        showToast('Error al guardar: ' + error.message, 'error');
+    }
+}
+
+async function editFaq(id) {
+    try {
+        const querySnapshot = await getDocs(collection(db, "preguntas"));
+        let faq = null;
+        querySnapshot.forEach((doc) => { if (doc.id === id) faq = doc.data(); });
+        if (!faq) return;
+
+        document.getElementById('faq-question-input').value = faq.question;
+        document.getElementById('faq-answer-input').value = faq.answer;
+        document.getElementById('edit-faq-id').value = id;
+        document.querySelector('.properties-list:has(#faq-container)')?.scrollIntoView({ behavior: 'smooth' });
+    } catch (error) {
+        showToast('Error al cargar la pregunta: ' + error.message, 'error');
+    }
+}
+
+async function deleteFaq(id) {
+    openConfirmModal(
+        '¿Estás seguro de eliminar esta pregunta frecuente?',
+        async () => {
+            try {
+                await deleteDoc(doc(db, "preguntas", id));
+                showToast('Pregunta eliminada correctamente', 'success');
+                loadFaqs();
+            } catch (error) {
+                showToast('Error al eliminar: ' + error.message, 'error');
+            }
+        },
+        'Sí, eliminar'
+    );
+}
+
+function doCancelFaqEdit() {
+    document.getElementById('faq-question-input').value = '';
+    document.getElementById('faq-answer-input').value = '';
+    document.getElementById('edit-faq-id').value = '';
+}
+
+function cancelFaqEdit() {
+    doCancelFaqEdit();
+    showToast('Edición cancelada', 'success');
+}
+
+// =========================================
 // HACER FUNCIONES GLOBALES (UNA SOLA VEZ, AL FINAL DE TODO)
 // =========================================
 window.login = login;
@@ -847,3 +955,8 @@ window.updatePropertyStatus = updatePropertyStatus;
 window.exportForMyMaps = exportForMyMaps;
 window.showWelcomeMessage = showWelcomeMessage;
 window.saveDraftManual = saveDraftManual;
+window.loadFaqs = loadFaqs;
+window.saveFaq = saveFaq;
+window.editFaq = editFaq;
+window.deleteFaq = deleteFaq;
+window.cancelFaqEdit = cancelFaqEdit;
