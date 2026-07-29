@@ -1683,7 +1683,7 @@ html, body {
     -webkit-appearance: none;
     appearance: none;
     height: 14px;
-    border-radius: 20px;
+    border-radius: 0;
     background: #e0e0e0;
     outline: none;
     cursor: pointer;
@@ -1714,19 +1714,19 @@ html, body {
 
 .price-slider-row input[type="range"]::-webkit-slider-runnable-track {
     height: 14px;
-    border-radius: 20px;
+    border-radius: 0;
     background: linear-gradient(to right, #4CAF50 var(--fill, 0%), #e0e0e0 var(--fill, 0%));
 }
 
 .price-slider-row input[type="range"]::-moz-range-track {
     height: 14px;
-    border-radius: 20px;
+    border-radius: 0;
     background: #e0e0e0;
 }
 
 .price-slider-row input[type="range"]::-moz-range-progress {
     height: 14px;
-    border-radius: 20px;
+    border-radius: 0;
     background: #4CAF50;
 }
 
