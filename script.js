@@ -643,7 +643,7 @@ function checkForSharedProperty() {
 }
 
 // =========================================
-// 9. FORMULARIO DE CONTACTO (envía por WhatsApp)
+// 9. FORMULARIO DE CONTACTO (envía por correo)
 // =========================================
 const contactForm = document.getElementById('contact-form');
 if (contactForm) {
@@ -655,12 +655,12 @@ if (contactForm) {
         const email = document.getElementById('contact-email').value.trim();
         const mensaje = document.getElementById('contact-message').value.trim();
 
-        let texto = `Hola Urbana Propiedades, mi nombre es ${nombre}.\n${mensaje}`;
-        if (email) texto += `\nMi email: ${email}`;
-        texto += `\nMi teléfono: ${telefono}`;
+        const asunto = `Consulta de ${nombre} - Urbana Propiedades`;
+        let cuerpo = `${mensaje}\n\nMi teléfono: ${telefono}`;
+        if (email) cuerpo += `\nMi email: ${email}`;
 
-        const url = `https://wa.me/595994272727?text=${encodeURIComponent(texto)}`;
-        window.open(url, '_blank');
+        const url = `mailto:urbanapropiedades.py@gmail.com?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+        window.location.href = url;
 
         contactForm.reset();
     });
