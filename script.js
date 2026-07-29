@@ -488,3 +488,27 @@ function checkForSharedProperty() {
         if (banner) banner.style.display = 'block';
     }
 }
+
+// =========================================
+// 9. FORMULARIO DE CONTACTO (envía por WhatsApp)
+// =========================================
+const contactForm = document.getElementById('contact-form');
+if (contactForm) {
+    contactForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const nombre = document.getElementById('contact-name').value.trim();
+        const telefono = document.getElementById('contact-phone').value.trim();
+        const email = document.getElementById('contact-email').value.trim();
+        const mensaje = document.getElementById('contact-message').value.trim();
+
+        let texto = `Hola Urbana Propiedades, mi nombre es ${nombre}.\n${mensaje}`;
+        if (email) texto += `\nMi email: ${email}`;
+        texto += `\nMi teléfono: ${telefono}`;
+
+        const url = `https://wa.me/595994272727?text=${encodeURIComponent(texto)}`;
+        window.open(url, '_blank');
+
+        contactForm.reset();
+    });
+}
