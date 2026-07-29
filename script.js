@@ -149,8 +149,11 @@ async function renderProperties(filter = 'todos') {
 
     filteredProperties.forEach(prop => {
             const featuresArray = Array.isArray(prop.features) ? prop.features : (prop.features ? prop.features.split(',').map(f => f.trim()) : []);
+            if (prop.dormitorios !== null && prop.dormitorios !== undefined) {
+                const textoDorm = prop.dormitorios === 0 ? 'Monoambiente' : `${prop.dormitorios}${prop.dormitorios === 5 ? '+' : ''} dormitorio${prop.dormitorios === 1 ? '' : 's'}`;
+                featuresArray.unshift(textoDorm);
+            }
             const featuresHTML = featuresArray.map(f => `<span>${f}</span>`).join(' • ');
-            
            const card = document.createElement('div');
 card.className = 'property-card fade-in-element';
 card.setAttribute('data-id', prop.id);
