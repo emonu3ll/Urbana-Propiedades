@@ -665,3 +665,19 @@ if (contactForm) {
         contactForm.reset();
     });
 }
+
+// =========================================
+// 10. PREGUNTAS FRECUENTES (ACORDEÓN)
+// =========================================
+document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const item = btn.closest('.faq-item');
+        const yaEstaAbierto = item.classList.contains('active');
+
+        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+
+        if (!yaEstaAbierto) {
+            item.classList.add('active');
+        }
+    });
+});
