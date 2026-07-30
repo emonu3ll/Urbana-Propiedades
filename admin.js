@@ -1146,9 +1146,9 @@ function renderSocialRow(platform = 'facebook', url = '') {
         `<option value="${key}" ${key === platform ? 'selected' : ''}>${val.label}</option>`
     ).join('');
 
-    row.innerHTML = `
-        <select class="social-platform-select" style="padding:12px; border:2px solid #e0e0e0; border-radius:8px; font-size:14px;">${options}</select>
-        <input type="url" class="social-url-input" placeholder="https://..." value="${url}" style="flex:1; padding:12px; border:2px solid #e0e0e0; border-radius:8px; font-size:14px;">
+   row.innerHTML = `
+        <select class="social-platform-select" style="padding:12px; border:2px solid #e0e0e0; border-radius:8px; font-size:14px; width:140px; flex-shrink:0;">${options}</select>
+        <input type="url" class="social-url-input" placeholder="https://..." value="${url}" style="flex:1; min-width:0; padding:12px; border:2px solid #e0e0e0; border-radius:8px; font-size:14px;">
         <button type="button" onclick="this.closest('.social-row').remove()" style="background:#f44336; color:white; border:none; border-radius:8px; width:42px; height:42px; cursor:pointer; flex-shrink:0;">
             <i class="fas fa-trash"></i>
         </button>
