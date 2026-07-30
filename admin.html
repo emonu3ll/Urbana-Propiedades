@@ -331,6 +331,82 @@
                 <div id="faq-container"></div>
             </div>
 
+           <!-- PERSONALIZACIÓN DEL SITIO -->
+            <div class="properties-list">
+                <h2 style="margin-bottom: 20px;">🎨 Personalizar Sección "Sobre Nosotros"</h2>
+                <p style="color: #666; font-size: 13px; margin-bottom: 20px;">Si no completás algún campo, se mantiene el texto actual del sitio. Los cambios se aplican al guardar.</p>
+
+                <div class="form-group">
+                    <label>Subtítulo pequeño (Ej: "QUIÉNES SOMOS")</label>
+                    <input type="text" id="content-subtitle" placeholder="QUIÉNES SOMOS">
+                </div>
+                <div class="form-group">
+                    <label>Título grande (Ej: "Urbana Propiedades")</label>
+                    <input type="text" id="content-title" placeholder="Urbana Propiedades">
+                </div>
+                <div class="form-group">
+                    <label>Párrafo de descripción</label>
+                    <textarea id="content-text" rows="3" placeholder="Con base en Curuguaty y presencia en toda la región..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>📷 Imagen de la sección</label>
+                    <img id="content-image-preview" src="" style="display:none; max-width: 220px; width: 100%; border-radius: 10px; margin-bottom: 10px;">
+                    <input type="file" id="content-image-input" accept="image/*" style="display:none" onchange="handleContentImageSelect(this.files)">
+                    <button type="button" onclick="document.getElementById('content-image-input').click()" style="background: #2196F3; color: white; padding: 10px 18px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">
+                        <i class="fas fa-crop"></i> Elegir y recortar imagen
+                    </button>
+                </div>
+
+                <div class="form-group" style="background: #f0f7ff; padding: 15px; border-radius: 12px;">
+                    <label>🥇 Punto destacado 1</label>
+                    <input type="text" id="content-feature1-title" placeholder="Experiencia" style="margin-bottom: 10px;">
+                    <input type="text" id="content-feature1-text" placeholder="Años de trayectoria en el mercado inmobiliario.">
+                </div>
+                <div class="form-group" style="background: #f0f7ff; padding: 15px; border-radius: 12px;">
+                    <label>🥈 Punto destacado 2</label>
+                    <input type="text" id="content-feature2-title" placeholder="Trato Directo" style="margin-bottom: 10px;">
+                    <input type="text" id="content-feature2-text" placeholder="Te acompañamos desde la primera visita hasta la firma.">
+                </div>
+                <div class="form-group" style="background: #f0f7ff; padding: 15px; border-radius: 12px;">
+                    <label>🥉 Punto destacado 3</label>
+                    <input type="text" id="content-feature3-title" placeholder="Trámites Seguros" style="margin-bottom: 10px;">
+                    <input type="text" id="content-feature3-text" placeholder="Asesoramiento en toda la operación de forma legal y segura.">
+                </div>
+
+                <div class="form-group">
+                    <label>📄 Texto del pie de página (columna izquierda del footer)</label>
+                    <textarea id="content-footer-text" rows="3" placeholder="Tu aliado estratégico en el mercado inmobiliario de Canindeyú..."></textarea>
+                </div>
+
+                <button id="content-save-btn" class="btn-save" onclick="saveContenido()">
+                    <i class="fas fa-save"></i> Guardar Personalización
+                </button>
+            </div>
+
+            <!-- MODAL DE RECORTE DE IMAGEN (estilo WhatsApp) -->
+            <div id="crop-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center; padding:20px;">
+                <div style="background:white; border-radius:15px; padding:20px; max-width:420px; width:100%;">
+                    <h3 style="color:#1e3a5f; margin-bottom:15px; text-align:center;">Recortá tu imagen</h3>
+                    <div id="crop-viewport" style="width:100%; aspect-ratio: 4/3; overflow:hidden; position:relative; background:#000; border-radius:10px; cursor:grab; touch-action:none;">
+                        <img id="crop-image" src="" style="position:absolute; top:0; left:0; user-select:none; -webkit-user-drag:none;">
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px; margin-top:15px;">
+                        <i class="fas fa-search-minus" style="color:#666;"></i>
+                        <input type="range" id="crop-zoom" min="100" max="300" value="100" style="flex:1; accent-color:#4CAF50;">
+                        <i class="fas fa-search-plus" style="color:#666;"></i>
+                    </div>
+                    <div style="display:flex; gap:10px; margin-top:18px;">
+                        <button onclick="cancelCrop()" style="flex:1; padding:12px; border:2px solid #e0e0e0; background:white; color:#1e3a5f; border-radius:8px; font-weight:bold; cursor:pointer;">
+                            Cancelar
+                        </button>
+                        <button onclick="confirmCrop()" style="flex:1; padding:12px; border:none; background:#4CAF50; color:white; border-radius:8px; font-weight:bold; cursor:pointer;">
+                            Usar esta imagen
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- MODAL DE CONFIRMACIÓN PERSONALIZADO -->
     <div id="confirm-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
         <div style="background:white; border-radius:15px; padding:30px; max-width:400px; width:90%; box-shadow:0 10px 40px rgba(0,0,0,0.3); text-align:center;">

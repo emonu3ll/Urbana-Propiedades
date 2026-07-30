@@ -1,4 +1,4 @@
-import { db, storage, auth, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, ref, uploadBytes, getDownloadURL, deleteObject, signInWithEmailAndPassword, signOut, onAuthStateChanged } from './firebase-config.js';
+import { db, storage, auth, collection, addDoc, getDocs, getDoc, deleteDoc, doc, updateDoc, setDoc, ref, uploadBytes, getDownloadURL, deleteObject, signInWithEmailAndPassword, signOut, onAuthStateChanged } from './firebase-config.js';
 
 // =========================================
 // SISTEMA DE LOGIN
@@ -31,6 +31,7 @@ function showAdminPanel() {
     document.getElementById('admin-panel').style.display = 'block';
     loadProperties();
     loadFaqs();
+    loadContenido();
     checkForDraft();
     showWelcomeMessage();
 }
@@ -929,6 +930,200 @@ function cancelFaqEdit() {
 }
 
 // =========================================
+// PERSONALIZACIÓN DEL SITIO ("SOBRE NOSOTROS" Y FOOTER)
+// =========================================
+async function loadContenido() {
+    try {
+        const docSnap = await getDoc(doc(db, 'contenido', 'sobre-nosotros'));
+        if (!docSnap.exists()) return;
+        const data = docSnap.data();
+
+        document.getElementById('content-subtitle').value = data.subtitle || '';
+        document.getElementById('content-title').value = data.title || '';
+        document.getElementById('content-text').value = data.text || '';
+        document.getElementById('content-feature1-title').value = data.feature1Title || '';
+        document.getElementById('content-feature1-text').value = data.feature1Text || '';
+        document.getElementById('content-feature2-title').value = data.feature2Title || '';
+        document.getElementById('content-feature2-text').value = data.feature2Text || '';
+        document.getElementById('content-feature3-title').value = data.feature3Title || '';
+        document.getElementById('content-feature3-text').value = data.feature3Text || '';
+        document.getElementById('content-footer-text').value = data.footerText || '';
+
+        if (data.image) {
+            const preview = document.getElementById('content-image-preview');
+            preview.src = data.image;
+            preview.style.display = 'block';
+        }
+    } catch (error) {
+        console.error('Error cargando personalización:', error);
+    }
+}
+
+let contentImageFile = null;
+
+async function saveContenido() {
+    const btn = document.getElementById('content-save-btn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+    btn.disabled = true;
+
+    try {
+        const preview = document.getElementById('content-image-preview');
+        let imageUrl = (preview.style.display === 'block' && preview.src.startsWith('http')) ? preview.src : null;
+
+        if (contentImageFile) {
+            const storageRef = ref(storage, `contenido/sobre-nosotros_${Date.now()}.jpg`);
+            await uploadBytes(storageRef, contentImageFile);
+            imageUrl = await getDownloadURL(storageRef);
+        }
+
+        const data = {
+            subtitle: document.getElementById('content-subtitle').value.trim(),
+            title: document.getElementById('content-title').value.trim(),
+            text: document.getElementById('content-text').value.trim(),
+            feature1Title: document.getElementById('content-feature1-title').value.trim(),
+            feature1Text: document.getElementById('content-feature1-text').value.trim(),
+            feature2Title: document.getElementById('content-feature2-title').value.trim(),
+            feature2Text: document.getElementById('content-feature2-text').value.trim(),
+            feature3Title: document.getElementById('content-feature3-title').value.trim(),
+            feature3Text: document.getElementById('content-feature3-text').value.trim(),
+            footerText: document.getElementById('content-footer-text').value.trim(),
+            image: imageUrl
+        };
+
+        await setDoc(doc(db, 'contenido', 'sobre-nosotros'), data);
+        contentImageFile = null;
+        showToast('Personalización guardada. Ya se ve reflejada en el sitio.', 'success');
+    } catch (error) {
+        showToast('Error al guardar: ' + error.message, 'error');
+    } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    }
+}
+
+// =========================================
+// RECORTE DE IMAGEN (ESTILO WHATSAPP)
+// =========================================
+let cropState = { naturalW: 0, naturalH: 0, scale: 1, baseScale: 1, offsetX: 0, offsetY: 0, viewportW: 0, viewportH: 0, dragging: false, startX: 0, startY: 0 };
+
+function handleContentImageSelect(files) {
+    const file = files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const img = document.getElementById('crop-image');
+        img.onload = () => initCrop(img);
+        img.src = e.target.result;
+        document.getElementById('crop-modal').style.display = 'flex';
+    };
+    reader.readAsDataURL(file);
+}
+
+function initCrop(img) {
+    const viewport = document.getElementById('crop-viewport');
+    const vw = viewport.clientWidth, vh = viewport.clientHeight;
+    cropState.naturalW = img.naturalWidth;
+    cropState.naturalH = img.naturalHeight;
+    cropState.viewportW = vw;
+    cropState.viewportH = vh;
+    cropState.baseScale = Math.max(vw / img.naturalWidth, vh / img.naturalHeight);
+    cropState.scale = 1;
+    cropState.offsetX = (vw - img.naturalWidth * cropState.baseScale) / 2;
+    cropState.offsetY = (vh - img.naturalHeight * cropState.baseScale) / 2;
+    document.getElementById('crop-zoom').value = 100;
+    applyCropTransform();
+}
+
+function applyCropTransform() {
+    const img = document.getElementById('crop-image');
+    const total = cropState.baseScale * cropState.scale;
+    img.style.width = cropState.naturalW + 'px';
+    img.style.height = cropState.naturalH + 'px';
+    img.style.transform = `translate(${cropState.offsetX}px, ${cropState.offsetY}px) scale(${total})`;
+}
+
+function clampCropOffsets() {
+    const total = cropState.baseScale * cropState.scale;
+    const dispW = cropState.naturalW * total;
+    const dispH = cropState.naturalH * total;
+    const minX = cropState.viewportW - dispW;
+    const minY = cropState.viewportH - dispH;
+    cropState.offsetX = Math.min(0, Math.max(minX, cropState.offsetX));
+    cropState.offsetY = Math.min(0, Math.max(minY, cropState.offsetY));
+}
+
+function getCropPointer(e) {
+    if (e.touches && e.touches[0]) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    return { x: e.clientX, y: e.clientY };
+}
+
+const cropViewportEl = document.getElementById('crop-viewport');
+if (cropViewportEl) {
+    const dragStart = (e) => {
+        cropState.dragging = true;
+        const p = getCropPointer(e);
+        cropState.startX = p.x - cropState.offsetX;
+        cropState.startY = p.y - cropState.offsetY;
+    };
+    const dragMove = (e) => {
+        if (!cropState.dragging) return;
+        if (e.cancelable) e.preventDefault();
+        const p = getCropPointer(e);
+        cropState.offsetX = p.x - cropState.startX;
+        cropState.offsetY = p.y - cropState.startY;
+        clampCropOffsets();
+        applyCropTransform();
+    };
+    const dragEnd = () => { cropState.dragging = false; };
+
+    cropViewportEl.addEventListener('mousedown', dragStart);
+    window.addEventListener('mousemove', dragMove);
+    window.addEventListener('mouseup', dragEnd);
+    cropViewportEl.addEventListener('touchstart', dragStart, { passive: true });
+    cropViewportEl.addEventListener('touchmove', dragMove, { passive: false });
+    cropViewportEl.addEventListener('touchend', dragEnd);
+}
+
+const cropZoomEl = document.getElementById('crop-zoom');
+if (cropZoomEl) {
+    cropZoomEl.addEventListener('input', () => {
+        cropState.scale = cropZoomEl.value / 100;
+        clampCropOffsets();
+        applyCropTransform();
+    });
+}
+
+function confirmCrop() {
+    const img = document.getElementById('crop-image');
+    const total = cropState.baseScale * cropState.scale;
+    const sx = -cropState.offsetX / total;
+    const sy = -cropState.offsetY / total;
+    const sWidth = cropState.viewportW / total;
+    const sHeight = cropState.viewportH / total;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 1000;
+    canvas.height = 750;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, 1000, 750);
+
+    canvas.toBlob((blob) => {
+        contentImageFile = new File([blob], 'sobre-nosotros.jpg', { type: 'image/jpeg' });
+        const preview = document.getElementById('content-image-preview');
+        preview.src = URL.createObjectURL(blob);
+        preview.style.display = 'block';
+        document.getElementById('crop-modal').style.display = 'none';
+        document.getElementById('content-image-input').value = '';
+    }, 'image/jpeg', 0.85);
+}
+
+function cancelCrop() {
+    document.getElementById('crop-modal').style.display = 'none';
+    document.getElementById('content-image-input').value = '';
+}
+
+// =========================================
 // HACER FUNCIONES GLOBALES (UNA SOLA VEZ, AL FINAL DE TODO)
 // =========================================
 window.login = login;
@@ -960,3 +1155,7 @@ window.saveFaq = saveFaq;
 window.editFaq = editFaq;
 window.deleteFaq = deleteFaq;
 window.cancelFaqEdit = cancelFaqEdit;
+window.saveContenido = saveContenido;
+window.handleContentImageSelect = handleContentImageSelect;
+window.confirmCrop = confirmCrop;
+window.cancelCrop = cancelCrop;

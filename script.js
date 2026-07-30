@@ -1,4 +1,4 @@
-import { db, collection, getDocs } from './firebase-config.js';
+import { db, collection, getDocs, doc, getDoc } from './firebase-config.js';
 
 // =========================================
 // FUNCIONES INTELIGENTES PARA PROCESAR URLS
@@ -548,8 +548,31 @@ window.addEventListener('DOMContentLoaded', async () => {
     initScrollAnimations(); // Activa las animaciones (como "Sobre Nosotros") sin esperar a Firebase
     await renderProperties();
     renderFaqs();
+    loadContenido();
     checkForSharedProperty();
 });
+
+async function loadContenido() {
+    try {
+        const docSnap = await getDoc(doc(db, 'contenido', 'sobre-nosotros'));
+        if (!docSnap.exists()) return; // No hay personalización todavía: se queda el contenido actual del sitio
+
+        const data = docSnap.data();
+        if (data.subtitle) document.getElementById('about-subtitle').textContent = data.subtitle;
+        if (data.title) document.getElementById('about-title').textContent = data.title;
+        if (data.text) document.getElementById('about-text').textContent = data.text;
+        if (data.feature1Title) document.getElementById('about-feature1-title').textContent = data.feature1Title + ':';
+        if (data.feature1Text) document.getElementById('about-feature1-text').textContent = data.feature1Text;
+        if (data.feature2Title) document.getElementById('about-feature2-title').textContent = data.feature2Title + ':';
+        if (data.feature2Text) document.getElementById('about-feature2-text').textContent = data.feature2Text;
+        if (data.feature3Title) document.getElementById('about-feature3-title').textContent = data.feature3Title + ':';
+        if (data.feature3Text) document.getElementById('about-feature3-text').textContent = data.feature3Text;
+        if (data.image) document.getElementById('about-image').src = data.image;
+        if (data.footerText) document.getElementById('footer-description').textContent = data.footerText;
+    } catch (error) {
+        console.error('Error cargando personalización:', error);
+    }
+}
 
 // =========================================
 // 8. ABRIR PROPIEDAD DIRECTO DESDE UN LINK COMPARTIDO
