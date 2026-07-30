@@ -659,6 +659,10 @@ html, body {
         margin-bottom: 15px;
     }
 
+    .search-btn {
+        margin-right: 10px;
+    }
+
     .filter-buttons {
         flex-direction: column;
         align-items: center;
