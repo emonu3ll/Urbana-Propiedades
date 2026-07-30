@@ -1260,4 +1260,3 @@ window.confirmCrop = confirmCrop;
 window.cancelCrop = cancelCrop;
 window.saveFooterContacto = saveFooterContacto;
 window.addSocialRow = addSocialRow;
-window.removeSocialRow = removeSocialRow;
