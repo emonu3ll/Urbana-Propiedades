@@ -594,8 +594,195 @@ if (contactForm) {
 }
 
 // =========================================
-// 10. PREGUNTAS FRECUENTES (DESDE FIREBASE)
+// LIGHTBOX DE IMÁGENES (ZOOM, ARRASTRE Y DESLIZAR)
 // =========================================
+const lightbox = document.getElementById('image-lightbox');
+const lightboxImage = document.getElementById('lightbox-image');
+const lightboxWrapper = document.getElementById('lightbox-image-wrapper');
+const lightboxClose = document.getElementById('lightbox-close');
+const lightboxPrev = document.getElementById('lightbox-prev');
+const lightboxNext = document.getElementById('lightbox-next');
+const lightboxCounter = document.getElementById('lightbox-counter');
+
+let lbScale = 1;
+let lbPosX = 0;
+let lbPosY = 0;
+let lbStartDistance = 0;
+let lbStartScale = 1;
+let lbDragging = false;
+let lbStartX = 0;
+let lbStartY = 0;
+let lbLastPosX = 0;
+let lbLastPosY = 0;
+let lbSwipeStartX = 0;
+let lbLastTapTime = 0;
+
+function lbApplyTransform() {
+    lightboxImage.style.transform = `translate(${lbPosX}px, ${lbPosY}px) scale(${lbScale})`;
+}
+
+function lbResetZoom() {
+    lbScale = 1;
+    lbPosX = 0;
+    lbPosY = 0;
+    lbApplyTransform();
+}
+
+function lbUpdateImage() {
+    if (currentImages.length === 0) return;
+    lightboxImage.src = currentImages[currentSlide];
+    lightboxCounter.textContent = `${currentSlide + 1} / ${currentImages.length}`;
+    lbResetZoom();
+    const multiples = currentImages.length > 1;
+    lightboxPrev.style.display = multiples ? 'flex' : 'none';
+    lightboxNext.style.display = multiples ? 'flex' : 'none';
+}
+
+function openLightbox() {
+    lightbox.classList.add('active');
+    lbUpdateImage();
+}
+
+function closeLightbox() {
+    lightbox.classList.remove('active');
+    lbResetZoom();
+}
+
+if (modalImage) {
+    modalImage.style.cursor = 'zoom-in';
+    modalImage.addEventListener('click', openLightbox);
+}
+
+if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
+
+if (lightboxPrev) {
+    lightboxPrev.addEventListener('click', () => {
+        changeSlide(-1);
+        lbUpdateImage();
+    });
+}
+
+if (lightboxNext) {
+    lightboxNext.addEventListener('click', () => {
+        changeSlide(1);
+        lbUpdateImage();
+    });
+}
+
+// Zoom con rueda del mouse (desktop)
+if (lightboxWrapper) {
+    lightboxWrapper.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const delta = e.deltaY < 0 ? 0.2 : -0.2;
+        lbScale = Math.min(4, Math.max(1, lbScale + delta));
+        if (lbScale === 1) { lbPosX = 0; lbPosY = 0; }
+        lbApplyTransform();
+    }, { passive: false });
+
+    // Doble click para zoom (desktop)
+    lightboxWrapper.addEventListener('dblclick', () => {
+        if (lbScale > 1) {
+            lbResetZoom();
+        } else {
+            lbScale = 2.5;
+            lbApplyTransform();
+        }
+    });
+
+    // Arrastre con mouse cuando hay zoom (desktop)
+    lightboxWrapper.addEventListener('mousedown', (e) => {
+        if (lbScale <= 1) return;
+        lbDragging = true;
+        lightboxImage.classList.add('dragging');
+        lbStartX = e.clientX - lbPosX;
+        lbStartY = e.clientY - lbPosY;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        if (!lbDragging) return;
+        lbPosX = e.clientX - lbStartX;
+        lbPosY = e.clientY - lbStartY;
+        lbApplyTransform();
+    });
+
+    window.addEventListener('mouseup', () => {
+        lbDragging = false;
+        lightboxImage.classList.remove('dragging');
+    });
+
+    // =========================================
+    // TOUCH: pellizcar para zoom, arrastrar, deslizar y doble toque
+    // =========================================
+    lightboxWrapper.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 2) {
+            const dx = e.touches[0].clientX - e.touches[1].clientX;
+            const dy = e.touches[0].clientY - e.touches[1].clientY;
+            lbStartDistance = Math.sqrt(dx * dx + dy * dy);
+            lbStartScale = lbScale;
+        } else if (e.touches.length === 1) {
+            lbSwipeStartX = e.touches[0].clientX;
+            if (lbScale > 1) {
+                lbDragging = true;
+                lightboxImage.classList.add('dragging');
+                lbLastPosX = e.touches[0].clientX - lbPosX;
+                lbLastPosY = e.touches[0].clientY - lbPosY;
+            }
+
+            // Detectar doble toque
+            const now = Date.now();
+            if (now - lbLastTapTime < 300) {
+                if (lbScale > 1) {
+                    lbResetZoom();
+                } else {
+                    lbScale = 2.5;
+                    lbApplyTransform();
+                }
+            }
+            lbLastTapTime = now;
+        }
+    }, { passive: true });
+
+    lightboxWrapper.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 2) {
+            e.preventDefault();
+            const dx = e.touches[0].clientX - e.touches[1].clientX;
+            const dy = e.touches[0].clientY - e.touches[1].clientY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            lbScale = Math.min(4, Math.max(1, lbStartScale * (distance / lbStartDistance)));
+            lightboxImage.classList.add('dragging');
+            lbApplyTransform();
+        } else if (e.touches.length === 1 && lbDragging && lbScale > 1) {
+            e.preventDefault();
+            lbPosX = e.touches[0].clientX - lbLastPosX;
+            lbPosY = e.touches[0].clientY - lbLastPosY;
+            lbApplyTransform();
+        }
+    }, { passive: false });
+
+    lightboxWrapper.addEventListener('touchend', (e) => {
+        lightboxImage.classList.remove('dragging');
+        lbDragging = false;
+
+        // Si no hay zoom, detectar deslizamiento para cambiar de foto
+        if (lbScale <= 1 && e.changedTouches.length === 1) {
+            const diff = e.changedTouches[0].clientX - lbSwipeStartX;
+            if (Math.abs(diff) > 60 && currentImages.length > 1) {
+                changeSlide(diff > 0 ? -1 : 1);
+                lbUpdateImage();
+            }
+        }
+
+        // Si quedó con zoom menor a 1 por algún motivo, reseteamos
+        if (lbScale < 1) lbResetZoom();
+    });
+}
+
+// Cerrar con la tecla Escape también
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lightbox?.classList.contains('active')) {
+        closeLightbox();
+    }
+});
 async function renderFaqs() {
     const faqList = document.getElementById('faq-list');
     if (!faqList) return;
