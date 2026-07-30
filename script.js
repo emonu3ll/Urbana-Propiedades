@@ -549,8 +549,53 @@ window.addEventListener('DOMContentLoaded', async () => {
     await renderProperties();
     renderFaqs();
     loadContenido();
+    loadFooterContacto();
     checkForSharedProperty();
 });
+
+const SOCIAL_ICONS = {
+    facebook: 'fab fa-facebook-f',
+    instagram: 'fab fa-instagram',
+    tiktok: 'fab fa-tiktok',
+    youtube: 'fab fa-youtube',
+    twitter: 'fab fa-twitter',
+    linkedin: 'fab fa-linkedin-in'
+};
+
+async function loadFooterContacto() {
+    try {
+        const docSnap = await getDoc(doc(db, 'contenido', 'footer-contacto'));
+        if (!docSnap.exists()) return; // Sin personalización: queda el footer actual
+
+        const data = docSnap.data();
+
+        if (data.phone1) {
+            const soloNumeros = data.phone1.replace(/\D/g, '');
+            document.getElementById('footer-phone1-link').textContent = data.phone1;
+            document.getElementById('footer-phone1-link').href = `https://wa.me/${soloNumeros}`;
+        }
+        if (data.phone2) {
+            const soloNumeros = data.phone2.replace(/\D/g, '');
+            document.getElementById('footer-phone2-link').textContent = data.phone2;
+            document.getElementById('footer-phone2-link').href = `https://wa.me/${soloNumeros}`;
+        } else if (data.phone2 === '') {
+            document.getElementById('footer-phone2-item').style.display = 'none';
+        }
+        if (data.email) document.getElementById('footer-email-text').textContent = data.email;
+        if (data.address) document.getElementById('footer-address-text').textContent = data.address;
+
+        if (data.socialLinks && data.socialLinks.length > 0) {
+            const container = document.getElementById('footer-social-links');
+            container.innerHTML = data.socialLinks.map(s => `
+                <a href="${s.url}" target="_blank" aria-label="${s.platform}">
+                    <i class="${SOCIAL_ICONS[s.platform] || 'fas fa-link'}"></i>
+                </a>
+            `).join('');
+        }
+    } catch (error) {
+        console.error('Error cargando contacto del footer:', error);
+    }
+}
 
 async function loadContenido() {
     try {

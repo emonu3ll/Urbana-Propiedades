@@ -384,6 +384,41 @@
                 </button>
             </div>
 
+            <!-- CONTACTO Y REDES SOCIALES -->
+            <div class="properties-list">
+                <h2 style="margin-bottom: 20px;">📞 Personalizar Contacto y Redes Sociales</h2>
+                <p style="color: #666; font-size: 13px; margin-bottom: 20px;">Afecta la columna "Contacto" y "Síguenos" del pie de página del sitio.</p>
+
+                <div class="form-group">
+                    <label>📱 Teléfono 1</label>
+                    <input type="text" id="footer-phone1" placeholder="Ej: 0994272727" oninput="formatOwnerPhone(this)">
+                </div>
+                <div class="form-group">
+                    <label>📱 Teléfono 2 (opcional)</label>
+                    <input type="text" id="footer-phone2" placeholder="Ej: 0994767676" oninput="formatOwnerPhone(this)">
+                </div>
+                <div class="form-group">
+                    <label>✉️ Email de contacto</label>
+                    <input type="email" id="footer-email" placeholder="urbanapropiedades.py@gmail.com">
+                </div>
+                <div class="form-group">
+                    <label>📍 Dirección / Ubicación</label>
+                    <input type="text" id="footer-address" placeholder="Curuguaty, Canindeyú">
+                </div>
+
+                <div class="form-group">
+                    <label>🌐 Redes Sociales</label>
+                    <div id="social-rows-container"></div>
+                    <button type="button" onclick="addSocialRow()" style="background: #757575; color: white; padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; margin-top: 8px;">
+                        <i class="fas fa-plus"></i> Agregar red social
+                    </button>
+                </div>
+
+                <button id="footer-save-btn" class="btn-save" onclick="saveFooterContacto()" style="margin-top: 15px;">
+                    <i class="fas fa-save"></i> Guardar Contacto y Redes
+                </button>
+            </div>
+
             <!-- MODAL DE RECORTE DE IMAGEN (estilo WhatsApp) -->
             <div id="crop-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center; padding:20px;">
                 <div style="background:white; border-radius:15px; padding:20px; max-width:420px; width:100%;">

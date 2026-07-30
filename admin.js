@@ -32,6 +32,7 @@ function showAdminPanel() {
     loadProperties();
     loadFaqs();
     loadContenido();
+    loadFooterContacto();
     checkForDraft();
     showWelcomeMessage();
 }
@@ -1124,6 +1125,104 @@ function cancelCrop() {
 }
 
 // =========================================
+// CONTACTO Y REDES SOCIALES DEL FOOTER
+// =========================================
+const SOCIAL_PLATFORMS = {
+    facebook: { label: 'Facebook', icon: 'fab fa-facebook-f' },
+    instagram: { label: 'Instagram', icon: 'fab fa-instagram' },
+    tiktok: { label: 'TikTok', icon: 'fab fa-tiktok' },
+    youtube: { label: 'YouTube', icon: 'fab fa-youtube' },
+    twitter: { label: 'X (Twitter)', icon: 'fab fa-twitter' },
+    linkedin: { label: 'LinkedIn', icon: 'fab fa-linkedin-in' }
+};
+
+function renderSocialRow(platform = 'facebook', url = '') {
+    const container = document.getElementById('social-rows-container');
+    const row = document.createElement('div');
+    row.className = 'social-row';
+    row.style.cssText = 'display:flex; gap:8px; margin-bottom:10px; align-items:center;';
+
+    const options = Object.entries(SOCIAL_PLATFORMS).map(([key, val]) =>
+        `<option value="${key}" ${key === platform ? 'selected' : ''}>${val.label}</option>`
+    ).join('');
+
+    row.innerHTML = `
+        <select class="social-platform-select" style="padding:12px; border:2px solid #e0e0e0; border-radius:8px; font-size:14px;">${options}</select>
+        <input type="url" class="social-url-input" placeholder="https://..." value="${url}" style="flex:1; padding:12px; border:2px solid #e0e0e0; border-radius:8px; font-size:14px;">
+        <button type="button" onclick="this.closest('.social-row').remove()" style="background:#f44336; color:white; border:none; border-radius:8px; width:42px; height:42px; cursor:pointer; flex-shrink:0;">
+            <i class="fas fa-trash"></i>
+        </button>
+    `;
+    container.appendChild(row);
+}
+
+function addSocialRow() {
+    renderSocialRow();
+}
+
+async function loadFooterContacto() {
+    try {
+        const docSnap = await getDoc(doc(db, 'contenido', 'footer-contacto'));
+        document.getElementById('social-rows-container').innerHTML = '';
+
+        if (!docSnap.exists()) {
+            renderSocialRow('facebook');
+            renderSocialRow('instagram');
+            return;
+        }
+
+        const data = docSnap.data();
+        document.getElementById('footer-phone1').value = data.phone1 || '';
+        document.getElementById('footer-phone2').value = data.phone2 || '';
+        document.getElementById('footer-email').value = data.email || '';
+        document.getElementById('footer-address').value = data.address || '';
+
+        if (data.socialLinks && data.socialLinks.length > 0) {
+            data.socialLinks.forEach(s => renderSocialRow(s.platform, s.url));
+        } else {
+            renderSocialRow('facebook');
+            renderSocialRow('instagram');
+        }
+    } catch (error) {
+        console.error('Error cargando contacto del footer:', error);
+        renderSocialRow('facebook');
+        renderSocialRow('instagram');
+    }
+}
+
+async function saveFooterContacto() {
+    const btn = document.getElementById('footer-save-btn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+    btn.disabled = true;
+
+    try {
+        const socialLinks = [];
+        document.querySelectorAll('.social-row').forEach(row => {
+            const platform = row.querySelector('.social-platform-select').value;
+            const url = row.querySelector('.social-url-input').value.trim();
+            if (url) socialLinks.push({ platform, url });
+        });
+
+        const data = {
+            phone1: document.getElementById('footer-phone1').value.trim(),
+            phone2: document.getElementById('footer-phone2').value.trim(),
+            email: document.getElementById('footer-email').value.trim(),
+            address: document.getElementById('footer-address').value.trim(),
+            socialLinks
+        };
+
+        await setDoc(doc(db, 'contenido', 'footer-contacto'), data);
+        showToast('Contacto y redes guardados. Ya se ve reflejado en el sitio.', 'success');
+    } catch (error) {
+        showToast('Error al guardar: ' + error.message, 'error');
+    } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    }
+}
+
+// =========================================
 // HACER FUNCIONES GLOBALES (UNA SOLA VEZ, AL FINAL DE TODO)
 // =========================================
 window.login = login;
@@ -1159,3 +1258,6 @@ window.saveContenido = saveContenido;
 window.handleContentImageSelect = handleContentImageSelect;
 window.confirmCrop = confirmCrop;
 window.cancelCrop = cancelCrop;
+window.saveFooterContacto = saveFooterContacto;
+window.addSocialRow = addSocialRow;
+window.removeSocialRow = removeSocialRow;
