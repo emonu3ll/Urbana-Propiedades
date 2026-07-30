@@ -123,9 +123,7 @@ let currentFilters = {
     tipoCompra: 'compra',
     categoria: 'todos',
     dormitorios: '',
-    precioMin: null,
-    precioMax: null,
-    moneda: 'USD',
+    ordenPrecio: '',
     texto: ''
 };
 
@@ -153,14 +151,7 @@ async function renderProperties() {
             if (prop.dormitorios === null || prop.dormitorios === undefined || prop.dormitorios < min) return false;
         }
 
-        if (currentFilters.precioMin !== null || currentFilters.precioMax !== null) {
-            const precioProp = currentFilters.moneda === 'USD' ? prop.priceUSD : prop.priceGS;
-            if (precioProp === null || precioProp === undefined) return false;
-            if (currentFilters.precioMin !== null && precioProp < currentFilters.precioMin) return false;
-            if (currentFilters.precioMax !== null && precioProp > currentFilters.precioMax) return false;
-        }
-
-        if (currentFilters.texto) {
+     if (currentFilters.texto) {
             const texto = currentFilters.texto.toLowerCase();
             const coincide = (prop.title || '').toLowerCase().includes(texto) || (prop.address || '').toLowerCase().includes(texto);
             if (!coincide) return false;
@@ -168,6 +159,14 @@ async function renderProperties() {
 
         return true;
     });
+
+    if (currentFilters.ordenPrecio === 'asc' || currentFilters.ordenPrecio === 'desc') {
+        filteredProperties.sort((a, b) => {
+            const precioA = a.priceUSD ?? a.priceGS ?? 0;
+            const precioB = b.priceUSD ?? b.priceGS ?? 0;
+            return currentFilters.ordenPrecio === 'asc' ? precioA - precioB : precioB - precioA;
+        });
+    }
 
     if (filteredProperties.length === 0) {
         grid.innerHTML = `<p style="text-align: center; width: 100%; padding: 40px 20px; color: #666; font-size: 16px;">😕 No hay propiedades que coincidan con tu búsqueda.<br><small style="color:#999;">Probá ajustar los filtros o consultanos por WhatsApp.</small></p>`;
@@ -248,50 +247,7 @@ const filterTipoPropiedad = document.getElementById('filter-tipo-propiedad');
 const filterDormitorios = document.getElementById('filter-dormitorios');
 const filterSearchInput = document.getElementById('filter-search-input');
 const filterSearchBtn = document.getElementById('filter-search-btn');
-const filterPriceBtn = document.getElementById('filter-price-btn');
-const filterPriceDropdown = document.getElementById('filter-price-dropdown');
-const filterPriceMin = document.getElementById('filter-price-min');
-const filterPriceMax = document.getElementById('filter-price-max');
-const filterPriceApply = document.getElementById('filter-price-apply');
-const priceMinLabel = document.getElementById('price-min-label');
-const priceMaxLabel = document.getElementById('price-max-label');
-
-function actualizarSliderMax() {
-    let max, step;
-
-    if (currentFilters.tipoCompra === 'alquiler') {
-        max = currentFilters.moneda === 'USD' ? 3000 : 20000000;
-        step = currentFilters.moneda === 'USD' ? 50 : 100000;
-    } else {
-        max = currentFilters.moneda === 'USD' ? 500000 : 2000000000;
-        step = currentFilters.moneda === 'USD' ? 5000 : 10000000;
-    }
-
-    filterPriceMin.max = max;
-    filterPriceMax.max = max;
-    filterPriceMin.step = step;
-    filterPriceMax.step = step;
-    filterPriceMin.value = 0;
-    filterPriceMax.value = max;
-    actualizarEtiquetasPrecio();
-}
-
-function actualizarEtiquetasPrecio() {
-    const formatear = (num) => new Intl.NumberFormat('es-PY').format(num);
-    priceMinLabel.textContent = formatear(filterPriceMin.value);
-    priceMaxLabel.textContent = filterPriceMax.value >= filterPriceMax.max ? `${formatear(filterPriceMax.value)}+` : formatear(filterPriceMax.value);
-
-    const pctMin = (filterPriceMin.value / filterPriceMin.max) * 100;
-    const pctMax = (filterPriceMax.value / filterPriceMax.max) * 100;
-    filterPriceMin.style.setProperty('--fill', pctMin + '%');
-    filterPriceMax.style.setProperty('--fill', pctMax + '%');
-}
-
-if (filterPriceMin && filterPriceMax) {
-    filterPriceMin.addEventListener('input', actualizarEtiquetasPrecio);
-    filterPriceMax.addEventListener('input', actualizarEtiquetasPrecio);
-}
-
+const filterPriceSort = document.getElementById('filter-price-sort');
 function aplicarFiltrosYScroll() {
     renderProperties();
     document.getElementById('propiedades').scrollIntoView({ behavior: 'smooth' });
@@ -303,9 +259,6 @@ if (toggleComprar && toggleAlquilar) {
         toggleComprar.classList.add('active');
         toggleAlquilar.classList.remove('active');
         filterTipoPropiedad.style.display = '';
-        actualizarSliderMax();
-        currentFilters.precioMin = null;
-        currentFilters.precioMax = null;
         aplicarFiltrosYScroll();
     });
     toggleAlquilar.addEventListener('click', () => {
@@ -313,9 +266,6 @@ if (toggleComprar && toggleAlquilar) {
         toggleAlquilar.classList.add('active');
         toggleComprar.classList.remove('active');
         filterTipoPropiedad.style.display = 'none';
-        actualizarSliderMax();
-        currentFilters.precioMin = null;
-        currentFilters.precioMax = null;
         aplicarFiltrosYScroll();
     });
 }
@@ -350,35 +300,12 @@ if (filterSearchInput) {
     });
 }
 
-if (filterPriceBtn) {
-    filterPriceBtn.addEventListener('click', () => {
-        filterPriceDropdown.classList.toggle('active');
-    });
-}
-
-document.querySelectorAll('.currency-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.currency-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentFilters.moneda = btn.getAttribute('data-currency');
-        actualizarSliderMax();
-    });
-});
-
-if (filterPriceApply) {
-    filterPriceApply.addEventListener('click', () => {
-        currentFilters.precioMin = parseInt(filterPriceMin.value);
-        currentFilters.precioMax = parseInt(filterPriceMax.value) >= parseInt(filterPriceMax.max) ? null : parseInt(filterPriceMax.value);
-        filterPriceDropdown.classList.remove('active');
+if (filterPriceSort) {
+    filterPriceSort.addEventListener('change', () => {
+        currentFilters.ordenPrecio = filterPriceSort.value;
         aplicarFiltrosYScroll();
     });
 }
-
-document.addEventListener('click', (e) => {
-    if (filterPriceDropdown && !e.target.closest('.filter-price-wrapper')) {
-        filterPriceDropdown.classList.remove('active');
-    }
-});
 
 // =========================================
 // 4.5. BOTÓN DE COMPARTIR
