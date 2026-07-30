@@ -171,12 +171,14 @@ html, body {
    ========================================= */
 .search-box {
     display: flex;
+    align-items: center;
     background: white;
     border-radius: 50px;
     overflow: hidden;
     margin-bottom: 20px;
     width: 100%;
     max-width: 600px;
+    height: 60px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -193,10 +195,8 @@ html, body {
     background-color: #4CAF50;
     color: white;
     border: none;
-    aspect-ratio: 1 / 1;
-    height: auto;
-    min-width: 48px;
-    align-self: stretch;
+    width: 52px;
+    height: 52px;
     flex-shrink: 0;
     border-radius: 50%;
     margin: 4px;
