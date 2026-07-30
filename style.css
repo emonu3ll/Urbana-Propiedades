@@ -195,12 +195,13 @@ html, body {
     border: none;
     aspect-ratio: 1 / 1;
     height: auto;
+    min-width: 48px;
     align-self: stretch;
     flex-shrink: 0;
     border-radius: 50%;
     margin: 4px;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
