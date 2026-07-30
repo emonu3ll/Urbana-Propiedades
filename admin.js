@@ -33,6 +33,7 @@ function showAdminPanel() {
     loadFaqs();
     loadContenido();
     loadFooterContacto();
+    loadHero();
     checkForDraft();
     showWelcomeMessage();
 }
@@ -1014,9 +1015,12 @@ let cropDragStartPointer = { x: 0, y: 0 };
 let cropDragStartRect = null;
 const CROP_MIN_SIZE = 10; // % mínimo de ancho/alto del recorte
 
-function handleContentImageSelect(files) {
+let cropTarget = 'about'; // 'about' o 'hero'
+
+function handleContentImageSelect(files, target = 'about') {
     const file = files[0];
     if (!file) return;
+    cropTarget = target;
     const reader = new FileReader();
     reader.onload = (e) => {
         cropImg = document.getElementById('crop-image');
@@ -1111,8 +1115,8 @@ function confirmCrop() {
     const sWidth = ((cropRect.right - cropRect.left) / 100) * cropNaturalW;
     const sHeight = ((cropRect.bottom - cropRect.top) / 100) * cropNaturalH;
 
-    const outWidth = 1000;
-    const outHeight = Math.round(1000 * (sHeight / sWidth));
+    const outWidth = 1400;
+    const outHeight = Math.round(1400 * (sHeight / sWidth));
 
     const canvas = document.createElement('canvas');
     canvas.width = outWidth;
@@ -1121,12 +1125,20 @@ function confirmCrop() {
     ctx.drawImage(cropImg, sx, sy, sWidth, sHeight, 0, 0, outWidth, outHeight);
 
     canvas.toBlob((blob) => {
-        contentImageFile = new File([blob], 'sobre-nosotros.jpg', { type: 'image/jpeg' });
-        const preview = document.getElementById('content-image-preview');
-        preview.src = URL.createObjectURL(blob);
-        preview.style.display = 'block';
+        if (cropTarget === 'hero') {
+            heroImageFile = new File([blob], 'hero.jpg', { type: 'image/jpeg' });
+            const preview = document.getElementById('hero-image-preview');
+            preview.src = URL.createObjectURL(blob);
+            preview.style.display = 'block';
+            document.getElementById('hero-image-input').value = '';
+        } else {
+            contentImageFile = new File([blob], 'sobre-nosotros.jpg', { type: 'image/jpeg' });
+            const preview = document.getElementById('content-image-preview');
+            preview.src = URL.createObjectURL(blob);
+            preview.style.display = 'block';
+            document.getElementById('content-image-input').value = '';
+        }
         document.getElementById('crop-modal').style.display = 'none';
-        document.getElementById('content-image-input').value = '';
     }, 'image/jpeg', 0.85);
 }
 
@@ -1233,6 +1245,60 @@ async function saveFooterContacto() {
 }
 
 // =========================================
+// PERSONALIZACIÓN DE LA PORTADA (HERO)
+// =========================================
+let heroImageFile = null;
+
+async function loadHero() {
+    try {
+        const docSnap = await getDoc(doc(db, 'contenido', 'hero'));
+        if (!docSnap.exists()) return;
+        const data = docSnap.data();
+
+        document.getElementById('hero-title').value = data.title || '';
+        if (data.image) {
+            const preview = document.getElementById('hero-image-preview');
+            preview.src = data.image;
+            preview.style.display = 'block';
+        }
+    } catch (error) {
+        console.error('Error cargando portada:', error);
+    }
+}
+
+async function saveHero() {
+    const btn = document.getElementById('hero-save-btn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+    btn.disabled = true;
+
+    try {
+        const preview = document.getElementById('hero-image-preview');
+        let imageUrl = (preview.style.display === 'block' && preview.src.startsWith('http')) ? preview.src : null;
+
+        if (heroImageFile) {
+            const storageRef = ref(storage, `contenido/hero_${Date.now()}.jpg`);
+            await uploadBytes(storageRef, heroImageFile);
+            imageUrl = await getDownloadURL(storageRef);
+        }
+
+        const data = {
+            title: document.getElementById('hero-title').value.trim(),
+            image: imageUrl
+        };
+
+        await setDoc(doc(db, 'contenido', 'hero'), data);
+        heroImageFile = null;
+        showToast('Portada guardada. Ya se ve reflejada en el sitio.', 'success');
+    } catch (error) {
+        showToast('Error al guardar: ' + error.message, 'error');
+    } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    }
+}
+
+// =========================================
 // HACER FUNCIONES GLOBALES (UNA SOLA VEZ, AL FINAL DE TODO)
 // =========================================
 window.login = login;
@@ -1270,3 +1336,4 @@ window.confirmCrop = confirmCrop;
 window.cancelCrop = cancelCrop;
 window.saveFooterContacto = saveFooterContacto;
 window.addSocialRow = addSocialRow;
+window.saveHero = saveHero;

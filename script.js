@@ -550,6 +550,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     renderFaqs();
     loadContenido();
     loadFooterContacto();
+    loadHero();
     checkForSharedProperty();
 });
 
@@ -612,10 +613,26 @@ async function loadContenido() {
         if (data.feature2Text) document.getElementById('about-feature2-text').textContent = data.feature2Text;
         if (data.feature3Title) document.getElementById('about-feature3-title').textContent = data.feature3Title + ':';
         if (data.feature3Text) document.getElementById('about-feature3-text').textContent = data.feature3Text;
-        if (data.image) document.getElementById('about-image').src = data.image;
+     if (data.image) document.getElementById('about-image').src = data.image;
         if (data.footerText) document.getElementById('footer-description').textContent = data.footerText;
     } catch (error) {
         console.error('Error cargando personalización:', error);
+    }
+}
+
+async function loadHero() {
+    try {
+        const docSnap = await getDoc(doc(db, 'contenido', 'hero'));
+        if (!docSnap.exists()) return;
+
+        const data = docSnap.data();
+        if (data.title) document.getElementById('hero-title-text').textContent = data.title;
+        if (data.image) {
+            const heroSection = document.getElementById('hero-section');
+            heroSection.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('${data.image}')`;
+        }
+    } catch (error) {
+        console.error('Error cargando portada:', error);
     }
 }
 

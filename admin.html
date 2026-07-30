@@ -419,7 +419,31 @@
                 </button>
             </div>
 
-          <!-- MODAL DE RECORTE DE IMAGEN (con cuadrícula y esquinas arrastrables) -->
+          <!-- PERSONALIZACIÓN DE LA PORTADA (HERO) -->
+            <div class="properties-list">
+                <h2 style="margin-bottom: 20px;">🖼️ Personalizar Portada Principal</h2>
+                <p style="color: #666; font-size: 13px; margin-bottom: 20px;">Es la primera imagen y título que ve la gente al entrar al sitio.</p>
+
+                <div class="form-group">
+                    <label>Título grande de la portada</label>
+                    <input type="text" id="hero-title" placeholder="Encontrá tu propiedad ideal en Curuguaty y Canindeyú">
+                </div>
+
+                <div class="form-group">
+                    <label>🖼️ Imagen de fondo</label>
+                    <img id="hero-image-preview" src="" style="display:none; max-width: 280px; width: 100%; border-radius: 10px; margin-bottom: 10px;">
+                    <input type="file" id="hero-image-input" accept="image/*" style="display:none" onchange="handleContentImageSelect(this.files, 'hero')">
+                    <button type="button" onclick="document.getElementById('hero-image-input').click()" style="background: #2196F3; color: white; padding: 10px 18px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">
+                        <i class="fas fa-crop"></i> Elegir y recortar imagen
+                    </button>
+                </div>
+
+                <button id="hero-save-btn" class="btn-save" onclick="saveHero()">
+                    <i class="fas fa-save"></i> Guardar Portada
+                </button>
+            </div>
+
+            <!-- MODAL DE RECORTE DE IMAGEN (con cuadrícula y esquinas arrastrables) -->
             <div id="crop-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; padding:20px;">
                 <div style="background:white; border-radius:15px; padding:20px; max-width:520px; width:100%;">
                     <h3 style="color:#1e3a5f; margin-bottom:15px; text-align:center;">Recortá tu imagen</h3>
