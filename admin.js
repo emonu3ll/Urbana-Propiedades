@@ -1014,9 +1014,11 @@ function handleContentImageSelect(files) {
     const reader = new FileReader();
     reader.onload = (e) => {
         const img = document.getElementById('crop-image');
-        img.onload = () => initCrop(img);
-        img.src = e.target.result;
         document.getElementById('crop-modal').style.display = 'flex';
+        img.onload = () => {
+            requestAnimationFrame(() => initCrop(img));
+        };
+        img.src = e.target.result;
     };
     reader.readAsDataURL(file);
 }
@@ -1030,8 +1032,11 @@ function initCrop(img) {
     cropState.viewportH = vh;
     cropState.baseScale = Math.max(vw / img.naturalWidth, vh / img.naturalHeight);
     cropState.scale = 1;
-    cropState.offsetX = (vw - img.naturalWidth * cropState.baseScale) / 2;
-    cropState.offsetY = (vh - img.naturalHeight * cropState.baseScale) / 2;
+
+    const total = cropState.baseScale * cropState.scale;
+    cropState.offsetX = (vw - img.naturalWidth * total) / 2;
+    cropState.offsetY = (vh - img.naturalHeight * total) / 2;
+
     document.getElementById('crop-zoom').value = 100;
     applyCropTransform();
 }
