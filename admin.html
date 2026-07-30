@@ -419,19 +419,25 @@
                 </button>
             </div>
 
-            <!-- MODAL DE RECORTE DE IMAGEN (estilo WhatsApp) -->
-            <div id="crop-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center; padding:20px;">
-                <div style="background:white; border-radius:15px; padding:20px; max-width:420px; width:100%;">
+          <!-- MODAL DE RECORTE DE IMAGEN (con cuadrícula y esquinas arrastrables) -->
+            <div id="crop-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; padding:20px;">
+                <div style="background:white; border-radius:15px; padding:20px; max-width:520px; width:100%;">
                     <h3 style="color:#1e3a5f; margin-bottom:15px; text-align:center;">Recortá tu imagen</h3>
-                    <div id="crop-viewport" style="width:100%; aspect-ratio: 4/3; overflow:hidden; position:relative; background:#000; border-radius:10px; cursor:grab; touch-action:none;">
-                        <img id="crop-image" src="" style="position:absolute; top:0; left:0; transform-origin: 0 0; user-select:none; -webkit-user-drag:none;">
+                    <div id="crop-container" style="position:relative; width:100%; background:#000; border-radius:10px; overflow:hidden; touch-action:none; user-select:none;">
+                        <img id="crop-image" src="" draggable="false" style="display:block; width:100%; height:100%; user-select:none; -webkit-user-drag:none;">
+                        <div id="crop-rect" style="position:absolute; box-shadow:0 0 0 9999px rgba(0,0,0,0.6); border:2px solid white; cursor:move;">
+                            <div class="crop-grid-line" style="position:absolute; left:33.333%; top:0; bottom:0; width:1px; background:rgba(255,255,255,0.5);"></div>
+                            <div class="crop-grid-line" style="position:absolute; left:66.666%; top:0; bottom:0; width:1px; background:rgba(255,255,255,0.5);"></div>
+                            <div class="crop-grid-line" style="position:absolute; top:33.333%; left:0; right:0; height:1px; background:rgba(255,255,255,0.5);"></div>
+                            <div class="crop-grid-line" style="position:absolute; top:66.666%; left:0; right:0; height:1px; background:rgba(255,255,255,0.5);"></div>
+                            <div class="crop-handle" data-corner="tl" style="position:absolute; top:-9px; left:-9px; width:22px; height:22px; border-top:4px solid #4CAF50; border-left:4px solid #4CAF50; cursor:nwse-resize;"></div>
+                            <div class="crop-handle" data-corner="tr" style="position:absolute; top:-9px; right:-9px; width:22px; height:22px; border-top:4px solid #4CAF50; border-right:4px solid #4CAF50; cursor:nesw-resize;"></div>
+                            <div class="crop-handle" data-corner="bl" style="position:absolute; bottom:-9px; left:-9px; width:22px; height:22px; border-bottom:4px solid #4CAF50; border-left:4px solid #4CAF50; cursor:nesw-resize;"></div>
+                            <div class="crop-handle" data-corner="br" style="position:absolute; bottom:-9px; right:-9px; width:22px; height:22px; border-bottom:4px solid #4CAF50; border-right:4px solid #4CAF50; cursor:nwse-resize;"></div>
+                        </div>
                     </div>
-                    <div style="display:flex; align-items:center; gap:10px; margin-top:15px;">
-                        <i class="fas fa-search-minus" style="color:#666;"></i>
-                        <input type="range" id="crop-zoom" min="100" max="300" value="100" style="flex:1; accent-color:#4CAF50;">
-                        <i class="fas fa-search-plus" style="color:#666;"></i>
-                    </div>
-                    <div style="display:flex; gap:10px; margin-top:18px;">
+                    <p style="text-align:center; color:#999; font-size:12px; margin-top:10px;">Arrastrá las esquinas verdes para ajustar el recorte, o el centro para moverlo</p>
+                    <div style="display:flex; gap:10px; margin-top:12px;">
                         <button onclick="cancelCrop()" style="flex:1; padding:12px; border:2px solid #e0e0e0; background:white; color:#1e3a5f; border-radius:8px; font-weight:bold; cursor:pointer;">
                             Cancelar
                         </button>
