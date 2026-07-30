@@ -848,8 +848,8 @@ html, body {
 }
 
 .about-text {
-    color: #555;
-    font-size: 16px;
+    color: #000;
+    font-size: 18px;
     line-height: 1.6;
     margin-bottom: 30px;
 }
@@ -1016,7 +1016,8 @@ html, body {
 }
 
 .modal-description {
-    color: #555;
+    color: #000;
+    font-size: 17px;
     line-height: 1.6;
     margin-bottom: 25px;
 }
@@ -2116,8 +2117,8 @@ a.contact-info-card:hover {
 }
 
 .faq-answer p {
-    color: #555;
-    font-size: 15px;
+    color: #000;
+    font-size: 17px;
     line-height: 1.6;
     padding-bottom: 20px;
 }
