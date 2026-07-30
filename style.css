@@ -296,6 +296,7 @@ html, body {
     transition: transform 0.3s, box-shadow 0.3s;
     width: 100%;
     isolation: isolate;
+    cursor: pointer;
 }
 
 .property-card:hover {

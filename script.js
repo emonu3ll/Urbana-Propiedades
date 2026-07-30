@@ -228,7 +228,7 @@ card.innerHTML = `
                     <p>${featuresHTML}</p>
                     ${iconsHTML}
                     <button class="btn-whatsapp modal-trigger">
-                        <i class="fab fa-whatsapp"></i> Ver detalles
+                        <i class="fas fa-eye"></i> Ver detalles
                     </button>
                 </div>
             `;
@@ -387,11 +387,10 @@ window.changeSlide = function(direction) {
 };
 
 document.querySelector('.properties')?.addEventListener('click', (e) => {
-    const trigger = e.target.closest('.modal-trigger');
-    if (!trigger) return;
+    const card = e.target.closest('.property-card');
+    if (!card) return;
     
     e.preventDefault();
-    const card = trigger.closest('.property-card');
     const category = card.getAttribute('data-category');
 
     const banner = document.getElementById('shared-property-banner');
