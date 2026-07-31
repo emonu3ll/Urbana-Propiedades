@@ -974,6 +974,17 @@ async function saveContenido() {
         let imageUrl = (preview.style.display === 'block' && preview.src.startsWith('http')) ? preview.src : null;
 
         if (contentImageFile) {
+            // Borramos la imagen anterior de "Sobre Nosotros", si había una guardada
+            try {
+                const docSnapAnterior = await getDoc(doc(db, 'contenido', 'sobre-nosotros'));
+                if (docSnapAnterior.exists() && docSnapAnterior.data().image) {
+                    const refAnterior = ref(storage, docSnapAnterior.data().image);
+                    await deleteObject(refAnterior);
+                }
+            } catch (errBorrado) {
+                console.warn('No se pudo borrar la imagen anterior (puede que ya no exista):', errBorrado.message);
+            }
+
             const storageRef = ref(storage, `contenido/sobre-nosotros_${Date.now()}.jpg`);
             await uploadBytes(storageRef, contentImageFile);
             imageUrl = await getDownloadURL(storageRef);
@@ -1277,6 +1288,17 @@ async function saveHero() {
         let imageUrl = (preview.style.display === 'block' && preview.src.startsWith('http')) ? preview.src : null;
 
         if (heroImageFile) {
+            // Borramos la imagen anterior de la Portada, si había una guardada
+            try {
+                const docSnapAnterior = await getDoc(doc(db, 'contenido', 'hero'));
+                if (docSnapAnterior.exists() && docSnapAnterior.data().image) {
+                    const refAnterior = ref(storage, docSnapAnterior.data().image);
+                    await deleteObject(refAnterior);
+                }
+            } catch (errBorrado) {
+                console.warn('No se pudo borrar la imagen anterior (puede que ya no exista):', errBorrado.message);
+            }
+
             const storageRef = ref(storage, `contenido/hero_${Date.now()}.jpg`);
             await uploadBytes(storageRef, heroImageFile);
             imageUrl = await getDownloadURL(storageRef);
