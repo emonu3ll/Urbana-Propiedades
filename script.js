@@ -671,7 +671,7 @@ if (contactForm) {
         let cuerpo = `${mensaje}\n\nMi teléfono: ${telefono}`;
         if (email) cuerpo += `\nMi email: ${email}`;
 
-        const url = `mailto:urbanapropiedades.py@gmail.com?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+const url = `mailto:gerencia@urbanapropiedades.com.py?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
         window.location.href = url;
 
         contactForm.reset();
