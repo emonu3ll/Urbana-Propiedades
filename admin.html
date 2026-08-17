@@ -1,505 +1,310 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <link rel="icon" type="image/png" href="img/logo.png">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Urbana Propiedades</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        .admin-login { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1e3a5f 0%, #4CAF50 100%); position: relative; }
-        .login-box { background: white; padding: 40px 35px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); width: 90%; max-width: 400px; text-align: center; }
-        .login-logo { width: 130px; height: 130px; object-fit: cover; border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin-bottom: 20px; background: #1e3a5f; }
-        .login-box h2 { text-align: center; color: #1e293b; margin-bottom: 25px; font-family: 'Segoe UI', sans-serif; font-size: 22px; font-weight: 700; line-height: 1.3; }
-        .form-group { margin-bottom: 20px; text-align: left; }
-        .form-group label { display: block; margin-bottom: 8px; color: #1e3a5f; font-weight: bold; }
-        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; transition: border-color 0.3s; box-sizing: border-box; }
-        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: #4CAF50; }
-        .login-box .form-group input { border-radius: 25px; padding: 14px 20px; border: 1px solid #dddfe2; font-size: 15px; }
-        .login-box .form-group input:focus { border-color: #4CAF50; box-shadow: 0 0 0 3px rgba(76,175,80,0.15); }
-        .btn-login, .btn-save { width: 100%; padding: 15px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.3s; }
-        .btn-login:hover, .btn-save:hover { background: #45a049; }
-        .login-box .btn-login { border-radius: 25px; font-size: 17px; padding: 14px; margin-top: 5px; }
-        .admin-panel { display: none; min-height: 100vh; background: #f5f5f5; }
-        .admin-header { background: #1e3a5f; color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
-.admin-header h1 { font-family: 'Cinzel', serif; font-size: 24px; margin: 0; }
-
-@media (max-width: 600px) {
-    .admin-header {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 16px;
-    }
-    .admin-header h1 {
-        font-size: 18px;
-    }
-    .admin-header > div:first-child {
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-    .btn-logout {
-        width: 100%;
-    }
-}
-        .btn-logout, .btn-delete { background: #f44336; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
-        .admin-content { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
-        .upload-section, .properties-list { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 30px; }
-        .upload-section h2, .properties-list h2 { color: #1e3a5f; margin-bottom: 20px; font-family: 'Cinzel', serif; margin-top: 0; }
-.drop-zone { border: 3px dashed #4CAF50; border-radius: 18px; padding: 40px; text-align: center; margin-bottom: 20px; cursor: pointer; transition: all 0.3s; background: #f9f9f9; }        .drop-zone:hover, .drop-zone.dragover { background: #e8f5e9; border-color: #45a049; }
-        .drop-zone i { font-size: 48px; color: #4CAF50; margin-bottom: 10px; }
-        .image-preview { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; margin-top: 20px; }
-       .image-preview img { width: 100%; height: 150px; object-fit: contain; background-color: #f0f0f0; border-radius: 14px; border: 2px solid #e0e0e0; }
-        .property-item { display: flex; gap: 20px; padding: 20px; border-bottom: 1px solid #e0e0e0; align-items: center; }
-        .property-item:last-child { border-bottom: none; }
-       .property-item img { width: 100px; height: 100px; object-fit: contain; background-color: #f0f0f0; border-radius: 14px; }
-        .property-item-info { flex: 1; }
-        .property-item h3 { color: #1e3a5f; margin: 0 0 5px 0; }
-        .property-item .price { color: #4CAF50; font-weight: bold; font-size: 18px; margin: 0 0 5px 0; }
-        @media (max-width: 768px) {
-            .property-item { flex-direction: column; text-align: center; }
-            .property-item img { width: 100%; height: 200px; }
-        }
-        @media (max-width: 480px) {
-            .admin-login {
-                flex-direction: column;
-                padding: 70px 20px 20px;
-                justify-content: flex-start;
-            }
-            .admin-login > button {
-                position: static !important;
-                margin-bottom: 20px;
-                align-self: flex-start;
-            }
-            .login-box {
-                width: 100%;
-                padding: 30px 25px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - Urbana Propiedades</title>
+<link rel="icon" type="image/png" href="img/logo.png">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="av2-body">
 
-<!-- LOGIN -->
-    <div class="admin-login" id="admin-login">
-        <!-- Botón volver al inicio -->
-        <button onclick="confirmNavigation('/')" style="position: absolute; top: 20px; left: 20px; background: rgba(255,255,255,0.9); color: #1e3a5f; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); transition: all 0.3s;" onmouseover="this.style.background='white'; this.style.transform='translateX(-5px)';" onmouseout="this.style.background='rgba(255,255,255,0.9)'; this.style.transform='translateX(0)';">
-            <i class="fas fa-arrow-left"></i> Volver al Inicio
-        </button>
-        
-        <div class="login-box">
-            <img src="img/logo.png" alt="Urbana Propiedades" class="login-logo">
-            <h2>Panel de Administración<br>Urbana Propiedades</h2>
-            <div class="form-group">
-                <input type="email" id="username" placeholder="Correo electrónico">
-            </div>
-            <div class="form-group">
-                <input type="password" id="password" placeholder="Contraseña">
-            </div>
-            <button class="btn-login" onclick="login()">Iniciar Sesión</button>
-        </div>
+<div class="av2-toast-stack" id="toastStack"></div>
+
+<!-- ===== LOGIN ===== -->
+<div class="av2-login" id="loginScreen">
+  <div class="av2-login-card">
+    <img src="img/logo.png" alt="Urbana Propiedades">
+    <h2>Panel de Administración<br>Urbana Propiedades</h2>
+    <div class="av2-field"><input type="email" id="username" placeholder="Correo electrónico"></div>
+    <div class="av2-field"><input type="password" id="password" placeholder="Contraseña"></div>
+    <button class="av2-btn av2-btn-primary av2-btn-block" onclick="login()">Iniciar Sesión</button>
+  </div>
+</div>
+
+<!-- ===== APP ===== -->
+<div class="av2-shell av2-hidden" id="adminApp">
+  <aside class="av2-sidebar" id="sidebar">
+    <div class="av2-sidebar-brand"><img src="img/logo.png" alt="Logo"><span>Urbana Propiedades</span></div>
+
+    <button class="av2-nav-item active" data-section="propiedades">
+      <i class="fas fa-home"></i> Propiedades
+    </button>
+    <button class="av2-nav-item" data-section="faq">
+      <i class="fas fa-question-circle"></i> Preguntas frecuentes
+    </button>
+    <button class="av2-nav-item" data-section="nosotros">
+      <i class="fas fa-users"></i> Sobre nosotros
+    </button>
+    <button class="av2-nav-item" data-section="contacto">
+      <i class="fas fa-address-book"></i> Contacto y redes
+    </button>
+    <button class="av2-nav-item" data-section="portada">
+      <i class="fas fa-image"></i> Portada
+    </button>
+
+    <div class="av2-sidebar-footer">
+      <a href="index.html" target="_blank">↗ Ver sitio público</a>
+      <button onclick="confirmLogout()">⎋ Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <div class="av2-main">
+    <div class="av2-topbar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="av2-nav-toggle" id="navToggle"><span></span><span></span><span></span></button>
+        <h2 id="topbarTitle">Propiedades</h2>
+      </div>
+      <span class="av2-topbar-user" id="topbarUser"></span>
     </div>
 
-    <!-- PANEL DE ADMINISTRACIÓN -->
-    <div class="admin-panel" id="admin-panel">
-        <div class="admin-header">
-<div style="display: flex; align-items: center; gap: 20px;">
-    <button onclick="confirmNavigation('/')" style="background: rgba(255,255,255,0.2); color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px; transition: all 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)';" onmouseout="this.style.background='rgba(255,255,255,0.2)';">
-        <i class="fas fa-arrow-left"></i> Volver
-    </button>
-    <div>
-        <h1 style="margin: 0;">🏠 Panel de Administración</h1>
-        <p id="welcome-message" style="margin: 4px 0 0 0; font-size: 14px; color: rgba(255,255,255,0.85); font-weight: normal;"></p>
-    </div>
-</div>
-           <button class="btn-logout" onclick="confirmLogout()">Cerrar Sesión</button>
+    <div class="av2-content">
+
+      <!-- ===== PROPIEDADES ===== -->
+      <section class="av2-section" id="section-propiedades">
+        <div class="av2-toolbar">
+          <div class="av2-search">
+            <i class="fas fa-search"></i>
+            <input type="text" id="propertySearch" placeholder="Buscar propiedad...">
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button class="av2-btn av2-btn-outline" onclick="exportForMyMaps()"><i class="fas fa-map-marked-alt"></i> My Maps</button>
+            <button class="av2-btn av2-btn-primary" onclick="openPropertyDrawer(null)">+ Nueva propiedad</button>
+          </div>
         </div>
-        
-        <div class="admin-content">
-            <!-- SECCIÓN DE SUBIDA -->
-            <div class="upload-section">
-                <h2>📤 Agregar Nueva Propiedad</h2>
-                
-                <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <p>Arrastrá las fotos aquí o hacé clic para seleccionar</p>
-                    <p style="font-size: 12px; color: #666; margin-top: 10px;">(PC: Arrastrar archivos | Celular: Tocar para abrir galería)</p>
-                </div>
-                <input type="file" id="file-input" multiple accept="image/*" style="display: none;" onchange="handleFiles(this.files)">
-                
-                <div class="image-preview" id="image-preview"></div>
-                
-<div class="form-group" style="margin-top: 20px;">
-    <label>Título de la propiedad</label>
-    <input type="text" id="prop-title" placeholder="Ej: Casa en Centro, Villa Curuguaty">
-</div>
-
-<div class="form-group">
-    <label>📍 Dirección (para exportar a My Maps)</label>
-    <input type="text" id="prop-address" placeholder="Ej: Av. 14 de Mayo c/ Gaspar Rodríguez, Curuguaty">
-    <small style="color: #666; font-size: 12px;">Opcional. Se usa solo para el botón "Descargar para My Maps".</small>
-</div>
-
-<div class="form-group">
-    <label>🏷️ Estado de la propiedad</label>
-    <select id="prop-status" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
-        <option value="disponible">🟢 Disponible</option>
-        <option value="reservado">🟡 Reservado</option>
-        <option value="vendido">🔴 Vendido</option>
-    </select>
-</div>
-
-                <!-- BADGE/ETIQUETA -->
-<div class="form-group">
-    <label>🏷️ Badge/Etiqueta (opcional)</label>
-    <select id="prop-badge" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
-        <option value="">Sin badge</option>
-        <option value="oferta">🔴 Oferta / Precio Especial</option>
-        <option value="nuevo">🟢 Nuevo / Reciente</option>
-        <option value="exclusivo">🔵 Exclusivo / Destacado</option>
-        <option value="urgente">🟠 Urgente / Oportunidad</option>
-        <option value="acceso"> Acceso Anticipado</option>
-        <option value="popular"> Más Vendido</option>
-    </select>
-</div>
-
-<!-- VIDEO DE YOUTUBE -->
-<div class="form-group">
-    <label> Link de YouTube (opcional)</label>
-    <input type="url" id="prop-youtube" placeholder="https://www.youtube.com/watch?v=...">
-    <small style="color: #666; font-size: 12px;">Pegá el link del video de YouTube</small>
-</div>
-
-<!-- TOUR 360° (MATTERPORT) -->
-<div class="form-group">
-    <label> Tour Virtual 360° (opcional)</label>
-    <input type="url" id="prop-matterport" placeholder="https://my.matterport.com/show/?m=...">
-    <small style="color: #666; font-size: 12px;">Pegá el link de Matterport o tour 360°</small>
-</div>
-                
-                <!-- Campos de precio para VENTAS -->
-                <div id="price-venta-fields">
-                    <div class="form-group">
-                        <label>💵 Precio en USD (opcional)</label>
-                        <input type="text" id="prop-price-usd" placeholder="Ej: 120000" oninput="formatNumber(this)">
-                    </div>
-                    <div class="form-group">
-                        <label>💵 Precio en Guaraníes (opcional)</label>
-                        <input type="text" id="prop-price-gs" placeholder="Ej: 850000000" oninput="formatNumber(this)">
-                    </div>
-                </div>
-
-                <!-- Campo de precio para ALQUILERES -->
-                <div id="price-alquiler-fields" style="display: none;">
-                    <div class="form-group">
-                        <label>💵 Precio mensual en Guaraníes</label>
-                        <input type="text" id="prop-price-alquiler" placeholder="Ej: 3500000" oninput="formatNumber(this)">
-                    </div>
-                </div>
-
-                <!-- Vista previa del precio -->
-                <div class="form-group">
-                    <label style="color: #4CAF50; font-weight: bold;">👁️ Se mostrará en la página:</label>
-                    <div id="price-preview" style="padding: 15px; background: #f0f0f0; border-radius: 8px; font-size: 16px; text-align: center; color: #999;">
-                        Completá los campos de arriba
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label>Categoría</label>
-                    <select id="prop-category" onchange="togglePriceFields()" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
-                        <option value="casas">🏠 Casas</option>
-                        <option value="terrenos">📐 Terrenos</option>
-                        <option value="campos">🌾 Campos</option>
-                        <option value="locales">🏪 Locales</option>
-                        <option value="alquileres">🔑 Alquileres</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>Descripción</label>
-                    <textarea id="prop-description" rows="4" placeholder="Descripción detallada de la propiedad..."></textarea>
-                </div>
-                
-             <div class="form-group">
-                    <label>🛏️ Dormitorios</label>
-                    <select id="prop-dormitorios" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
-                        <option value="">No aplica</option>
-                        <option value="0">0</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5+</option>
-                    </select>
-                </div>
-
-                <div class="form-group" style="background: #fff3e0; padding: 15px; border-radius: 12px; border: 2px dashed #FF9800;">
-                    <label>🔒 Datos del propietario (privado, solo visible en este panel)</label>
-                    <input type="text" id="prop-owner-name" placeholder="Nombre y apellido" style="margin-bottom: 10px;">
-                    <input type="text" id="prop-owner-phone" placeholder="Ej: 0986767459" oninput="formatOwnerPhone(this)">
-                    <small style="color: #666; font-size: 12px;">Este dato nunca se muestra en el sitio público, solo lo ven los administradores.</small>
-                </div>
-
-                <div class="form-group">
-                    <label>📐 Superficie (opcional)</label>
-                    <input type="text" id="prop-superficie" placeholder="Ej: 120" oninput="this.value = this.value.replace(/\D/g, '')">
-                    <small style="color: #666; font-size: 12px;">Solo escribí el número, el sitio agrega el "m²" automáticamente.</small>
-                </div>
-
-                <div class="form-group">
-                    <label>Características (separadas por coma)</label>
-                    <input type="text" id="prop-features" placeholder="Ej: 3 Habitaciones, 2 Baños, Cochera">
-                </div>
-                
-                <div class="form-group">
-                    <label>URL de Google Maps (opcional)</label>
-                    <input type="text" id="prop-map" placeholder="https://www.google.com/maps/embed...">
-                </div>
-               
-                <input type="hidden" id="edit-property-id" value="">
-               
-   <div style="display: flex; gap: 10px;">
-    <button class="btn-save" onclick="saveProperty()" style="flex: 1;">
-        <i class="fas fa-save"></i> Guardar Propiedad
-    </button>
-    <button onclick="saveDraftManual()" style="
-        flex: 1;
-        padding: 15px;
-        background: #FF9800;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background 0.3s;
-    " onmouseover="this.style.background='#F57C00';" 
-       onmouseout="this.style.background='#FF9800';">
-        <i class="fas fa-clock"></i> Guardar Borrador
-    </button>
-    <button onclick="cancelEdit()" style="
-        flex: 1;
-        padding: 15px;
-        background: #757575;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background 0.3s;
-    " onmouseover="this.style.background='#616161';" 
-       onmouseout="this.style.background='#757575';">
-        <i class="fas fa-times"></i> Cancelar
-    </button>
-</div>
-            </div>
-            
-<!-- LISTA DE PROPIEDADES -->
-            <div class="properties-list">
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
-                    <h2 style="margin: 0;">📋 Propiedades Publicadas</h2>
-                    <button onclick="exportForMyMaps()" style="background: #4285F4; color: white; padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px;">
-                        <i class="fas fa-map-marked-alt"></i> Descargar para My Maps
-                    </button>
-                </div>
-                <div id="properties-container"></div>
-            </div>
-
-<!-- SECCIÓN DE PREGUNTAS FRECUENTES -->
-            <div class="properties-list">
-                <h2 style="margin-bottom: 20px;">❓ Preguntas Frecuentes</h2>
-                <div class="form-group">
-                    <label>Pregunta</label>
-                    <input type="text" id="faq-question-input" placeholder="Ej: ¿Qué documentación necesito?">
-                </div>
-                <div class="form-group">
-                    <label>Respuesta</label>
-                    <textarea id="faq-answer-input" rows="3" placeholder="Escribí la respuesta completa..."></textarea>
-                </div>
-                <input type="hidden" id="edit-faq-id" value="">
-                <div style="display: flex; gap: 10px; margin-bottom: 25px;">
-                    <button class="btn-save" onclick="saveFaq()" style="flex: 1;">
-                        <i class="fas fa-save"></i> Guardar Pregunta
-                    </button>
-                    <button onclick="cancelFaqEdit()" style="flex: 1; padding: 15px; background: #757575; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer;">
-                        <i class="fas fa-times"></i> Cancelar
-                    </button>
-                </div>
-                <div id="faq-container"></div>
-            </div>
-
-           <!-- PERSONALIZACIÓN DEL SITIO -->
-            <div class="properties-list">
-                <h2 style="margin-bottom: 20px;">🎨 Personalizar Sección "Sobre Nosotros"</h2>
-                <p style="color: #666; font-size: 13px; margin-bottom: 20px;">Si no completás algún campo, se mantiene el texto actual del sitio. Los cambios se aplican al guardar.</p>
-
-                <div class="form-group">
-                    <label>Subtítulo pequeño (Ej: "QUIÉNES SOMOS")</label>
-                    <input type="text" id="content-subtitle" placeholder="QUIÉNES SOMOS">
-                </div>
-                <div class="form-group">
-                    <label>Título grande (Ej: "Urbana Propiedades")</label>
-                    <input type="text" id="content-title" placeholder="Urbana Propiedades">
-                </div>
-                <div class="form-group">
-                    <label>Párrafo de descripción</label>
-                    <textarea id="content-text" rows="3" placeholder="Con base en Curuguaty y presencia en toda la región..."></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>📷 Imagen de la sección</label>
-                    <img id="content-image-preview" src="" style="display:none; max-width: 220px; width: 100%; border-radius: 10px; margin-bottom: 10px;">
-                    <input type="file" id="content-image-input" accept="image/*" style="display:none" onchange="handleContentImageSelect(this.files)">
-                    <button type="button" onclick="document.getElementById('content-image-input').click()" style="background: #2196F3; color: white; padding: 10px 18px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">
-                        <i class="fas fa-crop"></i> Elegir y recortar imagen
-                    </button>
-                </div>
-
-                <div class="form-group" style="background: #f0f7ff; padding: 15px; border-radius: 12px;">
-                    <label>🥇 Punto destacado 1</label>
-                    <input type="text" id="content-feature1-title" placeholder="Experiencia" style="margin-bottom: 10px;">
-                    <input type="text" id="content-feature1-text" placeholder="Años de trayectoria en el mercado inmobiliario.">
-                </div>
-                <div class="form-group" style="background: #f0f7ff; padding: 15px; border-radius: 12px;">
-                    <label>🥈 Punto destacado 2</label>
-                    <input type="text" id="content-feature2-title" placeholder="Trato Directo" style="margin-bottom: 10px;">
-                    <input type="text" id="content-feature2-text" placeholder="Te acompañamos desde la primera visita hasta la firma.">
-                </div>
-                <div class="form-group" style="background: #f0f7ff; padding: 15px; border-radius: 12px;">
-                    <label>🥉 Punto destacado 3</label>
-                    <input type="text" id="content-feature3-title" placeholder="Trámites Seguros" style="margin-bottom: 10px;">
-                    <input type="text" id="content-feature3-text" placeholder="Asesoramiento en toda la operación de forma legal y segura.">
-                </div>
-
-                <div class="form-group">
-                    <label>📄 Texto del pie de página (columna izquierda del footer)</label>
-                    <textarea id="content-footer-text" rows="3" placeholder="Tu aliado estratégico en el mercado inmobiliario de Canindeyú..."></textarea>
-                </div>
-
-                <button id="content-save-btn" class="btn-save" onclick="saveContenido()">
-                    <i class="fas fa-save"></i> Guardar Personalización
-                </button>
-            </div>
-
-            <!-- CONTACTO Y REDES SOCIALES -->
-            <div class="properties-list">
-                <h2 style="margin-bottom: 20px;">📞 Personalizar Contacto y Redes Sociales</h2>
-                <p style="color: #666; font-size: 13px; margin-bottom: 20px;">Afecta la columna "Contacto" y "Síguenos" del pie de página del sitio.</p>
-
-                <div class="form-group">
-                    <label>📱 Teléfono 1</label>
-                    <input type="text" id="footer-phone1" placeholder="Ej: 0994272727" oninput="formatOwnerPhone(this)">
-                </div>
-                <div class="form-group">
-                    <label>📱 Teléfono 2 (opcional)</label>
-                    <input type="text" id="footer-phone2" placeholder="Ej: 0994767676" oninput="formatOwnerPhone(this)">
-                </div>
-                <div class="form-group">
-                    <label>✉️ Email de contacto</label>
-                    <input type="email" id="footer-email" placeholder="urbanapropiedades.py@gmail.com">
-                </div>
-                <div class="form-group">
-                    <label>📍 Dirección / Ubicación</label>
-                    <input type="text" id="footer-address" placeholder="Curuguaty, Canindeyú">
-                </div>
-
-                <div class="form-group">
-                    <label>🌐 Redes Sociales</label>
-                    <div id="social-rows-container"></div>
-                    <button type="button" onclick="addSocialRow()" style="background: #757575; color: white; padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; margin-top: 8px;">
-                        <i class="fas fa-plus"></i> Agregar red social
-                    </button>
-                </div>
-
-                <button id="footer-save-btn" class="btn-save" onclick="saveFooterContacto()" style="margin-top: 15px;">
-                    <i class="fas fa-save"></i> Guardar Contacto y Redes
-                </button>
-            </div>
-
-          <!-- PERSONALIZACIÓN DE LA PORTADA (HERO) -->
-            <div class="properties-list">
-                <h2 style="margin-bottom: 20px;">🖼️ Personalizar Portada Principal</h2>
-                <p style="color: #666; font-size: 13px; margin-bottom: 20px;">Es la primera imagen y título que ve la gente al entrar al sitio.</p>
-
-                <div class="form-group">
-                    <label>Título grande de la portada</label>
-                    <input type="text" id="hero-title" placeholder="Encontrá tu propiedad ideal en Curuguaty y Canindeyú">
-                </div>
-
-                <div class="form-group">
-                    <label>🖼️ Imagen de fondo</label>
-                    <img id="hero-image-preview" src="" style="display:none; max-width: 280px; width: 100%; border-radius: 10px; margin-bottom: 10px;">
-                    <input type="file" id="hero-image-input" accept="image/*" style="display:none" onchange="handleContentImageSelect(this.files, 'hero')">
-                    <button type="button" onclick="document.getElementById('hero-image-input').click()" style="background: #2196F3; color: white; padding: 10px 18px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">
-                        <i class="fas fa-crop"></i> Elegir y recortar imagen
-                    </button>
-                </div>
-
-                <button id="hero-save-btn" class="btn-save" onclick="saveHero()">
-                    <i class="fas fa-save"></i> Guardar Portada
-                </button>
-            </div>
-
-            <!-- MODAL DE RECORTE DE IMAGEN (con cuadrícula y esquinas arrastrables) -->
-            <div id="crop-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; padding:20px;">
-                <div style="background:white; border-radius:15px; padding:20px; max-width:520px; width:100%;">
-                    <h3 style="color:#1e3a5f; margin-bottom:15px; text-align:center;">Recortá tu imagen</h3>
-                    <div id="crop-container" style="position:relative; width:100%; background:#000; border-radius:10px; overflow:hidden; touch-action:none; user-select:none;">
-                        <img id="crop-image" src="" draggable="false" style="display:block; width:100%; height:100%; user-select:none; -webkit-user-drag:none;">
-                        <div id="crop-rect" style="position:absolute; box-shadow:0 0 0 9999px rgba(0,0,0,0.6); border:2px solid white; cursor:move;">
-                            <div class="crop-grid-line" style="position:absolute; left:33.333%; top:0; bottom:0; width:1px; background:rgba(255,255,255,0.5);"></div>
-                            <div class="crop-grid-line" style="position:absolute; left:66.666%; top:0; bottom:0; width:1px; background:rgba(255,255,255,0.5);"></div>
-                            <div class="crop-grid-line" style="position:absolute; top:33.333%; left:0; right:0; height:1px; background:rgba(255,255,255,0.5);"></div>
-                            <div class="crop-grid-line" style="position:absolute; top:66.666%; left:0; right:0; height:1px; background:rgba(255,255,255,0.5);"></div>
-                            <div class="crop-handle" data-corner="tl" style="position:absolute; top:-9px; left:-9px; width:22px; height:22px; border-top:4px solid #4CAF50; border-left:4px solid #4CAF50; cursor:nwse-resize;"></div>
-                            <div class="crop-handle" data-corner="tr" style="position:absolute; top:-9px; right:-9px; width:22px; height:22px; border-top:4px solid #4CAF50; border-right:4px solid #4CAF50; cursor:nesw-resize;"></div>
-                            <div class="crop-handle" data-corner="bl" style="position:absolute; bottom:-9px; left:-9px; width:22px; height:22px; border-bottom:4px solid #4CAF50; border-left:4px solid #4CAF50; cursor:nesw-resize;"></div>
-                            <div class="crop-handle" data-corner="br" style="position:absolute; bottom:-9px; right:-9px; width:22px; height:22px; border-bottom:4px solid #4CAF50; border-right:4px solid #4CAF50; cursor:nwse-resize;"></div>
-                        </div>
-                    </div>
-                    <p style="text-align:center; color:#999; font-size:12px; margin-top:10px;">Arrastrá las esquinas verdes para ajustar el recorte, o el centro para moverlo</p>
-                    <div style="display:flex; gap:10px; margin-top:12px;">
-                        <button onclick="cancelCrop()" style="flex:1; padding:12px; border:2px solid #e0e0e0; background:white; color:#1e3a5f; border-radius:8px; font-weight:bold; cursor:pointer;">
-                            Cancelar
-                        </button>
-                        <button onclick="confirmCrop()" style="flex:1; padding:12px; border:none; background:#4CAF50; color:white; border-radius:8px; font-weight:bold; cursor:pointer;">
-                            Usar esta imagen
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- MODAL DE CONFIRMACIÓN PERSONALIZADO -->
-    <div id="confirm-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
-        <div style="background:white; border-radius:15px; padding:30px; max-width:400px; width:90%; box-shadow:0 10px 40px rgba(0,0,0,0.3); text-align:center;">
-            <div style="font-size:40px; margin-bottom:15px;">📝</div>
-            <h3 style="color:#1e3a5f; font-family:'Cinzel', serif; margin-bottom:12px;">Tenés cambios sin guardar</h3>
-            <p style="color:#666; margin-bottom:25px; line-height:1.5;" id="confirm-modal-text">
-                Si salís ahora, vas a perder los datos que escribiste. ¿Qué querés hacer?
-            </p>
-            <div style="display:flex; gap:10px;">
-                <button onclick="closeConfirmModal()" style="flex:1; padding:12px; border:2px solid #e0e0e0; background:white; color:#1e3a5f; border-radius:8px; font-weight:bold; cursor:pointer;">
-                    Seguir editando
-                </button>
-                <button id="confirm-modal-action-btn" style="flex:1; padding:12px; border:none; background:#f44336; color:white; border-radius:8px; font-weight:bold; cursor:pointer;">
-                    Salir igual
-                </button>
-            </div>
+        <div class="av2-table-wrap">
+          <table class="av2-table">
+            <thead><tr><th>Propiedad</th><th>Categoría</th><th>Precio</th><th>Estado</th><th></th></tr></thead>
+            <tbody id="propertiesTableBody"></tbody>
+          </table>
         </div>
+      </section>
+
+      <!-- ===== FAQ ===== -->
+      <section class="av2-section av2-hidden" id="section-faq">
+        <div class="av2-toolbar">
+          <div></div>
+          <button class="av2-btn av2-btn-primary" onclick="openFaqDrawer(null)">+ Nueva pregunta</button>
+        </div>
+        <div id="faqList"></div>
+      </section>
+
+      <!-- ===== SOBRE NOSOTROS ===== -->
+      <section class="av2-section av2-hidden" id="section-nosotros">
+        <div class="av2-panel">
+          <div class="av2-field"><label>Subtítulo pequeño</label><input type="text" id="content-subtitle" placeholder="QUIÉNES SOMOS"></div>
+          <div class="av2-field"><label>Título grande</label><input type="text" id="content-title" placeholder="Urbana Propiedades"></div>
+          <div class="av2-field"><label>Párrafo de descripción</label><textarea id="content-text" rows="3"></textarea></div>
+          <div class="av2-field">
+            <label>Imagen de la sección</label>
+            <img id="content-image-preview" class="av2-image-preview">
+            <input type="file" id="content-image-input" accept="image/*" class="av2-hidden" onchange="handleContentImageSelect(this.files,'about')">
+            <button type="button" class="av2-btn av2-btn-outline" onclick="document.getElementById('content-image-input').click()"><i class="fas fa-crop"></i> Elegir y recortar imagen</button>
+          </div>
+          <div class="av2-form-section-title">Puntos destacados</div>
+          <div class="av2-form-row">
+            <div class="av2-field"><label>Punto 1 — título</label><input type="text" id="content-feature1-title"></div>
+            <div class="av2-field"><label>Punto 1 — texto</label><input type="text" id="content-feature1-text"></div>
+          </div>
+          <div class="av2-form-row">
+            <div class="av2-field"><label>Punto 2 — título</label><input type="text" id="content-feature2-title"></div>
+            <div class="av2-field"><label>Punto 2 — texto</label><input type="text" id="content-feature2-text"></div>
+          </div>
+          <div class="av2-form-row">
+            <div class="av2-field"><label>Punto 3 — título</label><input type="text" id="content-feature3-title"></div>
+            <div class="av2-field"><label>Punto 3 — texto</label><input type="text" id="content-feature3-text"></div>
+          </div>
+          <div class="av2-field"><label>Texto del footer (columna izquierda)</label><textarea id="content-footer-text" rows="3"></textarea></div>
+          <button class="av2-btn av2-btn-primary" id="content-save-btn" onclick="saveContenido()">Guardar cambios</button>
+        </div>
+      </section>
+
+      <!-- ===== CONTACTO Y REDES ===== -->
+      <section class="av2-section av2-hidden" id="section-contacto">
+        <div class="av2-panel">
+          <div class="av2-field"><label>Teléfono 1</label><input type="text" id="footer-phone1" oninput="formatOwnerPhone(this)"></div>
+          <div class="av2-field"><label>Teléfono 2 (opcional)</label><input type="text" id="footer-phone2" oninput="formatOwnerPhone(this)"></div>
+          <div class="av2-field"><label>Email de contacto</label><input type="email" id="footer-email"></div>
+          <div class="av2-field"><label>Dirección / Ubicación</label><input type="text" id="footer-address"></div>
+          <div class="av2-form-section-title">Redes sociales</div>
+          <div id="social-rows-container"></div>
+          <button type="button" class="av2-btn av2-btn-outline" onclick="addSocialRow()" style="align-self:flex-start;">+ Agregar red social</button>
+          <button class="av2-btn av2-btn-primary" id="footer-save-btn" onclick="saveFooterContacto()">Guardar cambios</button>
+        </div>
+      </section>
+
+      <!-- ===== PORTADA ===== -->
+      <section class="av2-section av2-hidden" id="section-portada">
+        <div class="av2-panel">
+          <div class="av2-field"><label>Título grande de la portada</label><input type="text" id="hero-title"></div>
+          <div class="av2-field">
+            <label>Imagen de fondo</label>
+            <img id="hero-image-preview" class="av2-image-preview">
+            <input type="file" id="hero-image-input" accept="image/*" class="av2-hidden" onchange="handleContentImageSelect(this.files,'hero')">
+            <button type="button" class="av2-btn av2-btn-outline" onclick="document.getElementById('hero-image-input').click()"><i class="fas fa-crop"></i> Elegir y recortar imagen</button>
+          </div>
+          <button class="av2-btn av2-btn-primary" id="hero-save-btn" onclick="saveHero()">Guardar cambios</button>
+        </div>
+      </section>
+
     </div>
+  </div>
+</div>
 
-    <!-- CONTENEDOR DE NOTIFICACIONES TIPO TOAST -->
-    <div id="toast-container" style="position:fixed; bottom:20px; right:20px; z-index:10000; display:flex; flex-direction:column; gap:10px;"></div>
+<!-- ===== DRAWER: PROPIEDAD ===== -->
+<div class="av2-drawer-overlay" id="propertyDrawerOverlay">
+  <div class="av2-drawer">
+    <div class="av2-drawer-head">
+      <h3 id="propertyDrawerTitle">Nueva propiedad</h3>
+      <button class="av2-icon-btn" onclick="closePropertyDrawer()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="av2-drawer-body">
+      <div class="av2-form-section-title">Fotos</div>
+      <div class="av2-dropzone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <p><strong>Arrastrá las fotos</strong> acá o hacé clic para elegirlas</p>
+      </div>
+      <input type="file" id="fileInput" multiple accept="image/*" class="av2-hidden" onchange="handleFiles(this.files)">
+      <div class="av2-photo-grid" id="imagePreview"></div>
 
-    <!-- SCRIPTS CORREGIDOS (Sin duplicados ni etiquetas sueltas) -->
-    <script type="module" src="firebase-config.js"></script>
-    <script type="module" src="admin.js"></script>
+      <div class="av2-form-section-title">Datos generales</div>
+      <div class="av2-field"><label>Título</label><input type="text" id="prop-title" placeholder="Ej: Casa en Centro, Villa Curuguaty"></div>
+      <div class="av2-field"><label>Dirección (para My Maps)</label><input type="text" id="prop-address"></div>
+      <div class="av2-form-row">
+        <div class="av2-field"><label>Estado</label>
+          <select id="prop-status">
+            <option value="disponible">🟢 Disponible</option>
+            <option value="reservado">🟡 Reservado</option>
+            <option value="vendido">🔴 Vendido</option>
+          </select>
+        </div>
+        <div class="av2-field"><label>Badge (opcional)</label>
+          <select id="prop-badge">
+            <option value="">Sin badge</option>
+            <option value="oferta">🔴 Oferta</option>
+            <option value="nuevo">🟢 Nuevo</option>
+            <option value="exclusivo">🔵 Exclusivo</option>
+            <option value="urgente">🟠 Urgente</option>
+            <option value="acceso">Acceso anticipado</option>
+            <option value="popular">Más vendido</option>
+          </select>
+        </div>
+      </div>
+      <div class="av2-form-row">
+        <div class="av2-field"><label>Link de YouTube (opcional)</label><input type="url" id="prop-youtube"></div>
+        <div class="av2-field"><label>Tour 360° (opcional)</label><input type="url" id="prop-matterport"></div>
+      </div>
 
+      <div class="av2-form-section-title">Precio</div>
+      <div id="price-venta-fields">
+        <div class="av2-form-row">
+          <div class="av2-field"><label>USD (opcional)</label><input type="text" id="prop-price-usd" oninput="formatNumber(this)"></div>
+          <div class="av2-field"><label>Guaraníes (opcional)</label><input type="text" id="prop-price-gs" oninput="formatNumber(this)"></div>
+        </div>
+      </div>
+      <div id="price-alquiler-fields" class="av2-hidden">
+        <div class="av2-field"><label>Precio mensual (Gs.)</label><input type="text" id="prop-price-alquiler" oninput="formatNumber(this)"></div>
+      </div>
+      <div class="av2-price-preview" id="price-preview">Completá los campos de arriba</div>
 
-    
+      <div class="av2-form-row">
+        <div class="av2-field"><label>Categoría</label>
+          <select id="prop-category" onchange="togglePriceFields()">
+            <option value="casas">🏠 Casas</option>
+            <option value="terrenos">📐 Terrenos</option>
+            <option value="campos">🌾 Campos</option>
+            <option value="locales">🏪 Locales</option>
+            <option value="alquileres">🔑 Alquileres</option>
+          </select>
+        </div>
+        <div class="av2-field"><label>Dormitorios</label>
+          <select id="prop-dormitorios">
+            <option value="">No aplica</option>
+            <option value="0">0</option><option value="1">1</option><option value="2">2</option>
+            <option value="3">3</option><option value="4">4</option><option value="5">5+</option>
+          </select>
+        </div>
+      </div>
+      <div class="av2-field"><label>Superficie (opcional)</label><input type="text" id="prop-superficie" oninput="this.value=this.value.replace(/\D/g,'')" placeholder="Solo el número, se agrega m² solo"></div>
+      <div class="av2-field"><label>Descripción</label><textarea id="prop-description" rows="4"></textarea></div>
+      <div class="av2-field"><label>Características (separadas por coma)</label><input type="text" id="prop-features" placeholder="Ej: 3 Habitaciones, 2 Baños, Cochera"></div>
+      <div class="av2-field"><label>URL de Google Maps (opcional)</label><input type="text" id="prop-map"></div>
 
+      <div class="av2-owner-box">
+        <span class="av2-owner-hint"><i class="fas fa-lock"></i> Privado — nunca se muestra en el sitio público</span>
+        <input type="text" id="prop-owner-name" placeholder="Nombre y apellido del dueño">
+        <input type="text" id="prop-owner-phone" placeholder="Teléfono del dueño" oninput="formatOwnerPhone(this)">
+      </div>
+
+      <input type="hidden" id="edit-property-id" value="">
+    </div>
+    <div class="av2-drawer-foot">
+      <button class="av2-btn av2-btn-outline" onclick="saveDraftManual()"><i class="fas fa-clock"></i> Borrador</button>
+      <button class="av2-btn av2-btn-primary" id="property-save-btn" onclick="saveProperty()"><i class="fas fa-save"></i> Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DRAWER: PREGUNTA FRECUENTE ===== -->
+<div class="av2-drawer-overlay" id="faqDrawerOverlay">
+  <div class="av2-drawer">
+    <div class="av2-drawer-head">
+      <h3 id="faqDrawerTitle">Nueva pregunta</h3>
+      <button class="av2-icon-btn" onclick="closeFaqDrawer()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="av2-drawer-body">
+      <div class="av2-field"><label>Pregunta</label><input type="text" id="faq-question-input"></div>
+      <div class="av2-field"><label>Respuesta</label><textarea id="faq-answer-input" rows="4"></textarea></div>
+      <input type="hidden" id="edit-faq-id" value="">
+    </div>
+    <div class="av2-drawer-foot">
+      <button class="av2-btn av2-btn-outline" onclick="closeFaqDrawer()">Cancelar</button>
+      <button class="av2-btn av2-btn-primary" onclick="saveFaq()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL DE RECORTE ===== -->
+<div class="av2-crop-overlay" id="crop-modal">
+  <div class="av2-crop-box">
+    <h3>Recortá tu imagen</h3>
+    <div class="av2-crop-container" id="crop-container" style="aspect-ratio:4/3;">
+      <img id="crop-image" src="" draggable="false">
+      <div id="crop-rect" class="av2-crop-rect">
+        <div class="av2-crop-grid-line" style="left:33.333%; top:0; bottom:0; width:1px;"></div>
+        <div class="av2-crop-grid-line" style="left:66.666%; top:0; bottom:0; width:1px;"></div>
+        <div class="av2-crop-grid-line" style="top:33.333%; left:0; right:0; height:1px;"></div>
+        <div class="av2-crop-grid-line" style="top:66.666%; left:0; right:0; height:1px;"></div>
+        <div class="av2-crop-handle" data-corner="tl" style="top:-9px; left:-9px; border-top:4px solid #4CAF50; border-left:4px solid #4CAF50; cursor:nwse-resize;"></div>
+        <div class="av2-crop-handle" data-corner="tr" style="top:-9px; right:-9px; border-top:4px solid #4CAF50; border-right:4px solid #4CAF50; cursor:nesw-resize;"></div>
+        <div class="av2-crop-handle" data-corner="bl" style="bottom:-9px; left:-9px; border-bottom:4px solid #4CAF50; border-left:4px solid #4CAF50; cursor:nesw-resize;"></div>
+        <div class="av2-crop-handle" data-corner="br" style="bottom:-9px; right:-9px; border-bottom:4px solid #4CAF50; border-right:4px solid #4CAF50; cursor:nwse-resize;"></div>
+      </div>
+    </div>
+    <p class="av2-crop-hint">Arrastrá las esquinas verdes para ajustar el recorte, o el centro para moverlo</p>
+    <div class="av2-confirm-actions" style="margin-top:14px;">
+      <button class="av2-btn av2-btn-outline" onclick="cancelCrop()">Cancelar</button>
+      <button class="av2-btn av2-btn-primary" onclick="confirmCrop()">Usar esta imagen</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL DE CONFIRMACIÓN ===== -->
+<div class="av2-confirm-overlay" id="confirm-modal">
+  <div class="av2-confirm-box">
+    <div class="av2-confirm-icon">📝</div>
+    <h3>Tenés cambios sin guardar</h3>
+    <p id="confirm-modal-text">Si salís ahora, vas a perder los datos que escribiste. ¿Qué querés hacer?</p>
+    <div class="av2-confirm-actions">
+      <button class="av2-btn av2-btn-outline" onclick="closeConfirmModal()">Seguir editando</button>
+      <button class="av2-btn av2-btn-danger" id="confirm-modal-action-btn">Salir igual</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="firebase-config.js"></script>
+<script type="module" src="admin.js"></script>
 </body>
 </html>
