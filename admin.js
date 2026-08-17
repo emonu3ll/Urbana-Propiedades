@@ -736,3 +736,107 @@ async function loadFooterContacto() {
         renderSocialRow('facebook'); renderSocialRow('instagram');
     }
 }
+
+function saveFooterContacto() {
+    const payload = {
+        phone1: document.getElementById('footer-phone1')?.value.trim() || '',
+        phone2: document.getElementById('footer-phone2')?.value.trim() || '',
+        email: document.getElementById('footer-email')?.value.trim() || '',
+        address: document.getElementById('footer-address')?.value.trim() || '',
+        socialLinks: []
+    };
+
+    const rows = document.querySelectorAll('#social-rows-container .av2-social-row');
+    rows.forEach((row) => {
+        const platform = row.querySelector('.social-platform-select')?.value || 'facebook';
+        const url = row.querySelector('.social-url-input')?.value.trim() || '';
+        if (url) payload.socialLinks.push({ platform, url });
+    });
+
+    setDoc(doc(db, 'contenido', 'footer-contacto'), payload)
+        .then(() => {
+            showToast('Datos de contacto guardados');
+        })
+        .catch((error) => {
+            console.error(error);
+            showToast('Error al guardar contacto: ' + error.message, 'error');
+        });
+}
+
+function handleContentImageSelect(files, type = 'about') {
+    const file = files && files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        const preview = type === 'hero' ? document.getElementById('hero-image-preview') : document.getElementById('content-image-preview');
+        if (preview) {
+            preview.src = event.target.result;
+            preview.style.display = 'block';
+        }
+    };
+    reader.readAsDataURL(file);
+
+    if (type === 'hero') heroImageFile = file; else contentImageFile = file;
+}
+
+function openConfirmModal(message, onConfirm, confirmText = 'Salir igual') {
+    const modal = document.getElementById('confirm-modal');
+    const text = document.getElementById('confirm-modal-text');
+    const actionBtn = document.getElementById('confirm-modal-action-btn');
+    if (!modal || !text || !actionBtn) return;
+    text.textContent = message || '¿Continuar?';
+    actionBtn.textContent = confirmText;
+    actionBtn.onclick = () => {
+        closeConfirmModal();
+        if (typeof onConfirm === 'function') onConfirm();
+    };
+    modal.classList.add('open');
+}
+
+function closeConfirmModal() {
+    const modal = document.getElementById('confirm-modal');
+    if (modal) modal.classList.remove('open');
+}
+
+function cancelCrop() {
+    const modal = document.getElementById('crop-modal');
+    if (modal) modal.classList.remove('open');
+}
+
+function confirmCrop() {
+    const modal = document.getElementById('crop-modal');
+    if (modal) modal.classList.remove('open');
+    showToast('Imagen recortada');
+}
+
+Object.assign(window, {
+    login,
+    logout,
+    confirmLogout,
+    showAdminPanel,
+    showLoginScreen,
+    formatNumber,
+    formatNumberString,
+    unformatNumber,
+    formatOwnerPhone,
+    togglePriceFields,
+    updatePricePreview,
+    removeImage,
+    saveDraftManual,
+    saveProperty,
+    closePropertyDrawer,
+    saveFaq,
+    closeFaqDrawer,
+    openFaqDrawer,
+    deleteFaq,
+    saveContenido,
+    saveHero,
+    saveFooterContacto,
+    addSocialRow,
+    handleContentImageSelect,
+    openConfirmModal,
+    closeConfirmModal,
+    cancelCrop,
+    confirmCrop
+});
