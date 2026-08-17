@@ -736,4 +736,3 @@ async function loadFooterContacto() {
         renderSocialRow('facebook'); renderSocialRow('instagram');
     }
 }
-as
