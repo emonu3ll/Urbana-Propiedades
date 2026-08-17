@@ -35,8 +35,8 @@ function confirmLogout() {
 }
 
 function showAdminPanel() {
-    document.getElementById('loginScreen').classList.add('av2-hidden');
-    document.getElementById('adminApp').classList.remove('av2-hidden');
+    document.getElementById('loginScreen').classList.add('admin-hidden');
+    document.getElementById('adminApp').classList.remove('admin-hidden');
     const user = auth.currentUser;
     document.getElementById('topbarUser').textContent = user ? user.email : '';
     initSidebarNav();
@@ -49,8 +49,8 @@ function showAdminPanel() {
 }
 
 function showLoginScreen() {
-    document.getElementById('loginScreen').classList.remove('av2-hidden');
-    document.getElementById('adminApp').classList.add('av2-hidden');
+    document.getElementById('loginScreen').classList.remove('admin-hidden');
+    document.getElementById('adminApp').classList.add('admin-hidden');
 }
 
 onAuthStateChanged(auth, (user) => {
@@ -72,11 +72,11 @@ let sidebarWired = false;
 function initSidebarNav() {
     if (sidebarWired) return;
     sidebarWired = true;
-    document.querySelectorAll('.av2-nav-item[data-section]').forEach(btn => {
+    document.querySelectorAll('.admin-nav-item[data-section]').forEach(btn => {
         btn.addEventListener('click', () => {
             const key = btn.getAttribute('data-section');
-            document.querySelectorAll('.av2-nav-item[data-section]').forEach(b => b.classList.toggle('active', b === btn));
-            document.querySelectorAll('.av2-section').forEach(s => s.classList.toggle('av2-hidden', s.id !== 'section-' + key));
+            document.querySelectorAll('.admin-nav-item[data-section]').forEach(b => b.classList.toggle('active', b === btn));
+            document.querySelectorAll('.admin-section').forEach(s => s.classList.toggle('admin-hidden', s.id !== 'section-' + key));
             document.getElementById('topbarTitle').textContent = SECTION_TITLES[key] || '';
             document.getElementById('sidebar').classList.remove('open');
         });
@@ -93,7 +93,7 @@ function showToast(message, type = 'success') {
     const container = document.getElementById('toastStack');
     if (!container) return;
     const toast = document.createElement('div');
-    toast.className = `av2-toast ${type === 'error' ? 'error' : ''}`;
+    toast.className = `admin-toast ${type === 'error' ? 'error' : ''}`;
     toast.innerHTML = `<span>${type === 'error' ? '❌' : '✅'}</span><span>${message}</span>`;
     container.appendChild(toast);
     requestAnimationFrame(() => toast.classList.add('show'));
@@ -125,8 +125,8 @@ function formatOwnerPhone(input) {
 
 function togglePriceFields() {
     const category = document.getElementById('prop-category').value;
-    document.getElementById('price-venta-fields').classList.toggle('av2-hidden', category === 'alquileres');
-    document.getElementById('price-alquiler-fields').classList.toggle('av2-hidden', category !== 'alquileres');
+    document.getElementById('price-venta-fields').classList.toggle('admin-hidden', category === 'alquileres');
+    document.getElementById('price-alquiler-fields').classList.toggle('admin-hidden', category !== 'alquileres');
     updatePricePreview();
 }
 function updatePricePreview() {
@@ -208,9 +208,9 @@ function displayImages() {
     const preview = document.getElementById('imagePreview');
     if (!preview) return;
     preview.innerHTML = uploadedImages.map((img, i) => `
-        <div class="av2-photo-thumb">
+        <div class="admin-photo-thumb">
             <img src="${img.base64}" alt="Imagen ${i + 1}">
-            <button class="av2-photo-remove" onclick="removeImage(${i})">×</button>
+            <button class="admin-photo-remove" onclick="removeImage(${i})">×</button>
         </div>`).join('');
 }
 function removeImage(i) { uploadedImages.splice(i, 1); displayImages(); }
@@ -233,30 +233,30 @@ function renderPropertiesTable() {
     const list = allProperties.filter(p => (p.title || '').toLowerCase().includes(term));
 
     if (!list.length) {
-        tbody.innerHTML = `<tr><td colspan="5" class="av2-empty">No hay propiedades que coincidan.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" class="admin-empty">No hay propiedades que coincidan.</td></tr>`;
         return;
     }
     tbody.innerHTML = list.map(p => `
         <tr>
             <td>
-                <div class="av2-row-name">
-                    <div class="av2-row-thumb"><img src="${p.image || ''}" alt=""></div>
+                <div class="admin-row-name">
+                    <div class="admin-row-thumb"><img src="${p.image || ''}" alt=""></div>
                     <span>${p.title || '(Sin título)'}</span>
                 </div>
             </td>
             <td>${(p.category || '').toUpperCase()}</td>
             <td>${p.price || '—'}</td>
             <td>
-                <select class="av2-status-select" onchange="updatePropertyStatus('${p.id}', this.value)">
+                <select class="admin-status-select" onchange="updatePropertyStatus('${p.id}', this.value)">
                     <option value="disponible" ${(p.status || 'disponible') === 'disponible' ? 'selected' : ''}>🟢 Disponible</option>
                     <option value="reservado" ${p.status === 'reservado' ? 'selected' : ''}>🟡 Reservado</option>
                     <option value="vendido" ${p.status === 'vendido' ? 'selected' : ''}>🔴 Vendido</option>
                 </select>
             </td>
             <td>
-                <div class="av2-row-actions">
-                    <button class="av2-icon-btn" title="Editar" onclick="openPropertyDrawer('${p.id}')"><i class="fas fa-edit"></i></button>
-                    <button class="av2-icon-btn danger" title="Eliminar" onclick="deleteProperty('${p.id}')"><i class="fas fa-trash"></i></button>
+                <div class="admin-row-actions">
+                    <button class="admin-icon-btn" title="Editar" onclick="openPropertyDrawer('${p.id}')"><i class="fas fa-edit"></i></button>
+                    <button class="admin-icon-btn danger" title="Eliminar" onclick="deleteProperty('${p.id}')"><i class="fas fa-trash"></i></button>
                 </div>
             </td>
         </tr>`).join('');
@@ -553,13 +553,13 @@ async function loadFaqs() {
 function renderFaqList() {
     const container = document.getElementById('faqList');
     if (!container) return;
-    if (!allFaqs.length) { container.innerHTML = `<div class="av2-empty">No hay preguntas cargadas todavía</div>`; return; }
+    if (!allFaqs.length) { container.innerHTML = `<div class="admin-empty">No hay preguntas cargadas todavía</div>`; return; }
     container.innerHTML = allFaqs.map(f => `
-        <div class="av2-list-card">
-            <div class="av2-list-card-body"><h4>${f.question}</h4><p>${f.answer}</p></div>
-            <div class="av2-row-actions">
-                <button class="av2-icon-btn" onclick="openFaqDrawer('${f.id}')"><i class="fas fa-edit"></i></button>
-                <button class="av2-icon-btn danger" onclick="deleteFaq('${f.id}')"><i class="fas fa-trash"></i></button>
+        <div class="admin-list-card">
+            <div class="admin-list-card-body"><h4>${f.question}</h4><p>${f.answer}</p></div>
+            <div class="admin-row-actions">
+                <button class="admin-icon-btn" onclick="openFaqDrawer('${f.id}')"><i class="fas fa-edit"></i></button>
+                <button class="admin-icon-btn danger" onclick="deleteFaq('${f.id}')"><i class="fas fa-trash"></i></button>
             </div>
         </div>`).join('');
 }
@@ -709,12 +709,12 @@ const SOCIAL_PLATFORMS = {
 function renderSocialRow(platform = 'facebook', url = '') {
     const container = document.getElementById('social-rows-container');
     const row = document.createElement('div');
-    row.className = 'av2-social-row';
+    row.className = 'admin-social-row';
     const options = Object.entries(SOCIAL_PLATFORMS).map(([k, v]) => `<option value="${k}" ${k === platform ? 'selected' : ''}>${v.label}</option>`).join('');
     row.innerHTML = `
         <select class="social-platform-select">${options}</select>
         <input type="url" class="social-url-input" placeholder="https://..." value="${url}">
-        <button type="button" class="av2-icon-btn danger" onclick="this.closest('.av2-social-row').remove()"><i class="fas fa-trash"></i></button>`;
+        <button type="button" class="admin-icon-btn danger" onclick="this.closest('.admin-social-row').remove()"><i class="fas fa-trash"></i></button>`;
     container.appendChild(row);
 }
 function addSocialRow() { renderSocialRow(); }
@@ -736,107 +736,171 @@ async function loadFooterContacto() {
         renderSocialRow('facebook'); renderSocialRow('instagram');
     }
 }
-
-function saveFooterContacto() {
-    const payload = {
-        phone1: document.getElementById('footer-phone1')?.value.trim() || '',
-        phone2: document.getElementById('footer-phone2')?.value.trim() || '',
-        email: document.getElementById('footer-email')?.value.trim() || '',
-        address: document.getElementById('footer-address')?.value.trim() || '',
-        socialLinks: []
-    };
-
-    const rows = document.querySelectorAll('#social-rows-container .av2-social-row');
-    rows.forEach((row) => {
-        const platform = row.querySelector('.social-platform-select')?.value || 'facebook';
-        const url = row.querySelector('.social-url-input')?.value.trim() || '';
-        if (url) payload.socialLinks.push({ platform, url });
-    });
-
-    setDoc(doc(db, 'contenido', 'footer-contacto'), payload)
-        .then(() => {
-            showToast('Datos de contacto guardados');
-        })
-        .catch((error) => {
-            console.error(error);
-            showToast('Error al guardar contacto: ' + error.message, 'error');
+async function saveFooterContacto() {
+    const btn = document.getElementById('footer-save-btn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...'; btn.disabled = true;
+    try {
+        const socialLinks = [];
+        document.querySelectorAll('.admin-social-row').forEach(row => {
+            const platform = row.querySelector('.social-platform-select').value;
+            const url = row.querySelector('.social-url-input').value.trim();
+            if (url) socialLinks.push({ platform, url });
         });
+        await setDoc(doc(db, 'contenido', 'footer-contacto'), {
+            phone1: document.getElementById('footer-phone1').value.trim(),
+            phone2: document.getElementById('footer-phone2').value.trim(),
+            email: document.getElementById('footer-email').value.trim(),
+            address: document.getElementById('footer-address').value.trim(),
+            socialLinks
+        });
+        showToast('Contacto y redes guardados');
+    } catch (error) { showToast('Error al guardar: ' + error.message, 'error'); }
+    finally { btn.innerHTML = originalText; btn.disabled = false; }
 }
 
-function handleContentImageSelect(files, type = 'about') {
-    const file = files && files[0];
-    if (!file) return;
+/* =========================================
+   RECORTE DE IMAGEN
+   ========================================= */
+let cropImg = null, cropNaturalW = 0, cropNaturalH = 0;
+let cropRect = { left: 10, top: 10, right: 90, bottom: 90 };
+let cropDragMode = null, cropDragStartPointer = { x: 0, y: 0 }, cropDragStartRect = null;
+const CROP_MIN_SIZE = 10;
+let cropTarget = 'about';
 
+function handleContentImageSelect(files, target = 'about') {
+    const file = files[0];
+    if (!file) return;
+    cropTarget = target;
     const reader = new FileReader();
-    reader.onload = (event) => {
-        const preview = type === 'hero' ? document.getElementById('hero-image-preview') : document.getElementById('content-image-preview');
-        if (preview) {
-            preview.src = event.target.result;
-            preview.style.display = 'block';
-        }
+    reader.onload = (e) => {
+        cropImg = document.getElementById('crop-image');
+        document.getElementById('crop-modal').classList.add('open');
+        cropImg.onload = () => {
+            cropNaturalW = cropImg.naturalWidth; cropNaturalH = cropImg.naturalHeight;
+            document.getElementById('crop-container').style.aspectRatio = `${cropNaturalW} / ${cropNaturalH}`;
+            cropRect = { left: 10, top: 10, right: 90, bottom: 90 };
+            renderCropRect();
+        };
+        cropImg.src = e.target.result;
     };
     reader.readAsDataURL(file);
-
-    if (type === 'hero') heroImageFile = file; else contentImageFile = file;
 }
+function renderCropRect() {
+    const rectEl = document.getElementById('crop-rect');
+    rectEl.style.left = cropRect.left + '%';
+    rectEl.style.top = cropRect.top + '%';
+    rectEl.style.width = (cropRect.right - cropRect.left) + '%';
+    rectEl.style.height = (cropRect.bottom - cropRect.top) + '%';
+}
+function getCropPointerPct(e) {
+    const bounds = document.getElementById('crop-container').getBoundingClientRect();
+    const p = e.touches && e.touches[0] ? e.touches[0] : e;
+    return { x: ((p.clientX - bounds.left) / bounds.width) * 100, y: ((p.clientY - bounds.top) / bounds.height) * 100 };
+}
+const cropRectEl = document.getElementById('crop-rect');
+if (cropRectEl) {
+    cropRectEl.querySelectorAll('.admin-crop-handle').forEach(handle => {
+        const start = (e) => { e.stopPropagation(); cropDragMode = handle.getAttribute('data-corner'); cropDragStartPointer = getCropPointerPct(e); cropDragStartRect = { ...cropRect }; };
+        handle.addEventListener('mousedown', start);
+        handle.addEventListener('touchstart', start, { passive: true });
+    });
+    const startMove = (e) => { if (e.target.classList.contains('admin-crop-handle')) return; cropDragMode = 'move'; cropDragStartPointer = getCropPointerPct(e); cropDragStartRect = { ...cropRect }; };
+    cropRectEl.addEventListener('mousedown', startMove);
+    cropRectEl.addEventListener('touchstart', startMove, { passive: true });
 
-function openConfirmModal(message, onConfirm, confirmText = 'Salir igual') {
-    const modal = document.getElementById('confirm-modal');
-    const text = document.getElementById('confirm-modal-text');
-    const actionBtn = document.getElementById('confirm-modal-action-btn');
-    if (!modal || !text || !actionBtn) return;
-    text.textContent = message || '¿Continuar?';
-    actionBtn.textContent = confirmText;
-    actionBtn.onclick = () => {
-        closeConfirmModal();
-        if (typeof onConfirm === 'function') onConfirm();
+    const onDragMove = (e) => {
+        if (!cropDragMode) return;
+        if (e.cancelable) e.preventDefault();
+        const p = getCropPointerPct(e);
+        const dx = p.x - cropDragStartPointer.x, dy = p.y - cropDragStartPointer.y;
+        const r = cropDragStartRect;
+        if (cropDragMode === 'move') {
+            const w = r.right - r.left, h = r.bottom - r.top;
+            let left = Math.min(100 - w, Math.max(0, r.left + dx));
+            let top = Math.min(100 - h, Math.max(0, r.top + dy));
+            cropRect = { left, top, right: left + w, bottom: top + h };
+        } else {
+            let { left, top, right, bottom } = r;
+            if (cropDragMode.includes('l')) left = Math.min(right - CROP_MIN_SIZE, Math.max(0, r.left + dx));
+            if (cropDragMode.includes('r')) right = Math.max(left + CROP_MIN_SIZE, Math.min(100, r.right + dx));
+            if (cropDragMode.includes('t')) top = Math.min(bottom - CROP_MIN_SIZE, Math.max(0, r.top + dy));
+            if (cropDragMode.includes('b')) bottom = Math.max(top + CROP_MIN_SIZE, Math.min(100, r.bottom + dy));
+            cropRect = { left, top, right, bottom };
+        }
+        renderCropRect();
     };
-    modal.classList.add('open');
+    window.addEventListener('mousemove', onDragMove);
+    window.addEventListener('mouseup', () => cropDragMode = null);
+    window.addEventListener('touchmove', onDragMove, { passive: false });
+    window.addEventListener('touchend', () => cropDragMode = null);
 }
-
-function closeConfirmModal() {
-    const modal = document.getElementById('confirm-modal');
-    if (modal) modal.classList.remove('open');
-}
-
-function cancelCrop() {
-    const modal = document.getElementById('crop-modal');
-    if (modal) modal.classList.remove('open');
-}
-
 function confirmCrop() {
-    const modal = document.getElementById('crop-modal');
-    if (modal) modal.classList.remove('open');
-    showToast('Imagen recortada');
+    const sx = (cropRect.left / 100) * cropNaturalW;
+    const sy = (cropRect.top / 100) * cropNaturalH;
+    const sWidth = ((cropRect.right - cropRect.left) / 100) * cropNaturalW;
+    const sHeight = ((cropRect.bottom - cropRect.top) / 100) * cropNaturalH;
+    const outWidth = 1400, outHeight = Math.round(1400 * (sHeight / sWidth));
+    const canvas = document.createElement('canvas');
+    canvas.width = outWidth; canvas.height = outHeight;
+    canvas.getContext('2d').drawImage(cropImg, sx, sy, sWidth, sHeight, 0, 0, outWidth, outHeight);
+    canvas.toBlob((blob) => {
+        if (cropTarget === 'hero') {
+            heroImageFile = new File([blob], 'hero.jpg', { type: 'image/jpeg' });
+            const preview = document.getElementById('hero-image-preview');
+            preview.src = URL.createObjectURL(blob); preview.style.display = 'block';
+        } else {
+            contentImageFile = new File([blob], 'sobre-nosotros.jpg', { type: 'image/jpeg' });
+            const preview = document.getElementById('content-image-preview');
+            preview.src = URL.createObjectURL(blob); preview.style.display = 'block';
+        }
+        document.getElementById('crop-modal').classList.remove('open');
+    }, 'image/jpeg', 0.85);
 }
+function cancelCrop() { document.getElementById('crop-modal').classList.remove('open'); }
 
-Object.assign(window, {
-    login,
-    logout,
-    confirmLogout,
-    showAdminPanel,
-    showLoginScreen,
-    formatNumber,
-    formatNumberString,
-    unformatNumber,
-    formatOwnerPhone,
-    togglePriceFields,
-    updatePricePreview,
-    removeImage,
-    saveDraftManual,
-    saveProperty,
-    closePropertyDrawer,
-    saveFaq,
-    closeFaqDrawer,
-    openFaqDrawer,
-    deleteFaq,
-    saveContenido,
-    saveHero,
-    saveFooterContacto,
-    addSocialRow,
-    handleContentImageSelect,
-    openConfirmModal,
-    closeConfirmModal,
-    cancelCrop,
-    confirmCrop
-});
+/* =========================================
+   MODAL DE CONFIRMACIÓN
+   ========================================= */
+function openConfirmModal(message, onConfirm, actionText = 'Salir igual') {
+    const modal = document.getElementById('confirm-modal');
+    document.getElementById('confirm-modal-text').textContent = message;
+    const actionBtn = document.getElementById('confirm-modal-action-btn');
+    actionBtn.textContent = actionText;
+    modal.classList.add('open');
+    const newBtn = actionBtn.cloneNode(true);
+    actionBtn.parentNode.replaceChild(newBtn, actionBtn);
+    newBtn.id = 'confirm-modal-action-btn';
+    newBtn.addEventListener('click', () => { closeConfirmModal(); onConfirm(); });
+}
+function closeConfirmModal() { document.getElementById('confirm-modal').classList.remove('open'); }
+
+/* =========================================
+   GLOBALES
+   ========================================= */
+window.login = login;
+window.confirmLogout = confirmLogout;
+window.handleFiles = handleFiles;
+window.removeImage = removeImage;
+window.formatNumber = formatNumber;
+window.formatOwnerPhone = formatOwnerPhone;
+window.togglePriceFields = togglePriceFields;
+window.openPropertyDrawer = openPropertyDrawer;
+window.closePropertyDrawer = closePropertyDrawer;
+window.saveProperty = saveProperty;
+window.deleteProperty = deleteProperty;
+window.updatePropertyStatus = updatePropertyStatus;
+window.exportForMyMaps = exportForMyMaps;
+window.saveDraftManual = saveDraftManual;
+window.openFaqDrawer = openFaqDrawer;
+window.closeFaqDrawer = closeFaqDrawer;
+window.saveFaq = saveFaq;
+window.deleteFaq = deleteFaq;
+window.saveContenido = saveContenido;
+window.saveHero = saveHero;
+window.saveFooterContacto = saveFooterContacto;
+window.addSocialRow = addSocialRow;
+window.handleContentImageSelect = handleContentImageSelect;
+window.confirmCrop = confirmCrop;
+window.cancelCrop = cancelCrop;
+window.closeConfirmModal = closeConfirmModal;

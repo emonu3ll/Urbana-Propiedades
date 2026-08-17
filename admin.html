@@ -9,73 +9,73 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="av2-body">
+<body class="admin-body">
 
-<div class="av2-toast-stack" id="toastStack"></div>
+<div class="admin-toast-stack" id="toastStack"></div>
 
 <!-- ===== LOGIN ===== -->
-<div class="av2-login" id="loginScreen">
-  <div class="av2-login-card">
+<div class="admin-login-screen" id="loginScreen">
+  <div class="admin-login-card">
     <img src="img/logo.png" alt="Urbana Propiedades">
     <h2>Panel de Administración<br>Urbana Propiedades</h2>
-    <div class="av2-field"><input type="email" id="username" placeholder="Correo electrónico"></div>
-    <div class="av2-field"><input type="password" id="password" placeholder="Contraseña"></div>
-    <button class="av2-btn av2-btn-primary av2-btn-block" onclick="login()">Iniciar Sesión</button>
+    <div class="admin-field"><input type="email" id="username" placeholder="Correo electrónico"></div>
+    <div class="admin-field"><input type="password" id="password" placeholder="Contraseña"></div>
+    <button class="admin-btn admin-btn-primary admin-btn-block" onclick="login()">Iniciar Sesión</button>
   </div>
 </div>
 
 <!-- ===== APP ===== -->
-<div class="av2-shell av2-hidden" id="adminApp">
-  <aside class="av2-sidebar" id="sidebar">
-    <div class="av2-sidebar-brand"><img src="img/logo.png" alt="Logo"><span>Urbana Propiedades</span></div>
+<div class="admin-shell admin-hidden" id="adminApp">
+  <aside class="admin-sidebar" id="sidebar">
+    <div class="admin-sidebar-brand"><img src="img/logo.png" alt="Logo"><span>Urbana Propiedades</span></div>
 
-    <button class="av2-nav-item active" data-section="propiedades">
+    <button class="admin-nav-item active" data-section="propiedades">
       <i class="fas fa-home"></i> Propiedades
     </button>
-    <button class="av2-nav-item" data-section="faq">
+    <button class="admin-nav-item" data-section="faq">
       <i class="fas fa-question-circle"></i> Preguntas frecuentes
     </button>
-    <button class="av2-nav-item" data-section="nosotros">
+    <button class="admin-nav-item" data-section="nosotros">
       <i class="fas fa-users"></i> Sobre nosotros
     </button>
-    <button class="av2-nav-item" data-section="contacto">
+    <button class="admin-nav-item" data-section="contacto">
       <i class="fas fa-address-book"></i> Contacto y redes
     </button>
-    <button class="av2-nav-item" data-section="portada">
+    <button class="admin-nav-item" data-section="portada">
       <i class="fas fa-image"></i> Portada
     </button>
 
-    <div class="av2-sidebar-footer">
+    <div class="admin-sidebar-footer">
       <a href="/" target="_blank">↗ Ver sitio público</a>
       <button onclick="confirmLogout()">⎋ Cerrar sesión</button>
     </div>
   </aside>
 
-  <div class="av2-main">
-    <div class="av2-topbar">
+  <div class="admin-main">
+    <div class="admin-topbar">
       <div style="display:flex;align-items:center;gap:12px;">
-        <button class="av2-nav-toggle" id="navToggle"><span></span><span></span><span></span></button>
+        <button class="admin-nav-toggle" id="navToggle"><span></span><span></span><span></span></button>
         <h2 id="topbarTitle">Propiedades</h2>
       </div>
-      <span class="av2-topbar-user" id="topbarUser"></span>
+      <span class="admin-topbar-user" id="topbarUser"></span>
     </div>
 
-    <div class="av2-content">
+    <div class="admin-page-content">
 
       <!-- ===== PROPIEDADES ===== -->
-      <section class="av2-section" id="section-propiedades">
-        <div class="av2-toolbar">
-          <div class="av2-search">
+      <section class="admin-section" id="section-propiedades">
+        <div class="admin-toolbar">
+          <div class="admin-search">
             <i class="fas fa-search"></i>
             <input type="text" id="propertySearch" placeholder="Buscar propiedad...">
           </div>
           <div style="display:flex; gap:10px;">
-            <button class="av2-btn av2-btn-outline" onclick="exportForMyMaps()"><i class="fas fa-map-marked-alt"></i> My Maps</button>
-            <button class="av2-btn av2-btn-primary" onclick="openPropertyDrawer(null)">+ Nueva propiedad</button>
+            <button class="admin-btn admin-btn-outline" onclick="exportForMyMaps()"><i class="fas fa-map-marked-alt"></i> My Maps</button>
+            <button class="admin-btn admin-btn-primary" onclick="openPropertyDrawer(null)">+ Nueva propiedad</button>
           </div>
         </div>
-        <div class="av2-table-wrap">
-          <table class="av2-table">
+        <div class="admin-table-wrap">
+          <table class="admin-table">
             <thead><tr><th>Propiedad</th><th>Categoría</th><th>Precio</th><th>Estado</th><th></th></tr></thead>
             <tbody id="propertiesTableBody"></tbody>
           </table>
@@ -83,69 +83,69 @@
       </section>
 
       <!-- ===== FAQ ===== -->
-      <section class="av2-section av2-hidden" id="section-faq">
-        <div class="av2-toolbar">
+      <section class="admin-section admin-hidden" id="section-faq">
+        <div class="admin-toolbar">
           <div></div>
-          <button class="av2-btn av2-btn-primary" onclick="openFaqDrawer(null)">+ Nueva pregunta</button>
+          <button class="admin-btn admin-btn-primary" onclick="openFaqDrawer(null)">+ Nueva pregunta</button>
         </div>
         <div id="faqList"></div>
       </section>
 
       <!-- ===== SOBRE NOSOTROS ===== -->
-      <section class="av2-section av2-hidden" id="section-nosotros">
-        <div class="av2-panel">
-          <div class="av2-field"><label>Subtítulo pequeño</label><input type="text" id="content-subtitle" placeholder="QUIÉNES SOMOS"></div>
-          <div class="av2-field"><label>Título grande</label><input type="text" id="content-title" placeholder="Urbana Propiedades"></div>
-          <div class="av2-field"><label>Párrafo de descripción</label><textarea id="content-text" rows="3"></textarea></div>
-          <div class="av2-field">
+      <section class="admin-section admin-hidden" id="section-nosotros">
+        <div class="admin-form-panel">
+          <div class="admin-field"><label>Subtítulo pequeño</label><input type="text" id="content-subtitle" placeholder="QUIÉNES SOMOS"></div>
+          <div class="admin-field"><label>Título grande</label><input type="text" id="content-title" placeholder="Urbana Propiedades"></div>
+          <div class="admin-field"><label>Párrafo de descripción</label><textarea id="content-text" rows="3"></textarea></div>
+          <div class="admin-field">
             <label>Imagen de la sección</label>
-            <img id="content-image-preview" class="av2-image-preview">
-            <input type="file" id="content-image-input" accept="image/*" class="av2-hidden" onchange="handleContentImageSelect(this.files,'about')">
-            <button type="button" class="av2-btn av2-btn-outline" onclick="document.getElementById('content-image-input').click()"><i class="fas fa-crop"></i> Elegir y recortar imagen</button>
+            <img id="content-image-preview" class="admin-image-preview">
+            <input type="file" id="content-image-input" accept="image/*" class="admin-hidden" onchange="handleContentImageSelect(this.files,'about')">
+            <button type="button" class="admin-btn admin-btn-outline" onclick="document.getElementById('content-image-input').click()"><i class="fas fa-crop"></i> Elegir y recortar imagen</button>
           </div>
-          <div class="av2-form-section-title">Puntos destacados</div>
-          <div class="av2-form-row">
-            <div class="av2-field"><label>Punto 1 — título</label><input type="text" id="content-feature1-title"></div>
-            <div class="av2-field"><label>Punto 1 — texto</label><input type="text" id="content-feature1-text"></div>
+          <div class="admin-form-section-title">Puntos destacados</div>
+          <div class="admin-form-row">
+            <div class="admin-field"><label>Punto 1 — título</label><input type="text" id="content-feature1-title"></div>
+            <div class="admin-field"><label>Punto 1 — texto</label><input type="text" id="content-feature1-text"></div>
           </div>
-          <div class="av2-form-row">
-            <div class="av2-field"><label>Punto 2 — título</label><input type="text" id="content-feature2-title"></div>
-            <div class="av2-field"><label>Punto 2 — texto</label><input type="text" id="content-feature2-text"></div>
+          <div class="admin-form-row">
+            <div class="admin-field"><label>Punto 2 — título</label><input type="text" id="content-feature2-title"></div>
+            <div class="admin-field"><label>Punto 2 — texto</label><input type="text" id="content-feature2-text"></div>
           </div>
-          <div class="av2-form-row">
-            <div class="av2-field"><label>Punto 3 — título</label><input type="text" id="content-feature3-title"></div>
-            <div class="av2-field"><label>Punto 3 — texto</label><input type="text" id="content-feature3-text"></div>
+          <div class="admin-form-row">
+            <div class="admin-field"><label>Punto 3 — título</label><input type="text" id="content-feature3-title"></div>
+            <div class="admin-field"><label>Punto 3 — texto</label><input type="text" id="content-feature3-text"></div>
           </div>
-          <div class="av2-field"><label>Texto del footer (columna izquierda)</label><textarea id="content-footer-text" rows="3"></textarea></div>
-          <button class="av2-btn av2-btn-primary" id="content-save-btn" onclick="saveContenido()">Guardar cambios</button>
+          <div class="admin-field"><label>Texto del footer (columna izquierda)</label><textarea id="content-footer-text" rows="3"></textarea></div>
+          <button class="admin-btn admin-btn-primary" id="content-save-btn" onclick="saveContenido()">Guardar cambios</button>
         </div>
       </section>
 
       <!-- ===== CONTACTO Y REDES ===== -->
-      <section class="av2-section av2-hidden" id="section-contacto">
-        <div class="av2-panel">
-          <div class="av2-field"><label>Teléfono 1</label><input type="text" id="footer-phone1" oninput="formatOwnerPhone(this)"></div>
-          <div class="av2-field"><label>Teléfono 2 (opcional)</label><input type="text" id="footer-phone2" oninput="formatOwnerPhone(this)"></div>
-          <div class="av2-field"><label>Email de contacto</label><input type="email" id="footer-email"></div>
-          <div class="av2-field"><label>Dirección / Ubicación</label><input type="text" id="footer-address"></div>
-          <div class="av2-form-section-title">Redes sociales</div>
+      <section class="admin-section admin-hidden" id="section-contacto">
+        <div class="admin-form-panel">
+          <div class="admin-field"><label>Teléfono 1</label><input type="text" id="footer-phone1" oninput="formatOwnerPhone(this)"></div>
+          <div class="admin-field"><label>Teléfono 2 (opcional)</label><input type="text" id="footer-phone2" oninput="formatOwnerPhone(this)"></div>
+          <div class="admin-field"><label>Email de contacto</label><input type="email" id="footer-email"></div>
+          <div class="admin-field"><label>Dirección / Ubicación</label><input type="text" id="footer-address"></div>
+          <div class="admin-form-section-title">Redes sociales</div>
           <div id="social-rows-container"></div>
-          <button type="button" class="av2-btn av2-btn-outline" onclick="addSocialRow()" style="align-self:flex-start;">+ Agregar red social</button>
-          <button class="av2-btn av2-btn-primary" id="footer-save-btn" onclick="saveFooterContacto()">Guardar cambios</button>
+          <button type="button" class="admin-btn admin-btn-outline" onclick="addSocialRow()" style="align-self:flex-start;">+ Agregar red social</button>
+          <button class="admin-btn admin-btn-primary" id="footer-save-btn" onclick="saveFooterContacto()">Guardar cambios</button>
         </div>
       </section>
 
       <!-- ===== PORTADA ===== -->
-      <section class="av2-section av2-hidden" id="section-portada">
-        <div class="av2-panel">
-          <div class="av2-field"><label>Título grande de la portada</label><input type="text" id="hero-title"></div>
-          <div class="av2-field">
+      <section class="admin-section admin-hidden" id="section-portada">
+        <div class="admin-form-panel">
+          <div class="admin-field"><label>Título grande de la portada</label><input type="text" id="hero-title"></div>
+          <div class="admin-field">
             <label>Imagen de fondo</label>
-            <img id="hero-image-preview" class="av2-image-preview">
-            <input type="file" id="hero-image-input" accept="image/*" class="av2-hidden" onchange="handleContentImageSelect(this.files,'hero')">
-            <button type="button" class="av2-btn av2-btn-outline" onclick="document.getElementById('hero-image-input').click()"><i class="fas fa-crop"></i> Elegir y recortar imagen</button>
+            <img id="hero-image-preview" class="admin-image-preview">
+            <input type="file" id="hero-image-input" accept="image/*" class="admin-hidden" onchange="handleContentImageSelect(this.files,'hero')">
+            <button type="button" class="admin-btn admin-btn-outline" onclick="document.getElementById('hero-image-input').click()"><i class="fas fa-crop"></i> Elegir y recortar imagen</button>
           </div>
-          <button class="av2-btn av2-btn-primary" id="hero-save-btn" onclick="saveHero()">Guardar cambios</button>
+          <button class="admin-btn admin-btn-primary" id="hero-save-btn" onclick="saveHero()">Guardar cambios</button>
         </div>
       </section>
 
@@ -154,33 +154,33 @@
 </div>
 
 <!-- ===== DRAWER: PROPIEDAD ===== -->
-<div class="av2-drawer-overlay" id="propertyDrawerOverlay">
-  <div class="av2-drawer">
-    <div class="av2-drawer-head">
+<div class="admin-drawer-overlay" id="propertyDrawerOverlay">
+  <div class="admin-drawer">
+    <div class="admin-drawer-head">
       <h3 id="propertyDrawerTitle">Nueva propiedad</h3>
-      <button class="av2-icon-btn" onclick="closePropertyDrawer()"><i class="fas fa-times"></i></button>
+      <button class="admin-icon-btn" onclick="closePropertyDrawer()"><i class="fas fa-times"></i></button>
     </div>
-    <div class="av2-drawer-body">
-      <div class="av2-form-section-title">Fotos</div>
-      <div class="av2-dropzone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+    <div class="admin-drawer-body">
+      <div class="admin-form-section-title">Fotos</div>
+      <div class="admin-dropzone" id="dropZone" onclick="document.getElementById('fileInput').click()">
         <i class="fas fa-cloud-upload-alt"></i>
         <p><strong>Arrastrá las fotos</strong> acá o hacé clic para elegirlas</p>
       </div>
-      <input type="file" id="fileInput" multiple accept="image/*" class="av2-hidden" onchange="handleFiles(this.files)">
-      <div class="av2-photo-grid" id="imagePreview"></div>
+      <input type="file" id="fileInput" multiple accept="image/*" class="admin-hidden" onchange="handleFiles(this.files)">
+      <div class="admin-photo-grid" id="imagePreview"></div>
 
-      <div class="av2-form-section-title">Datos generales</div>
-      <div class="av2-field"><label>Título</label><input type="text" id="prop-title" placeholder="Ej: Casa en Centro, Villa Curuguaty"></div>
-      <div class="av2-field"><label>Dirección (para My Maps)</label><input type="text" id="prop-address"></div>
-      <div class="av2-form-row">
-        <div class="av2-field"><label>Estado</label>
+      <div class="admin-form-section-title">Datos generales</div>
+      <div class="admin-field"><label>Título</label><input type="text" id="prop-title" placeholder="Ej: Casa en Centro, Villa Curuguaty"></div>
+      <div class="admin-field"><label>Dirección (para My Maps)</label><input type="text" id="prop-address"></div>
+      <div class="admin-form-row">
+        <div class="admin-field"><label>Estado</label>
           <select id="prop-status">
             <option value="disponible">🟢 Disponible</option>
             <option value="reservado">🟡 Reservado</option>
             <option value="vendido">🔴 Vendido</option>
           </select>
         </div>
-        <div class="av2-field"><label>Badge (opcional)</label>
+        <div class="admin-field"><label>Badge (opcional)</label>
           <select id="prop-badge">
             <option value="">Sin badge</option>
             <option value="oferta">🔴 Oferta</option>
@@ -192,25 +192,25 @@
           </select>
         </div>
       </div>
-      <div class="av2-form-row">
-        <div class="av2-field"><label>Link de YouTube (opcional)</label><input type="url" id="prop-youtube"></div>
-        <div class="av2-field"><label>Tour 360° (opcional)</label><input type="url" id="prop-matterport"></div>
+      <div class="admin-form-row">
+        <div class="admin-field"><label>Link de YouTube (opcional)</label><input type="url" id="prop-youtube"></div>
+        <div class="admin-field"><label>Tour 360° (opcional)</label><input type="url" id="prop-matterport"></div>
       </div>
 
-      <div class="av2-form-section-title">Precio</div>
+      <div class="admin-form-section-title">Precio</div>
       <div id="price-venta-fields">
-        <div class="av2-form-row">
-          <div class="av2-field"><label>USD (opcional)</label><input type="text" id="prop-price-usd" oninput="formatNumber(this)"></div>
-          <div class="av2-field"><label>Guaraníes (opcional)</label><input type="text" id="prop-price-gs" oninput="formatNumber(this)"></div>
+        <div class="admin-form-row">
+          <div class="admin-field"><label>USD (opcional)</label><input type="text" id="prop-price-usd" oninput="formatNumber(this)"></div>
+          <div class="admin-field"><label>Guaraníes (opcional)</label><input type="text" id="prop-price-gs" oninput="formatNumber(this)"></div>
         </div>
       </div>
-      <div id="price-alquiler-fields" class="av2-hidden">
-        <div class="av2-field"><label>Precio mensual (Gs.)</label><input type="text" id="prop-price-alquiler" oninput="formatNumber(this)"></div>
+      <div id="price-alquiler-fields" class="admin-hidden">
+        <div class="admin-field"><label>Precio mensual (Gs.)</label><input type="text" id="prop-price-alquiler" oninput="formatNumber(this)"></div>
       </div>
-      <div class="av2-price-preview" id="price-preview">Completá los campos de arriba</div>
+      <div class="admin-price-preview" id="price-preview">Completá los campos de arriba</div>
 
-      <div class="av2-form-row">
-        <div class="av2-field"><label>Categoría</label>
+      <div class="admin-form-row">
+        <div class="admin-field"><label>Categoría</label>
           <select id="prop-category" onchange="togglePriceFields()">
             <option value="casas">🏠 Casas</option>
             <option value="terrenos">📐 Terrenos</option>
@@ -219,7 +219,7 @@
             <option value="alquileres">🔑 Alquileres</option>
           </select>
         </div>
-        <div class="av2-field"><label>Dormitorios</label>
+        <div class="admin-field"><label>Dormitorios</label>
           <select id="prop-dormitorios">
             <option value="">No aplica</option>
             <option value="0">0</option><option value="1">1</option><option value="2">2</option>
@@ -227,89 +227,84 @@
           </select>
         </div>
       </div>
-      <div class="av2-field"><label>Superficie (opcional)</label><input type="text" id="prop-superficie" oninput="this.value=this.value.replace(/\D/g,'')" placeholder="Solo el número, se agrega m² solo"></div>
-      <div class="av2-field"><label>Descripción</label><textarea id="prop-description" rows="4"></textarea></div>
-      <div class="av2-field"><label>Características (separadas por coma)</label><input type="text" id="prop-features" placeholder="Ej: 3 Habitaciones, 2 Baños, Cochera"></div>
-      <div class="av2-field"><label>URL de Google Maps (opcional)</label><input type="text" id="prop-map"></div>
+      <div class="admin-field"><label>Superficie (opcional)</label><input type="text" id="prop-superficie" oninput="this.value=this.value.replace(/\D/g,'')" placeholder="Solo el número, se agrega m² solo"></div>
+      <div class="admin-field"><label>Descripción</label><textarea id="prop-description" rows="4"></textarea></div>
+      <div class="admin-field"><label>Características (separadas por coma)</label><input type="text" id="prop-features" placeholder="Ej: 3 Habitaciones, 2 Baños, Cochera"></div>
+      <div class="admin-field"><label>URL de Google Maps (opcional)</label><input type="text" id="prop-map"></div>
 
-      <div class="av2-owner-box">
-        <span class="av2-owner-hint"><i class="fas fa-lock"></i> Privado — nunca se muestra en el sitio público</span>
+      <div class="admin-owner-box">
+        <span class="admin-owner-hint"><i class="fas fa-lock"></i> Privado — nunca se muestra en el sitio público</span>
         <input type="text" id="prop-owner-name" placeholder="Nombre y apellido del dueño">
         <input type="text" id="prop-owner-phone" placeholder="Teléfono del dueño" oninput="formatOwnerPhone(this)">
       </div>
 
       <input type="hidden" id="edit-property-id" value="">
     </div>
-    <div class="av2-drawer-foot">
-      <button class="av2-btn av2-btn-outline" onclick="saveDraftManual()"><i class="fas fa-clock"></i> Borrador</button>
-      <button class="av2-btn av2-btn-primary" id="property-save-btn" onclick="saveProperty()"><i class="fas fa-save"></i> Guardar</button>
+    <div class="admin-drawer-foot">
+      <button class="admin-btn admin-btn-outline" onclick="saveDraftManual()"><i class="fas fa-clock"></i> Borrador</button>
+      <button class="admin-btn admin-btn-primary" id="property-save-btn" onclick="saveProperty()"><i class="fas fa-save"></i> Guardar</button>
     </div>
   </div>
 </div>
 
 <!-- ===== DRAWER: PREGUNTA FRECUENTE ===== -->
-<div class="av2-drawer-overlay" id="faqDrawerOverlay">
-  <div class="av2-drawer">
-    <div class="av2-drawer-head">
+<div class="admin-drawer-overlay" id="faqDrawerOverlay">
+  <div class="admin-drawer">
+    <div class="admin-drawer-head">
       <h3 id="faqDrawerTitle">Nueva pregunta</h3>
-      <button class="av2-icon-btn" onclick="closeFaqDrawer()"><i class="fas fa-times"></i></button>
+      <button class="admin-icon-btn" onclick="closeFaqDrawer()"><i class="fas fa-times"></i></button>
     </div>
-    <div class="av2-drawer-body">
-      <div class="av2-field"><label>Pregunta</label><input type="text" id="faq-question-input"></div>
-      <div class="av2-field"><label>Respuesta</label><textarea id="faq-answer-input" rows="4"></textarea></div>
+    <div class="admin-drawer-body">
+      <div class="admin-field"><label>Pregunta</label><input type="text" id="faq-question-input"></div>
+      <div class="admin-field"><label>Respuesta</label><textarea id="faq-answer-input" rows="4"></textarea></div>
       <input type="hidden" id="edit-faq-id" value="">
     </div>
-    <div class="av2-drawer-foot">
-      <button class="av2-btn av2-btn-outline" onclick="closeFaqDrawer()">Cancelar</button>
-      <button class="av2-btn av2-btn-primary" onclick="saveFaq()">Guardar</button>
+    <div class="admin-drawer-foot">
+      <button class="admin-btn admin-btn-outline" onclick="closeFaqDrawer()">Cancelar</button>
+      <button class="admin-btn admin-btn-primary" onclick="saveFaq()">Guardar</button>
     </div>
   </div>
 </div>
 
 <!-- ===== MODAL DE RECORTE ===== -->
-<div class="av2-crop-overlay" id="crop-modal">
-  <div class="av2-crop-box">
+<div class="admin-crop-overlay" id="crop-modal">
+  <div class="admin-crop-box">
     <h3>Recortá tu imagen</h3>
-    <div class="av2-crop-container" id="crop-container" style="aspect-ratio:4/3;">
+    <div class="admin-crop-container" id="crop-container" style="aspect-ratio:4/3;">
       <img id="crop-image" src="" draggable="false">
-      <div id="crop-rect" class="av2-crop-rect">
-        <div class="av2-crop-grid-line" style="left:33.333%; top:0; bottom:0; width:1px;"></div>
-        <div class="av2-crop-grid-line" style="left:66.666%; top:0; bottom:0; width:1px;"></div>
-        <div class="av2-crop-grid-line" style="top:33.333%; left:0; right:0; height:1px;"></div>
-        <div class="av2-crop-grid-line" style="top:66.666%; left:0; right:0; height:1px;"></div>
-        <div class="av2-crop-handle" data-corner="tl" style="top:-9px; left:-9px; border-top:4px solid #4CAF50; border-left:4px solid #4CAF50; cursor:nwse-resize;"></div>
-        <div class="av2-crop-handle" data-corner="tr" style="top:-9px; right:-9px; border-top:4px solid #4CAF50; border-right:4px solid #4CAF50; cursor:nesw-resize;"></div>
-        <div class="av2-crop-handle" data-corner="bl" style="bottom:-9px; left:-9px; border-bottom:4px solid #4CAF50; border-left:4px solid #4CAF50; cursor:nesw-resize;"></div>
-        <div class="av2-crop-handle" data-corner="br" style="bottom:-9px; right:-9px; border-bottom:4px solid #4CAF50; border-right:4px solid #4CAF50; cursor:nwse-resize;"></div>
+      <div id="crop-rect" class="admin-crop-rect">
+        <div class="admin-crop-grid-line" style="left:33.333%; top:0; bottom:0; width:1px;"></div>
+        <div class="admin-crop-grid-line" style="left:66.666%; top:0; bottom:0; width:1px;"></div>
+        <div class="admin-crop-grid-line" style="top:33.333%; left:0; right:0; height:1px;"></div>
+        <div class="admin-crop-grid-line" style="top:66.666%; left:0; right:0; height:1px;"></div>
+        <div class="admin-crop-handle" data-corner="tl" style="top:-9px; left:-9px; border-top:4px solid #4CAF50; border-left:4px solid #4CAF50; cursor:nwse-resize;"></div>
+        <div class="admin-crop-handle" data-corner="tr" style="top:-9px; right:-9px; border-top:4px solid #4CAF50; border-right:4px solid #4CAF50; cursor:nesw-resize;"></div>
+        <div class="admin-crop-handle" data-corner="bl" style="bottom:-9px; left:-9px; border-bottom:4px solid #4CAF50; border-left:4px solid #4CAF50; cursor:nesw-resize;"></div>
+        <div class="admin-crop-handle" data-corner="br" style="bottom:-9px; right:-9px; border-bottom:4px solid #4CAF50; border-right:4px solid #4CAF50; cursor:nwse-resize;"></div>
       </div>
     </div>
-    <p class="av2-crop-hint">Arrastrá las esquinas verdes para ajustar el recorte, o el centro para moverlo</p>
-    <div class="av2-confirm-actions" style="margin-top:14px;">
-      <button class="av2-btn av2-btn-outline" onclick="cancelCrop()">Cancelar</button>
-      <button class="av2-btn av2-btn-primary" onclick="confirmCrop()">Usar esta imagen</button>
+    <p class="admin-crop-hint">Arrastrá las esquinas verdes para ajustar el recorte, o el centro para moverlo</p>
+    <div class="admin-confirm-actions" style="margin-top:14px;">
+      <button class="admin-btn admin-btn-outline" onclick="cancelCrop()">Cancelar</button>
+      <button class="admin-btn admin-btn-primary" onclick="confirmCrop()">Usar esta imagen</button>
     </div>
   </div>
 </div>
 
 <!-- ===== MODAL DE CONFIRMACIÓN ===== -->
-<div class="av2-confirm-overlay" id="confirm-modal">
-  <div class="av2-confirm-box">
-    <div class="av2-confirm-icon">📝</div>
+<div class="admin-confirm-overlay" id="confirm-modal">
+  <div class="admin-confirm-box">
+    <div class="admin-confirm-icon">📝</div>
     <h3>Tenés cambios sin guardar</h3>
     <p id="confirm-modal-text">Si salís ahora, vas a perder los datos que escribiste. ¿Qué querés hacer?</p>
-    <div class="av2-confirm-actions">
-      <button class="av2-btn av2-btn-outline" onclick="closeConfirmModal()">Seguir editando</button>
-      <button class="av2-btn av2-btn-danger" id="confirm-modal-action-btn">Salir igual</button>
+    <div class="admin-confirm-actions">
+      <button class="admin-btn admin-btn-outline" onclick="closeConfirmModal()">Seguir editando</button>
+      <button class="admin-btn admin-btn-danger" id="confirm-modal-action-btn">Salir igual</button>
     </div>
   </div>
 </div>
 
 <script type="module" src="firebase-config.js"></script>
 <script type="module" src="admin.js"></script>
-<script>
-  if (window.location.pathname.toLowerCase().includes('admin')) {
-    history.replaceState(null, '', '/');
-  }
-</script>
 </body>
 </html>
