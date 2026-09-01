@@ -255,6 +255,8 @@ function initPropertiesSlider(cantidad) {
         gutter: 30,
         mode: 'carousel',
         speed: 500,
+        preventScrollOnTouch: 'auto',
+        useLocalStorage: false,
         autoplay: false,
         controls: true,
         controlsText: ['<i class="fas fa-chevron-left"></i>', '<i class="fas fa-chevron-right"></i>'],
