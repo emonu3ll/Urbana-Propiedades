@@ -236,38 +236,6 @@ grid.appendChild(card);
     });
 
     initScrollAnimations();
-    initPropertiesSlider(filteredProperties.length);
-}
-
-let propertiesSliderInstance = null;
-
-function initPropertiesSlider(cantidad) {
-    if (propertiesSliderInstance) {
-        propertiesSliderInstance.destroy();
-        propertiesSliderInstance = null;
-    }
-
-    if (cantidad <= 1 || typeof tns === 'undefined') return;
-
-    propertiesSliderInstance = tns({
-        container: '#properties-grid',
-        items: 3,
-        gutter: 30,
-        mode: 'carousel',
-        speed: 500,
-        preventScrollOnTouch: 'auto',
-        useLocalStorage: false,
-        autoplay: false,
-        controls: true,
-        controlsText: ['<i class="fas fa-chevron-left"></i>', '<i class="fas fa-chevron-right"></i>'],
-        controlsContainer: '#property-nav',
-        nav: false,
-        responsive: {
-            0: { items: 1 },
-            700: { items: 2 },
-            1000: { items: 3 }
-        }
-    });
 }
 
 // =========================================

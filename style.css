@@ -320,13 +320,13 @@ color: white;
 }
 
 .properties-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+gap: 25px;
 width: 100%;
 }
 
-.properties-grid .property-card {
-padding: 0 15px;
-box-sizing: border-box;
-}
+
 
 @media (max-width: 600px) {
 .properties-header {
