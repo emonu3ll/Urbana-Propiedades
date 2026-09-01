@@ -252,7 +252,7 @@ function initPropertiesSlider(cantidad) {
     propertiesSliderInstance = tns({
         container: '#properties-grid',
         items: 3,
-        gutter: 0,
+        gutter: 30,
         mode: 'carousel',
         speed: 500,
         autoplay: false,
