@@ -44,6 +44,9 @@
     <button class="admin-nav-item" data-section="portada">
       <i class="fas fa-image"></i> Portada
     </button>
+    <button class="admin-nav-item" data-section="fichas">
+      <i class="fas fa-id-card"></i> Fichas de Clientes
+    </button>
 
     <div class="admin-sidebar-footer">
       <a href="/">↗ Ver sitio público</a>
@@ -134,6 +137,33 @@
           <button class="admin-btn admin-btn-primary" id="footer-save-btn" onclick="saveFooterContacto()">Guardar cambios</button>
         </div>
       </section>
+
+            <!-- ===== FICHAS DE CLIENTES ===== -->
+      <section class="admin-section admin-hidden" id="section-fichas">
+        <div class="admin-toolbar">
+          <div class="admin-search">
+            <i class="fas fa-search"></i>
+            <input type="text" id="fichaSearch" placeholder="Buscar por nombre o C.I....">
+          </div>
+          <div style="display:flex; gap:10px;">
+            <select id="fichaFilterTipo" style="padding:10px 14px; border-radius:25px; border:1.5px solid #dddfe2;">
+              <option value="">Todos los tipos</option>
+              <option value="alquiler">Dueños - Alquiler</option>
+              <option value="venta">Dueños - Venta</option>
+              <option value="persona">Inquilinos / Compradores</option>
+            </select>
+            <button class="admin-btn admin-btn-primary" onclick="openFichaDrawer(null)">+ Nueva ficha</button>
+          </div>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead><tr><th>Nombre</th><th>Tipo</th><th>Teléfono</th><th>Alerta</th><th></th></tr></thead>
+            <tbody id="fichasTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== PORTADA ===== -->
 
       <!-- ===== PORTADA ===== -->
       <section class="admin-section admin-hidden" id="section-portada">
@@ -265,6 +295,56 @@
     </div>
   </div>
 </div>
+
+<!-- ===== DRAWER: FICHA DE CLIENTE ===== -->
+<div class="admin-drawer-overlay" id="fichaDrawerOverlay">
+  <div class="admin-drawer">
+    <div class="admin-drawer-head">
+      <h3 id="fichaDrawerTitle">Nueva ficha</h3>
+      <button class="admin-icon-btn" onclick="closeFichaDrawer()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="admin-drawer-body">
+      <div class="admin-field">
+        <label>Tipo de ficha</label>
+        <select id="ficha-tipo" onchange="toggleFichaTipoFields()">
+          <option value="alquiler">Dueño — Alquiler</option>
+          <option value="venta">Dueño — Venta</option>
+          <option value="persona">Inquilino / Comprador</option>
+        </select>
+      </div>
+
+      <div class="admin-field admin-hidden" id="ficha-subtipo-wrap">
+        <label>Es...</label>
+        <select id="ficha-subtipo">
+          <option value="inquilino">Inquilino</option>
+          <option value="comprador">Comprador</option>
+        </select>
+      </div>
+
+      <div class="admin-form-row">
+        <div class="admin-field"><label>Nombre y apellido</label><input type="text" id="ficha-nombre"></div>
+        <div class="admin-field"><label>Cédula (C.I.)</label><input type="text" id="ficha-cedula"></div>
+      </div>
+      <div class="admin-field"><label>Teléfono</label><input type="text" id="ficha-telefono"></div>
+
+      <div id="ficha-propiedades-wrap">
+        <div class="admin-form-section-title" id="ficha-propiedades-title">Propiedades en alquiler</div>
+        <div id="ficha-propiedades-container"></div>
+        <button type="button" class="admin-btn admin-btn-outline" onclick="addPropiedadRow()" style="align-self:flex-start;">+ Agregar propiedad</button>
+      </div>
+
+      <div class="admin-field"><label>Notas</label><textarea id="ficha-notas" rows="3"></textarea></div>
+
+      <input type="hidden" id="edit-ficha-id" value="">
+    </div>
+    <div class="admin-drawer-foot">
+      <button class="admin-btn admin-btn-outline" onclick="closeFichaDrawer()">Cancelar</button>
+      <button class="admin-btn admin-btn-primary" onclick="saveFicha()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL DE RECORTE ===== -->
 
 <!-- ===== MODAL DE RECORTE ===== -->
 <div class="admin-crop-overlay" id="crop-modal">

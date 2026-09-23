@@ -45,6 +45,7 @@ function showAdminPanel() {
     loadContenido();
     loadFooterContacto();
     loadHero();
+    loadFichas();
     checkForDraft();
 }
 
@@ -65,7 +66,8 @@ const SECTION_TITLES = {
     faq: 'Preguntas frecuentes',
     nosotros: 'Sobre nosotros',
     contacto: 'Contacto y redes',
-    portada: 'Portada'
+    portada: 'Portada',
+    fichas: 'Fichas de Clientes'
 };
 
 let sidebarWired = false;
@@ -876,6 +878,228 @@ function openConfirmModal(message, onConfirm, actionText = 'Salir igual') {
 function closeConfirmModal() { document.getElementById('confirm-modal').classList.remove('open'); }
 
 /* =========================================
+   FICHAS DE CLIENTES
+   ========================================= */
+let allFichas = [];
+
+const ESTADOS_ALQUILER = ['Disponible', 'Reservado', 'Ocupado'];
+const ESTADOS_VENTA = ['Disponible', 'Reservado', 'Vendido'];
+
+function diasHastaVencimiento(fechaStr) {
+    if (!fechaStr) return null;
+    const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+    const fecha = new Date(fechaStr + 'T00:00:00');
+    return Math.ceil((fecha - hoy) / (1000 * 60 * 60 * 24));
+}
+
+function renderFichaAlertaBadge(ficha) {
+    if (ficha.tipo === 'persona' || !ficha.propiedades?.length) return '—';
+    const dias = ficha.propiedades
+        .map(p => diasHastaVencimiento(p.fechaExpiracion))
+        .filter(d => d !== null);
+    if (!dias.length) return '—';
+    const min = Math.min(...dias);
+    if (min < 0) return `<span class="admin-badge" style="background:#f44336;">Vencido hace ${Math.abs(min)}d</span>`;
+    if (min <= 30) return `<span class="admin-badge" style="background:#FF9800;">Vence en ${min}d</span>`;
+    return '—';
+}
+
+async function loadFichas() {
+    try {
+        const querySnapshot = await getDocs(collection(db, "fichas"));
+        allFichas = [];
+        querySnapshot.forEach(d => allFichas.push({ id: d.id, ...d.data() }));
+        renderFichasTable();
+    } catch (error) { console.error(error); }
+}
+
+function renderFichasTable() {
+    const tbody = document.getElementById('fichasTableBody');
+    if (!tbody) return;
+    const term = (document.getElementById('fichaSearch')?.value || '').toLowerCase();
+    const tipoFiltro = document.getElementById('fichaFilterTipo')?.value || '';
+
+    const list = allFichas.filter(f => {
+        const matchTerm = !term || (f.nombre || '').toLowerCase().includes(term) || (f.cedula || '').includes(term);
+        const matchTipo = !tipoFiltro || f.tipo === tipoFiltro;
+        return matchTerm && matchTipo;
+    });
+
+    if (!list.length) {
+        tbody.innerHTML = `<tr><td colspan="5" class="admin-empty">No hay fichas que coincidan.</td></tr>`;
+        return;
+    }
+
+    const tipoLabels = {
+        alquiler: 'Dueño (Alquiler)',
+        venta: 'Dueño (Venta)',
+        persona: null
+    };
+
+    tbody.innerHTML = list.map(f => {
+        const tipoTexto = f.tipo === 'persona'
+            ? (f.subtipo === 'comprador' ? 'Comprador' : 'Inquilino')
+            : tipoLabels[f.tipo];
+        return `
+        <tr>
+            <td><strong>${f.nombre || '(Sin nombre)'}</strong><br><span style="font-size:12px;color:#888;">${f.cedula || ''}</span></td>
+            <td>${tipoTexto}</td>
+            <td>${f.telefono || '—'}</td>
+            <td>${renderFichaAlertaBadge(f)}</td>
+            <td>
+                <div class="admin-row-actions">
+                    <button class="admin-icon-btn" onclick="openFichaDrawer('${f.id}')"><i class="fas fa-edit"></i></button>
+                    <button class="admin-icon-btn danger" onclick="deleteFicha('${f.id}')"><i class="fas fa-trash"></i></button>
+                </div>
+            </td>
+        </tr>`;
+    }).join('');
+}
+
+document.getElementById('fichaSearch')?.addEventListener('input', renderFichasTable);
+document.getElementById('fichaFilterTipo')?.addEventListener('change', renderFichasTable);
+
+function toggleFichaTipoFields() {
+    const tipo = document.getElementById('ficha-tipo').value;
+    document.getElementById('ficha-subtipo-wrap').classList.toggle('admin-hidden', tipo !== 'persona');
+    document.getElementById('ficha-propiedades-wrap').classList.toggle('admin-hidden', tipo === 'persona');
+    document.getElementById('ficha-propiedades-title').textContent =
+        tipo === 'alquiler' ? 'Propiedades en alquiler' : 'Propiedades en venta';
+
+    document.querySelectorAll('.propiedad-row').forEach(row => updatePropiedadRowLabels(row, tipo));
+}
+
+function updatePropiedadRowLabels(row, tipo) {
+    const estadoSelect = row.querySelector('.propiedad-estado');
+    const estados = tipo === 'alquiler' ? ESTADOS_ALQUILER : ESTADOS_VENTA;
+    const valorActual = estadoSelect.value;
+    estadoSelect.innerHTML = estados.map(e => `<option value="${e}" ${e === valorActual ? 'selected' : ''}>${e}</option>`).join('');
+
+    row.querySelector('.propiedad-fecha-inicio-label').textContent = tipo === 'alquiler' ? 'Fecha de ingreso' : 'Fecha de inicio';
+    row.querySelector('.propiedad-persona-label').textContent = tipo === 'alquiler' ? 'Inquilino (opcional)' : 'Comprador (opcional)';
+}
+
+function addPropiedadRow(datos = {}) {
+    const tipo = document.getElementById('ficha-tipo').value;
+    const estados = tipo === 'alquiler' ? ESTADOS_ALQUILER : ESTADOS_VENTA;
+    const container = document.getElementById('ficha-propiedades-container');
+    const row = document.createElement('div');
+    row.className = 'propiedad-row admin-owner-box';
+    row.style.marginBottom = '14px';
+    row.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span class="admin-owner-hint"><i class="fas fa-home"></i> Propiedad</span>
+            <button type="button" class="admin-icon-btn danger" onclick="this.closest('.propiedad-row').remove()"><i class="fas fa-trash"></i></button>
+        </div>
+        <input type="text" class="propiedad-descripcion" placeholder="Descripción / características" value="${datos.descripcion || ''}">
+        <div class="admin-form-row">
+            <div>
+                <label style="font-size:12px; font-weight:bold; display:block; margin-bottom:4px;">Estado</label>
+                <select class="propiedad-estado" style="width:100%; padding:10px; border-radius:8px; border:1.5px solid #ffd699;">
+                    ${estados.map(e => `<option value="${e}" ${e === datos.estado ? 'selected' : ''}>${e}</option>`).join('')}
+                </select>
+            </div>
+            <div>
+                <label class="propiedad-persona-label" style="font-size:12px; font-weight:bold; display:block; margin-bottom:4px;">${tipo === 'alquiler' ? 'Inquilino (opcional)' : 'Comprador (opcional)'}</label>
+                <input type="text" class="propiedad-persona" value="${datos.persona || ''}" style="width:100%; padding:10px; border-radius:8px; border:1.5px solid #ffd699; box-sizing:border-box;">
+            </div>
+        </div>
+        <div class="admin-form-row">
+            <div>
+                <label class="propiedad-fecha-inicio-label" style="font-size:12px; font-weight:bold; display:block; margin-bottom:4px;">${tipo === 'alquiler' ? 'Fecha de ingreso' : 'Fecha de inicio'}</label>
+                <input type="date" class="propiedad-fecha-inicio" value="${datos.fechaInicio || ''}" style="width:100%; padding:10px; border-radius:8px; border:1.5px solid #ffd699; box-sizing:border-box;">
+            </div>
+            <div>
+                <label style="font-size:12px; font-weight:bold; display:block; margin-bottom:4px;">Fecha de expiración</label>
+                <input type="date" class="propiedad-fecha-exp" value="${datos.fechaExpiracion || ''}" style="width:100%; padding:10px; border-radius:8px; border:1.5px solid #ffd699; box-sizing:border-box;">
+            </div>
+        </div>
+    `;
+    container.appendChild(row);
+}
+
+let editingFichaId = null;
+
+function openFichaDrawer(id) {
+    editingFichaId = id;
+    document.getElementById('fichaDrawerTitle').textContent = id ? 'Editar ficha' : 'Nueva ficha';
+    document.getElementById('ficha-propiedades-container').innerHTML = '';
+
+    if (id) {
+        const f = allFichas.find(x => x.id === id);
+        if (!f) return;
+        document.getElementById('ficha-tipo').value = f.tipo || 'alquiler';
+        document.getElementById('ficha-subtipo').value = f.subtipo || 'inquilino';
+        document.getElementById('ficha-nombre').value = f.nombre || '';
+        document.getElementById('ficha-cedula').value = f.cedula || '';
+        document.getElementById('ficha-telefono').value = f.telefono || '';
+        document.getElementById('ficha-notas').value = f.notas || '';
+        toggleFichaTipoFields();
+        (f.propiedades || []).forEach(p => addPropiedadRow(p));
+        document.getElementById('edit-ficha-id').value = id;
+    } else {
+        document.getElementById('ficha-tipo').value = 'alquiler';
+        document.getElementById('ficha-subtipo').value = 'inquilino';
+        document.getElementById('ficha-nombre').value = '';
+        document.getElementById('ficha-cedula').value = '';
+        document.getElementById('ficha-telefono').value = '';
+        document.getElementById('ficha-notas').value = '';
+        document.getElementById('edit-ficha-id').value = '';
+        toggleFichaTipoFields();
+    }
+    document.getElementById('fichaDrawerOverlay').classList.add('open');
+}
+
+function closeFichaDrawer() {
+    document.getElementById('fichaDrawerOverlay').classList.remove('open');
+}
+
+async function saveFicha() {
+    const tipo = document.getElementById('ficha-tipo').value;
+    const nombre = document.getElementById('ficha-nombre').value.trim();
+    const cedula = document.getElementById('ficha-cedula').value.trim();
+    const telefono = document.getElementById('ficha-telefono').value.trim();
+    const notas = document.getElementById('ficha-notas').value.trim();
+
+    if (!nombre) { showToast('Completá al menos el nombre', 'error'); return; }
+
+    const fichaData = { tipo, nombre, cedula, telefono, notas };
+
+    if (tipo === 'persona') {
+        fichaData.subtipo = document.getElementById('ficha-subtipo').value;
+    } else {
+        fichaData.propiedades = Array.from(document.querySelectorAll('.propiedad-row')).map(row => ({
+            descripcion: row.querySelector('.propiedad-descripcion').value.trim(),
+            estado: row.querySelector('.propiedad-estado').value,
+            persona: row.querySelector('.propiedad-persona').value.trim(),
+            fechaInicio: row.querySelector('.propiedad-fecha-inicio').value,
+            fechaExpiracion: row.querySelector('.propiedad-fecha-exp').value
+        }));
+    }
+
+    try {
+        const editId = document.getElementById('edit-ficha-id').value;
+        if (editId) await updateDoc(doc(db, "fichas", editId), fichaData);
+        else await addDoc(collection(db, "fichas"), { ...fichaData, date: new Date().toISOString() });
+        showToast(editId ? 'Ficha actualizada' : 'Ficha creada');
+        closeFichaDrawer();
+        loadFichas();
+    } catch (error) {
+        showToast('Error al guardar: ' + error.message, 'error');
+    }
+}
+
+async function deleteFicha(id) {
+    openConfirmModal('¿Eliminar esta ficha? Esta acción no se puede deshacer.', async () => {
+        try {
+            await deleteDoc(doc(db, "fichas", id));
+            showToast('Ficha eliminada');
+            loadFichas();
+        } catch (error) { showToast('Error al eliminar: ' + error.message, 'error'); }
+    }, 'Sí, eliminar');
+}
+
+/* =========================================
    GLOBALES
    ========================================= */
 window.login = login;
@@ -900,6 +1124,12 @@ window.saveContenido = saveContenido;
 window.saveHero = saveHero;
 window.saveFooterContacto = saveFooterContacto;
 window.addSocialRow = addSocialRow;
+window.openFichaDrawer = openFichaDrawer;
+window.closeFichaDrawer = closeFichaDrawer;
+window.saveFicha = saveFicha;
+window.deleteFicha = deleteFicha;
+window.toggleFichaTipoFields = toggleFichaTipoFields;
+window.addPropiedadRow = addPropiedadRow;
 window.handleContentImageSelect = handleContentImageSelect;
 window.confirmCrop = confirmCrop;
 window.cancelCrop = cancelCrop;
