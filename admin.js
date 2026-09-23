@@ -966,7 +966,11 @@ function toggleFichaTipoFields() {
     document.getElementById('ficha-propiedades-title').textContent =
         tipo === 'alquiler' ? 'Propiedades en alquiler' : 'Propiedades en venta';
 
-    document.querySelectorAll('.propiedad-row').forEach(row => updatePropiedadRowLabels(row, tipo));
+    document.querySelectorAll('.propiedad-row').forEach(row => {
+        updatePropiedadRowLabels(row, tipo);
+        const nisWrap = row.querySelector('.propiedad-nis-wrap');
+        if (nisWrap) nisWrap.style.display = tipo === 'alquiler' ? '' : 'none';
+    });
 }
 
 function updatePropiedadRowLabels(row, tipo) {
@@ -1012,6 +1016,33 @@ function addPropiedadRow(datos = {}) {
             <div>
                 <label style="font-size:12px; font-weight:bold; display:block; margin-bottom:4px;">Fecha de expiración</label>
                 <input type="date" class="propiedad-fecha-exp" value="${datos.fechaExpiracion || ''}" style="width:100%; padding:10px; border-radius:8px; border:1.5px solid #ffd699; box-sizing:border-box;">
+            </div>
+        </div>
+        <div class="admin-form-section-title" style="border-color:#ffd699; color:#B45309;">Datos catastrales (opcional)</div>
+        <div class="admin-form-row propiedad-nis-wrap" style="${tipo === 'alquiler' ? '' : 'display:none;'}">
+            <div style="grid-column: 1 / -1;">
+                <label style="font-size:12px; font-weight:bold; display:block; margin-bottom:4px;">Número de NIS</label>
+                <input type="text" class="propiedad-nis" value="${datos.nis || ''}" style="width:100%; padding:10px; border-radius:8px; border:1.5px solid #ffd699; box-sizing:border-box;">
+            </div>
+        </div>
+        <div class="admin-form-row">
+            <div>
+                <label style="font-size:12px; font-weight:bold; display:block; margin-bottom:4px;">Cuenta Corriente Catastral</label>
+                <input type="text" class="propiedad-cuenta-catastral" value="${datos.cuentaCatastral || ''}" style="width:100%; padding:10px; border-radius:8px; border:1.5px solid #ffd699; box-sizing:border-box;">
+            </div>
+            <div>
+                <label style="font-size:12px; font-weight:bold; display:block; margin-bottom:4px;">Padrón</label>
+                <input type="text" class="propiedad-padron" value="${datos.padron || ''}" style="width:100%; padding:10px; border-radius:8px; border:1.5px solid #ffd699; box-sizing:border-box;">
+            </div>
+        </div>
+        <div class="admin-form-row">
+            <div>
+                <label style="font-size:12px; font-weight:bold; display:block; margin-bottom:4px;">Número de Finca</label>
+                <input type="text" class="propiedad-finca" value="${datos.numeroFinca || ''}" style="width:100%; padding:10px; border-radius:8px; border:1.5px solid #ffd699; box-sizing:border-box;">
+            </div>
+            <div>
+                <label style="font-size:12px; font-weight:bold; display:block; margin-bottom:4px;">Superficie</label>
+                <input type="text" class="propiedad-superficie" value="${datos.superficie || ''}" style="width:100%; padding:10px; border-radius:8px; border:1.5px solid #ffd699; box-sizing:border-box;">
             </div>
         </div>
     `;
@@ -1073,7 +1104,12 @@ async function saveFicha() {
             estado: row.querySelector('.propiedad-estado').value,
             persona: row.querySelector('.propiedad-persona').value.trim(),
             fechaInicio: row.querySelector('.propiedad-fecha-inicio').value,
-            fechaExpiracion: row.querySelector('.propiedad-fecha-exp').value
+            fechaExpiracion: row.querySelector('.propiedad-fecha-exp').value,
+            nis: row.querySelector('.propiedad-nis')?.value.trim() || '',
+            cuentaCatastral: row.querySelector('.propiedad-cuenta-catastral').value.trim(),
+            padron: row.querySelector('.propiedad-padron').value.trim(),
+            numeroFinca: row.querySelector('.propiedad-finca').value.trim(),
+            superficie: row.querySelector('.propiedad-superficie').value.trim()
         }));
     }
 
