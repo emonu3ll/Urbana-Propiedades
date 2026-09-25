@@ -384,6 +384,18 @@
   </div>
 </div>
 
+<!-- ===== MODAL DE ALERTAS DE VENCIMIENTO ===== -->
+<div class="admin-confirm-overlay" id="vencimientos-modal">
+  <div class="admin-confirm-box" style="max-width:480px; text-align:left;">
+    <div style="text-align:center;">
+      <div class="admin-confirm-icon">⏰</div>
+      <h3 style="text-align:center;">Contratos por vencer</h3>
+    </div>
+    <div id="vencimientos-lista" style="max-height:320px; overflow-y:auto; margin:16px 0;"></div>
+    <button class="admin-btn admin-btn-primary admin-btn-block" onclick="closeVencimientosModal()">Entendido</button>
+  </div>
+</div>
+
 <script type="module" src="firebase-config.js"></script>
 <script type="module" src="admin.js"></script>
 </body>
