@@ -1178,6 +1178,47 @@ function closeVencimientosModal() {
     document.getElementById('vencimientos-modal').classList.remove('open');
 }
 
+function checkVencimientosAlert() {
+    if (sessionStorage.getItem('vencimientosAlertShown')) return;
+
+    const alertas = [];
+    allFichas.forEach(f => {
+        if (f.tipo === 'persona' || !f.propiedades?.length) return;
+        f.propiedades.forEach(p => {
+            const dias = diasHastaVencimiento(p.fechaExpiracion);
+            if (dias !== null && dias <= 30) {
+                alertas.push({ nombre: f.nombre, descripcion: p.descripcion, dias });
+            }
+        });
+    });
+
+    if (!alertas.length) return;
+
+    alertas.sort((a, b) => a.dias - b.dias);
+
+    const lista = document.getElementById('vencimientos-lista');
+    lista.innerHTML = alertas.map(a => {
+        let textoTiempo, color;
+        if (a.dias < 0) { textoTiempo = `Vencido hace ${Math.abs(a.dias)} día${Math.abs(a.dias) === 1 ? '' : 's'}`; color = '#f44336'; }
+        else if (a.dias === 0) { textoTiempo = 'Vence hoy'; color = '#f44336'; }
+        else { textoTiempo = `Vence en ${a.dias} día${a.dias === 1 ? '' : 's'}`; color = '#FF9800'; }
+
+        return `
+            <div style="padding:12px 14px; border-left:4px solid ${color}; background:#f9f9f9; border-radius:8px; margin-bottom:10px;">
+                <strong>${a.nombre}</strong><br>
+                <span style="font-size:13px; color:#666;">${a.descripcion || 'Sin descripción'}</span><br>
+                <span style="font-size:13px; font-weight:bold; color:${color};">${textoTiempo}</span>
+            </div>`;
+    }).join('');
+
+    document.getElementById('vencimientos-modal').classList.add('open');
+    sessionStorage.setItem('vencimientosAlertShown', 'true');
+}
+
+function closeVencimientosModal() {
+    document.getElementById('vencimientos-modal').classList.remove('open');
+}
+
 /* =========================================
    GLOBALES
    ========================================= */
@@ -1209,6 +1250,7 @@ window.saveFicha = saveFicha;
 window.deleteFicha = deleteFicha;
 window.toggleFichaTipoFields = toggleFichaTipoFields;
 window.addPropiedadRow = addPropiedadRow;
+window.closeVencimientosModal = closeVencimientosModal;
 window.closeVencimientosModal = closeVencimientosModal;
 window.handleContentImageSelect = handleContentImageSelect;
 window.confirmCrop = confirmCrop;
