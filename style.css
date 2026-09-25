@@ -2556,8 +2556,7 @@ font-size: 14px;
 /* ---- Modal de confirmación ---- */
 .admin-confirm-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 950; display: none; align-items: center; justify-content: center; }
 .admin-confirm-overlay.open { display: flex; }
-.admin-confirm-box { background: white; border-radius: 15px; padding: 30px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,.3); }
-.admin-confirm-icon { font-size: 40px; margin-bottom: 12px; }
+.admin-confirm-box { background: white; border-radius: 15px; padding: 34px; max-width: 480px; width: 92%; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,.3); }.admin-confirm-icon { font-size: 40px; margin-bottom: 12px; }
 .admin-confirm-box h3 { font-family: 'Cinzel', serif; margin-bottom: 10px; color: #1e3a5f; }
 .admin-confirm-box p { color: #666; margin-bottom: 22px; line-height: 1.5; }
 .admin-confirm-actions { display: flex; gap: 10px; }
